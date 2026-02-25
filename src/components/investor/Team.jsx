@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Users, Cpu, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Slider } from "@/components/ui/slider";
 
 export default function Team() {
+    const [investmentAmount, setInvestmentAmount] = useState(25000);
+    const targetReturn = investmentAmount * 1.10;
+    const avgMonthlyRevenue = 50530;
+    const monthlyPayment = avgMonthlyRevenue * 0.05;
+    const estimatedMonths = Math.ceil(targetReturn / monthlyPayment);
     return (
         <section className="py-24 bg-slate-950">
             <div className="max-w-6xl mx-auto px-6">
