@@ -55,6 +55,7 @@ export default function Home() {
                 <Financials />
                 <Investment />
                 <Team />
+                <SocialImpact />
                 <CTA />
             </div>
 
