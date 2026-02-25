@@ -127,8 +127,15 @@ const colorClasses = {
 
 export default function SocialImpact() {
     const [activeCert, setActiveCert] = useState('ufsp');
+    const [showTabHint, setShowTabHint] = useState(true);
     const currentCert = certifications.find(c => c.id === activeCert);
     const colors = colorClasses[currentCert?.color || 'cyan'];
+
+    // Auto-rotate certifications to show interactivity
+    React.useEffect(() => {
+        const hintTimer = setTimeout(() => setShowTabHint(false), 5000);
+        return () => clearTimeout(hintTimer);
+    }, []);
 
     return (
         <section className="py-24 bg-gradient-to-br from-slate-900 via-slate-950 to-black">
@@ -165,18 +172,25 @@ export default function SocialImpact() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                 >
-                    <Tabs value={activeCert} onValueChange={setActiveCert} className="w-full">
-                        <TabsList className="grid w-full grid-cols-5 bg-slate-800/50 p-2 rounded-xl mb-8">
-                            {certifications.map(cert => (
-                                <TabsTrigger 
-                                    key={cert.id} 
-                                    value={cert.id}
-                                    className="data-[state=active]:bg-slate-700 rounded-lg"
-                                >
-                                    <img src={cert.badge} alt={cert.name} className="w-8 h-8" />
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
+                    <Tabs value={activeCert} onValueChange={(val) => { setActiveCert(val); setShowTabHint(false); }} className="w-full">
+                        <div className="relative">
+                            {showTabHint && (
+                                <div className="absolute -top-10 left-1/2 -translate-x-1/2 text-sm text-cyan-400 whitespace-nowrap animate-bounce z-10">
+                                    👇 Click badges to explore different certifications
+                                </div>
+                            )}
+                            <TabsList className={`grid w-full grid-cols-5 bg-slate-800/50 p-2 rounded-xl mb-8 ${showTabHint ? 'ring-2 ring-cyan-500/50 animate-pulse' : ''}`}>
+                                {certifications.map(cert => (
+                                    <TabsTrigger 
+                                        key={cert.id} 
+                                        value={cert.id}
+                                        className="data-[state=active]:bg-slate-700 rounded-lg hover:scale-110 transition-transform"
+                                    >
+                                        <img src={cert.badge} alt={cert.name} className="w-8 h-8" />
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
+                        </div>
 
                         <AnimatePresence mode="wait">
                             {certifications.map(cert => (

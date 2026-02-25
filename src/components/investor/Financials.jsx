@@ -5,6 +5,13 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, L
 
 export default function Financials() {
     const [activeTab, setActiveTab] = useState('overview');
+    const [isPulsing, setIsPulsing] = useState(true);
+
+    // Auto-rotate tabs to show interactivity
+    React.useEffect(() => {
+        const timer = setTimeout(() => setIsPulsing(false), 5000);
+        return () => clearTimeout(timer);
+    }, []);
 
     const yearlyData = [
         { year: '2026', revenue: 160552, profit: 97858, margin: 61 },
@@ -41,7 +48,12 @@ export default function Financials() {
                 </motion.div>
 
                 {/* Tab Navigation */}
-                <div className="flex gap-2 mb-8 bg-slate-800/30 p-1 rounded-xl w-fit mx-auto">
+                <div className={`flex gap-2 mb-8 bg-slate-800/30 p-1 rounded-xl w-fit mx-auto relative ${isPulsing ? 'animate-pulse' : ''}`}>
+                    {isPulsing && (
+                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-xs text-cyan-400 whitespace-nowrap animate-bounce">
+                            👆 Click to explore different views
+                        </div>
+                    )}
                     {[
                         { id: 'overview', label: 'Overview' },
                         { id: 'revenue', label: 'Revenue Growth' },
@@ -49,7 +61,7 @@ export default function Financials() {
                     ].map(tab => (
                         <button
                             key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
+                            onClick={() => { setActiveTab(tab.id); setIsPulsing(false); }}
                             className={`px-6 py-2 rounded-lg font-medium transition-all ${
                                 activeTab === tab.id
                                     ? 'bg-cyan-500 text-slate-950'

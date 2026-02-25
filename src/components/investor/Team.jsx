@@ -5,6 +5,12 @@ import { Slider } from "@/components/ui/slider";
 
 export default function Team() {
     const [investmentAmount, setInvestmentAmount] = useState(25000);
+    const [showSliderHint, setShowSliderHint] = useState(true);
+
+    React.useEffect(() => {
+        const timer = setTimeout(() => setShowSliderHint(false), 4000);
+        return () => clearTimeout(timer);
+    }, []);
     const targetReturn = investmentAmount * 1.10;
     const avgMonthlyRevenue = 50530;
     const monthlyPayment = avgMonthlyRevenue * 0.05;
@@ -128,14 +134,19 @@ export default function Team() {
                 >
                     <h3 className="text-2xl font-bold text-white mb-6 text-center">Investment Calculator</h3>
                     <div className="max-w-2xl mx-auto">
-                        <div className="mb-8">
+                        <div className="mb-8 relative">
+                            {showSliderHint && (
+                                <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-cyan-400 whitespace-nowrap animate-bounce">
+                                    👇 Adjust your investment amount
+                                </div>
+                            )}
                             <div className="flex justify-between mb-3">
                                 <span className="text-slate-300">Investment Amount</span>
                                 <span className="text-2xl font-bold text-cyan-400">${investmentAmount.toLocaleString()}</span>
                             </div>
                             <Slider
                                 value={[investmentAmount]}
-                                onValueChange={(val) => setInvestmentAmount(val[0])}
+                                onValueChange={(val) => { setInvestmentAmount(val[0]); setShowSliderHint(false); }}
                                 min={5000}
                                 max={100000}
                                 step={5000}

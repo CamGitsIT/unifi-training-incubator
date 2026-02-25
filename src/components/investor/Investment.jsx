@@ -6,6 +6,12 @@ import { Slider } from "@/components/ui/slider";
 
 export default function Investment() {
     const [investmentAmount, setInvestmentAmount] = useState(25000);
+    const [showSliderHint, setShowSliderHint] = useState(true);
+
+    React.useEffect(() => {
+        const timer = setTimeout(() => setShowSliderHint(false), 4000);
+        return () => clearTimeout(timer);
+    }, []);
     
     // Revenue-based repayment calculation
     // Assume 5% of monthly revenue goes to investors until paid back with 10% return
@@ -83,14 +89,19 @@ export default function Investment() {
                                 <CardTitle className="text-2xl text-white">Calculate Your Return</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-6">
-                                <div>
+                                <div className="relative">
                                     <div className="flex justify-between mb-2">
                                         <span className="text-slate-400">Your Investment</span>
                                         <span className="text-white font-bold">${investmentAmount.toLocaleString()}</span>
                                     </div>
+                                    {showSliderHint && (
+                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-xs text-cyan-400 whitespace-nowrap animate-bounce">
+                                            👈 Drag slider to calculate 👉
+                                        </div>
+                                    )}
                                     <Slider
                                         value={[investmentAmount]}
-                                        onValueChange={(val) => setInvestmentAmount(val[0])}
+                                        onValueChange={(val) => { setInvestmentAmount(val[0]); setShowSliderHint(false); }}
                                         min={5000}
                                         max={100000}
                                         step={5000}

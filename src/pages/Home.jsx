@@ -15,7 +15,12 @@ import CTA from '../components/investor/CTA';
 
 export default function Home() {
     const scrollToSection = (id) => {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        const element = document.getElementById(id);
+        if (element) {
+            const yOffset = -80; // Account for fixed nav
+            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'auto' }); // instant jump
+        }
     };
 
     return (

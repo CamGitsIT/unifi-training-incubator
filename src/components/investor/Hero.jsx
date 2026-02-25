@@ -62,7 +62,7 @@ export default function Hero({ scrollToSection }) {
                             size="lg"
                             variant="outline"
                             onClick={() => scrollToSection('mission')}
-                            className="border-slate-600 text-white hover:bg-slate-800 text-lg px-8 py-6"
+                            className="border-cyan-500 text-cyan-400 hover:bg-cyan-950 hover:text-cyan-300 text-lg px-8 py-6"
                         >
                             Our Mission
                         </Button>
