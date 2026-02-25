@@ -10,6 +10,7 @@ import Investment from '../components/investor/Investment';
 import Mission from '../components/investor/Mission';
 import Property from '../components/investor/Property';
 import Team from '../components/investor/Team';
+import SocialImpact from '../components/investor/SocialImpact';
 import CTA from '../components/investor/CTA';
 
 export default function Home() {
