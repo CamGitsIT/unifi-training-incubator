@@ -96,8 +96,16 @@ export default function Home() {
                             </p>
                         </div>
                     </div>
-                    <div className="mt-8 pt-8 border-t border-slate-800 text-center text-slate-500 text-sm">
-                        © 2026 OverIT. Building freedom through technology.
+                    <div className="mt-8 pt-8 border-t border-slate-800 flex items-center justify-between text-slate-500 text-sm">
+                        <span>© 2026 OverIT. Building freedom through technology.</span>
+                        <a 
+                            href="https://sba.overithelp.com/" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-slate-600 hover:text-slate-400 transition-colors text-xs"
+                        >
+                            Versions
+                        </a>
                     </div>
                 </div>
             </footer>
