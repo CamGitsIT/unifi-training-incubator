@@ -44,7 +44,7 @@ export default function Home() {
                         </div>
                         <Button 
                             onClick={() => scrollToSection('pledge')}
-                            className="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-semibold"
+                            className="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-semibold hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200"
                         >
                             Pledge Capital
                         </Button>
