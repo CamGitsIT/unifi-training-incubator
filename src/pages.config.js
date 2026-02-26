@@ -49,15 +49,17 @@
  */
 import Home from './pages/Home';
 import InvestorPayments from './pages/InvestorPayments';
-import ROICalculator from './pages/ROICalculator';
 import MarketIntelligence from './pages/MarketIntelligence';
+import ROICalculator from './pages/ROICalculator';
+import ChatConversations from './pages/ChatConversations';
 
 
 export const PAGES = {
     "Home": Home,
     "InvestorPayments": InvestorPayments,
-    "ROICalculator": ROICalculator,
     "MarketIntelligence": MarketIntelligence,
+    "ROICalculator": ROICalculator,
+    "ChatConversations": ChatConversations,
 }
 
 export const pagesConfig = {
