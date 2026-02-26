@@ -1,11 +1,11 @@
 import React from 'react';
-import ChatwootWidget from '@/components/chat/ChatwootWidget';
+import AIChat from '@/components/chat/AIChat';
 
 export default function Layout({ children, currentPageName }) {
     return (
         <>
             {children}
-            <ChatwootWidget />
+            <AIChat />
         </>
     );
 }
