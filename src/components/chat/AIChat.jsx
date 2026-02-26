@@ -42,7 +42,7 @@ export default function AIChat() {
             // Add welcome message
             const welcomeMsg = {
                 role: 'assistant',
-                content: "Hi! 👋 Welcome to OverIT's UniFi Experience Center. I'm here to help you learn about our access control and intercom solutions. How can I assist you today?"
+                content: "Hi! 👋 Welcome to OverISP's UniFi Experience Center. I'm here to help you learn about our access control and intercom solutions. How can I assist you today?"
             };
             setMessages([welcomeMsg]);
         } catch (error) {
@@ -183,7 +183,7 @@ export default function AIChat() {
                         <Bot className="w-6 h-6" />
                     </div>
                     <div>
-                        <div className="font-semibold">OverIT Assistant</div>
+                        <div className="font-semibold">OverISP Assistant</div>
                         <div className="text-xs text-blue-100">Online • Instant Reply</div>
                     </div>
                 </div>

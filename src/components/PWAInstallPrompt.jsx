@@ -85,7 +85,7 @@ export default function PWAInstallPrompt() {
                         </div>
                         <div className="flex-1">
                             <h3 className="font-bold text-lg mb-2">
-                                {isIOS ? 'Add to Home Screen' : 'Install OverIT Chat'}
+                                {isIOS ? 'Add to Home Screen' : 'Install OverISP Chat'}
                             </h3>
                             
                             {isIOS ? (

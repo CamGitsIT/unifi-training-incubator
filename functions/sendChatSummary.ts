@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
 
         // Send email notification
         await base44.asServiceRole.integrations.Core.SendEmail({
-            from_name: 'OverIT AI Chat',
+            from_name: 'OverISP AI Chat',
             to: 'support@overit.com', // Change to your support email
             subject: `New Lead: ${contact_name || 'Website Visitor'} - AI Chat`,
             body: emailBody
