@@ -62,7 +62,7 @@ export default function Hero({ scrollToSection }) {
                         <Button 
                             size="lg"
                             onClick={() => scrollToSection('investment')}
-                            className="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-semibold text-lg px-8 py-6"
+                            className="bg-slate-900 hover:bg-white text-white hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-slate-700 hover:border-white transition-all"
                         >
                             Investment Details
                             <ArrowRight className="ml-2 w-5 h-5" />
@@ -70,8 +70,7 @@ export default function Hero({ scrollToSection }) {
                         <Link to={createPageUrl('ROICalculator')}>
                             <Button 
                                 size="lg"
-                                variant="outline"
-                                className="border-purple-500 text-purple-400 hover:bg-purple-950 hover:text-purple-300 text-lg px-8 py-6"
+                                className="bg-slate-900 hover:bg-white text-white hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-slate-700 hover:border-white transition-all"
                             >
                                 <Calculator className="mr-2 w-5 h-5" />
                                 ROI Calculator
@@ -79,9 +78,8 @@ export default function Hero({ scrollToSection }) {
                         </Link>
                         <Button 
                             size="lg"
-                            variant="outline"
                             onClick={() => scrollToSection('mission')}
-                            className="border-cyan-500 text-cyan-400 hover:bg-cyan-950 hover:text-cyan-300 text-lg px-8 py-6"
+                            className="bg-slate-900 hover:bg-white text-white hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-slate-700 hover:border-white transition-all"
                         >
                             Our Mission
                         </Button>
