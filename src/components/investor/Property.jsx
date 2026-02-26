@@ -27,11 +27,11 @@ export default function Property() {
                         viewport={{ once: true }}
                         className="bg-slate-900/50 border border-slate-700 rounded-2xl overflow-hidden"
                     >
-                        <div className="h-64 bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
+                        <div className="h-64 bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center overflow-hidden">
                             <img 
-                                src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop" 
-                                alt="Modern Loft Building"
-                                className="w-full h-full object-cover"
+                                src="https://sba.overithelp.com/public/455-glen-iris-dr-ne-unit-p-atlanta-ga-building-photo.jpg" 
+                                alt="Sager Lofts - 455 Glen Iris Drive NE"
+                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                             />
                         </div>
                         <div className="p-6">
@@ -96,6 +96,36 @@ export default function Property() {
                         </div>
                     </motion.div>
                 </div>
+
+                {/* Interior Gallery */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="grid md:grid-cols-3 gap-4 mt-8"
+                >
+                    <div className="rounded-xl overflow-hidden border border-slate-700 h-48 group">
+                        <img 
+                            src="https://sba.overithelp.com/public/935478657142e45c960f3b1db567b694-cc_ft_1536.jpg"
+                            alt="Sager Lofts Exterior" 
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                    </div>
+                    <div className="rounded-xl overflow-hidden border border-slate-700 h-48 group">
+                        <img 
+                            src="https://sba.overithelp.com/public/b3556a907589f6fbfb44bfdf5f65d5bc-cc_ft_960.jpg"
+                            alt="Sager Lofts Building"
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                    </div>
+                    <div className="rounded-xl overflow-hidden border border-slate-700 h-48 group bg-gradient-to-br from-cyan-900/30 to-purple-900/30 flex items-center justify-center">
+                        <div className="text-center p-4">
+                            <Building className="w-10 h-10 text-cyan-400 mx-auto mb-2" />
+                            <div className="text-white font-semibold mb-1">3,160 sq ft</div>
+                            <div className="text-slate-300 text-sm">Mixed-Use Loft</div>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
         </section>
     );

@@ -25,6 +25,18 @@ export default function Solution() {
                 </motion.div>
 
                 <div className="bg-gradient-to-br from-cyan-950/30 to-slate-900/30 border border-cyan-900/50 rounded-2xl p-8 mb-12">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        className="mb-8 flex justify-center"
+                    >
+                        <img 
+                            src="https://sba.overithelp.com/public/landing-industry-leading-layer-1-PqjdRKw7.png"
+                            alt="UniFi Experience"
+                            className="max-w-full h-auto rounded-xl"
+                        />
+                    </motion.div>
                     <div className="grid md:grid-cols-2 gap-12">
                         <div>
                             <Zap className="w-10 h-10 text-cyan-400 mb-4" />

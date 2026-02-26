@@ -32,6 +32,28 @@ export default function Team() {
                     </p>
                 </motion.div>
 
+                {/* Leadership Team */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="grid md:grid-cols-3 gap-6 mb-12"
+                >
+                    {[
+                        { name: "John Shea", role: "Principal/Trainer", image: "https://sba.overithelp.com/public/johnshea.png" },
+                        { name: "Cameron Champion", role: "Principal/Operations", image: "https://sba.overithelp.com/public/cameron-champion.png" },
+                        { name: "Ella", role: "Network Technician", image: "https://sba.overithelp.com/public/Ella-191.png" }
+                    ].map((person, i) => (
+                        <div key={i} className="bg-slate-800/30 border border-slate-700 rounded-2xl p-6 text-center group hover:border-cyan-500/50 transition-colors">
+                            <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-slate-700 group-hover:border-cyan-500/50 transition-colors">
+                                <img src={person.image} alt={person.name} className="w-full h-full object-cover" />
+                            </div>
+                            <h4 className="text-xl font-bold text-white mb-1">{person.name}</h4>
+                            <p className="text-sm text-cyan-400">{person.role}</p>
+                        </div>
+                    ))}
+                </motion.div>
+
                 <div className="grid md:grid-cols-2 gap-8 mb-12">
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
