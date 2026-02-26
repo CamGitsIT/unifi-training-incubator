@@ -62,7 +62,7 @@ export default function Hero({ scrollToSection }) {
                         <Button 
                             size="lg"
                             onClick={() => scrollToSection('investment')}
-                            className="bg-slate-900 hover:bg-white text-white hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-slate-700 hover:border-white transition-all"
+                            className="bg-cyan-900 hover:bg-white text-cyan-100 hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-cyan-700 hover:border-white transition-all"
                         >
                             Investment Details
                             <ArrowRight className="ml-2 w-5 h-5" />
@@ -70,7 +70,7 @@ export default function Hero({ scrollToSection }) {
                         <Link to={createPageUrl('ROICalculator')}>
                             <Button 
                                 size="lg"
-                                className="bg-slate-900 hover:bg-white text-white hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-slate-700 hover:border-white transition-all"
+                                className="bg-purple-900 hover:bg-white text-purple-100 hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-purple-700 hover:border-white transition-all"
                             >
                                 <Calculator className="mr-2 w-5 h-5" />
                                 ROI Calculator
@@ -79,7 +79,7 @@ export default function Hero({ scrollToSection }) {
                         <Button 
                             size="lg"
                             onClick={() => scrollToSection('mission')}
-                            className="bg-slate-900 hover:bg-white text-white hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-slate-700 hover:border-white transition-all"
+                            className="bg-cyan-900 hover:bg-white text-cyan-100 hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-cyan-700 hover:border-white transition-all"
                         >
                             Our Mission
                         </Button>
