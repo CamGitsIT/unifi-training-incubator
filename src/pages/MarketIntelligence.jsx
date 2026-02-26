@@ -12,6 +12,7 @@ import PropertyMap from '@/components/market/PropertyMap';
 import CrossSellAnalysis from '@/components/market/CrossSellAnalysis';
 import DataImportDialog from '@/components/market/DataImportDialog';
 import AddPropertyDialog from '@/components/market/AddPropertyDialog';
+import DataManagement from '@/components/market/DataManagement';
 
 export default function MarketIntelligence() {
     const [activeTab, setActiveTab] = useState('overview');
@@ -186,6 +187,7 @@ export default function MarketIntelligence() {
                         <TabsTrigger value="overview">Overview</TabsTrigger>
                         <TabsTrigger value="crosssell">Cross-Sell Analysis</TabsTrigger>
                         <TabsTrigger value="properties">Properties</TabsTrigger>
+                        <TabsTrigger value="management">Data Management</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="overview" className="space-y-6">
@@ -236,6 +238,10 @@ export default function MarketIntelligence() {
                             onBusinessLineChange={setBusinessLineFilter}
                         />
                         <PropertyList properties={filteredProperties} />
+                    </TabsContent>
+
+                    <TabsContent value="management" className="space-y-6">
+                        <DataManagement properties={properties} />
                     </TabsContent>
                 </Tabs>
             </div>
