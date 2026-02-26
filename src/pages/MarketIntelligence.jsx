@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Download, Upload, Plus } from 'lucide-react';
+import { Download, Upload, Plus, Database, Loader2 } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 import MarketSummary from '@/components/market/MarketSummary';
 import PropertyFilters from '@/components/market/PropertyFilters';
 import PropertyList from '@/components/market/PropertyList';
@@ -19,11 +20,46 @@ export default function MarketIntelligence() {
     const [businessLineFilter, setBusinessLineFilter] = useState('all');
     const [showImportDialog, setShowImportDialog] = useState(false);
     const [showAddDialog, setShowAddDialog] = useState(false);
+    const [liveMode, setLiveMode] = useState(false);
+    const [bigQueryData, setBigQueryData] = useState([]);
+    const [loadingBigQuery, setLoadingBigQuery] = useState(false);
 
-    const { data: properties = [], isLoading } = useQuery({
+    const { data: localProperties = [], isLoading: isLoadingLocal } = useQuery({
         queryKey: ['marketData'],
         queryFn: () => base44.entities.MarketDataPoint.list(),
+        enabled: !liveMode,
     });
+
+    // Query BigQuery when filters change in live mode
+    useEffect(() => {
+        if (!liveMode) return;
+
+        const fetchBigQueryData = async () => {
+            setLoadingBigQuery(true);
+            try {
+                const entityTypes = typeFilter !== 'all' ? [typeFilter] : [];
+                const response = await base44.functions.invoke('queryBigQueryMarketData', {
+                    radiusMiles: radiusFilter,
+                    centerLat: 33.8041,
+                    centerLon: -84.3753,
+                    entityTypes
+                });
+                
+                if (response.data.success) {
+                    setBigQueryData(response.data.properties);
+                }
+            } catch (error) {
+                console.error('BigQuery fetch error:', error);
+            } finally {
+                setLoadingBigQuery(false);
+            }
+        };
+
+        fetchBigQueryData();
+    }, [liveMode, radiusFilter, typeFilter]);
+
+    const properties = liveMode ? bigQueryData : localProperties;
+    const isLoading = liveMode ? loadingBigQuery : isLoadingLocal;
 
     // Filter properties based on current filters
     const filteredProperties = useMemo(() => {
@@ -112,19 +148,32 @@ export default function MarketIntelligence() {
                             <h1 className="text-2xl font-bold text-slate-900">OverIT Market Intelligence</h1>
                             <p className="text-sm text-slate-600">UniFi Experience Center • Atlanta, GA</p>
                         </div>
-                        <div className="flex gap-3">
-                            <Button variant="outline" onClick={handleExport}>
-                                <Download className="w-4 h-4 mr-2" />
-                                Export Data
-                            </Button>
-                            <Button variant="outline" onClick={() => setShowImportDialog(true)}>
-                                <Upload className="w-4 h-4 mr-2" />
-                                Import Data
-                            </Button>
-                            <Button onClick={() => setShowAddDialog(true)}>
-                                <Plus className="w-4 h-4 mr-2" />
-                                Add Property
-                            </Button>
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-lg">
+                                <Database className="w-4 h-4 text-slate-600" />
+                                <span className="text-sm font-medium text-slate-700">
+                                    {liveMode ? 'BigQuery Live' : 'Local Data'}
+                                </span>
+                                <Switch
+                                    checked={liveMode}
+                                    onCheckedChange={setLiveMode}
+                                />
+                                {loadingBigQuery && <Loader2 className="w-4 h-4 animate-spin text-blue-600" />}
+                            </div>
+                            <div className="flex gap-3">
+                                <Button variant="outline" onClick={handleExport}>
+                                    <Download className="w-4 h-4 mr-2" />
+                                    Export Data
+                                </Button>
+                                <Button variant="outline" onClick={() => setShowImportDialog(true)} disabled={liveMode}>
+                                    <Upload className="w-4 h-4 mr-2" />
+                                    Import Data
+                                </Button>
+                                <Button onClick={() => setShowAddDialog(true)} disabled={liveMode}>
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    Add Property
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -140,6 +189,15 @@ export default function MarketIntelligence() {
                     </TabsList>
 
                     <TabsContent value="overview" className="space-y-6">
+                        {liveMode && (
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <p className="text-sm text-blue-900">
+                                    <strong>Live Mode:</strong> Data is being queried directly from BigQuery. 
+                                    Adjust filters below to fetch fresh market intelligence in real-time.
+                                </p>
+                            </div>
+                        )}
+                        
                         <PropertyFilters
                             radiusFilter={radiusFilter}
                             typeFilter={typeFilter}
@@ -149,7 +207,14 @@ export default function MarketIntelligence() {
                             onBusinessLineChange={setBusinessLineFilter}
                         />
                         
-                        <MarketSummary metrics={metrics} />
+                        {isLoading ? (
+                            <div className="flex items-center justify-center py-12">
+                                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                                <span className="ml-3 text-slate-600">Loading market data...</span>
+                            </div>
+                        ) : (
+                            <MarketSummary metrics={metrics} />
+                        )}
                         
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <PropertyMap properties={filteredProperties} />
