@@ -48,10 +48,12 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Home from './pages/Home';
+import ROICalculator from './pages/ROICalculator';
 
 
 export const PAGES = {
     "Home": Home,
+    "ROICalculator": ROICalculator,
 }
 
 export const pagesConfig = {
