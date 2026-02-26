@@ -61,28 +61,28 @@ export default function Hero({ scrollToSection }) {
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button 
                             size="lg"
-                            onClick={() => scrollToSection('investment')}
+                            onClick={() => scrollToSection('mission')}
                             className="bg-cyan-900 hover:bg-white text-cyan-100 hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-cyan-700 hover:border-white transition-all"
                         >
-                            Investment Details
+                            Start Here
                             <ArrowRight className="ml-2 w-5 h-5" />
+                        </Button>
+                        <Button 
+                            size="lg"
+                            onClick={() => scrollToSection('pledge')}
+                            className="bg-purple-900 hover:bg-white text-purple-100 hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-purple-700 hover:border-white transition-all"
+                        >
+                            Pledge Capital
                         </Button>
                         <Link to={createPageUrl('ROICalculator')}>
                             <Button 
                                 size="lg"
-                                className="bg-purple-900 hover:bg-white text-purple-100 hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-purple-700 hover:border-white transition-all"
+                                className="bg-cyan-900 hover:bg-white text-cyan-100 hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-cyan-700 hover:border-white transition-all"
                             >
                                 <Calculator className="mr-2 w-5 h-5" />
                                 ROI Calculator
                             </Button>
                         </Link>
-                        <Button 
-                            size="lg"
-                            onClick={() => scrollToSection('mission')}
-                            className="bg-cyan-900 hover:bg-white text-cyan-100 hover:text-slate-950 font-semibold text-lg px-8 py-6 border border-cyan-700 hover:border-white transition-all"
-                        >
-                            Our Mission
-                        </Button>
                     </div>
                 </motion.div>
             </div>

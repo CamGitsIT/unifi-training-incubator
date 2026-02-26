@@ -36,17 +36,17 @@ export default function Home() {
                             <span className="text-slate-400 text-sm hidden md:inline">UniFi Experience Center</span>
                         </div>
                         <div className="hidden md:flex items-center gap-6 text-sm">
-                            <button onClick={() => scrollToSection('problem')} className="text-slate-300 hover:text-cyan-400 transition-colors">The Problem</button>
-                            <button onClick={() => scrollToSection('solution')} className="text-slate-300 hover:text-cyan-400 transition-colors">Our Solution</button>
-                            <button onClick={() => scrollToSection('financials')} className="text-slate-300 hover:text-cyan-400 transition-colors">Financials</button>
-                            <button onClick={() => scrollToSection('investment')} className="text-slate-300 hover:text-cyan-400 transition-colors">Investment</button>
-                            <button onClick={() => scrollToSection('pledge')} className="text-slate-300 hover:text-cyan-400 transition-colors">Pledge</button>
+                            <button onClick={() => scrollToSection('mission')} className="text-slate-300 hover:text-cyan-400 transition-colors">Mission</button>
+                            <button onClick={() => scrollToSection('problem')} className="text-slate-300 hover:text-cyan-400 transition-colors">Problem</button>
+                            <button onClick={() => scrollToSection('solution')} className="text-slate-300 hover:text-cyan-400 transition-colors">Solution</button>
+                            <button onClick={() => scrollToSection('property')} className="text-slate-300 hover:text-cyan-400 transition-colors">Property</button>
+                            <button onClick={() => scrollToSection('team')} className="text-slate-300 hover:text-cyan-400 transition-colors">Team</button>
                         </div>
                         <Button 
-                            onClick={() => scrollToSection('cta')}
+                            onClick={() => scrollToSection('pledge')}
                             className="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-semibold"
                         >
-                            Get Involved
+                            Pledge Capital
                         </Button>
                     </div>
                 </div>
