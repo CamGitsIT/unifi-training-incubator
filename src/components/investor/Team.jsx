@@ -37,12 +37,11 @@ export default function Team() {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="grid md:grid-cols-3 gap-6 mb-12"
+                    className="grid md:grid-cols-2 gap-6 mb-12 max-w-2xl mx-auto"
                 >
                     {[
                         { name: "John Shea", role: "Principal/Trainer", image: "https://sba.overithelp.com/public/johnshea.png" },
-                        { name: "Cameron Champion", role: "Principal/Operations", image: "https://sba.overithelp.com/public/cameron-champion.png" },
-                        { name: "Ella", role: "Network Technician", image: "https://sba.overithelp.com/public/Ella-191.png" }
+                        { name: "Cameron Champion", role: "Principal/Operations", image: "https://sba.overithelp.com/public/cameron-champion.png" }
                     ].map((person, i) => (
                         <div key={i} className="bg-slate-800/30 border border-slate-700 rounded-2xl p-6 text-center group hover:border-cyan-500/50 transition-colors">
                             <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-slate-700 group-hover:border-cyan-500/50 transition-colors">
