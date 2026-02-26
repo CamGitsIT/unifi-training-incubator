@@ -8,9 +8,16 @@ import { createPageUrl } from '@/utils';
 export default function Hero({ scrollToSection }) {
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-            {/* Animated background gradient */}
+            {/* Animated background gradient with UniFi branding */}
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-950/20 via-slate-950 to-purple-950/20" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-cyan-900/10 via-transparent to-transparent" />
+            <div className="absolute inset-0 flex items-center justify-center opacity-5">
+                <img 
+                    src="https://sba.overithelp.com/public/logo-dark.png" 
+                    alt="UniFi"
+                    className="w-96 h-96 object-contain"
+                />
+            </div>
             
             {/* Content */}
             <div className="relative z-10 max-w-6xl mx-auto px-6 py-24 text-center">
