@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TrendingUp, DollarSign, PieChart, Shield } from 'lucide-react';
+import { TrendingUp, DollarSign, PieChart, Shield, BarChart3, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -48,29 +48,59 @@ export default function Financials() {
                 </motion.div>
 
                 {/* Tab Navigation */}
-                <div className={`flex gap-2 mb-8 bg-slate-800/30 p-1 rounded-xl w-fit mx-auto relative ${isPulsing ? 'animate-pulse' : ''}`}>
+                <div className="mb-12 relative">
                     {isPulsing && (
-                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-xs text-cyan-400 whitespace-nowrap animate-bounce">
-                            👆 Click to explore different views
+                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 text-sm font-medium text-cyan-400 whitespace-nowrap animate-bounce">
+                            👇 Click to explore different financial views
                         </div>
                     )}
-                    {[
-                        { id: 'overview', label: 'Overview' },
-                        { id: 'revenue', label: 'Revenue Growth' },
-                        { id: 'safety', label: 'Safety Margins' }
-                    ].map(tab => (
-                        <button
-                            key={tab.id}
-                            onClick={() => { setActiveTab(tab.id); setIsPulsing(false); }}
-                            className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                                activeTab === tab.id
-                                    ? 'bg-cyan-500 text-slate-950'
-                                    : 'text-slate-400 hover:text-white'
-                            }`}
-                        >
-                            {tab.label}
-                        </button>
-                    ))}
+                    <div className={`grid grid-cols-3 gap-4 max-w-4xl mx-auto ${isPulsing ? 'scale-105' : ''} transition-transform`}>
+                        {[
+                            { id: 'overview', label: 'Overview', icon: PieChart, gradient: 'from-cyan-500 to-blue-500', description: 'Key metrics at a glance' },
+                            { id: 'revenue', label: 'Revenue Growth', icon: BarChart3, gradient: 'from-purple-500 to-pink-500', description: 'Income breakdown' },
+                            { id: 'safety', label: 'Safety Margins', icon: Shield, gradient: 'from-green-500 to-emerald-500', description: 'Risk analysis' }
+                        ].map(tab => {
+                            const Icon = tab.icon;
+                            const isActive = activeTab === tab.id;
+                            return (
+                                <motion.button
+                                    key={tab.id}
+                                    onClick={() => { setActiveTab(tab.id); setIsPulsing(false); }}
+                                    whileHover={{ scale: 1.05, y: -5 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className={`relative overflow-hidden rounded-2xl p-6 transition-all duration-300 ${
+                                        isActive
+                                            ? `bg-gradient-to-br ${tab.gradient} shadow-2xl shadow-cyan-500/50`
+                                            : 'bg-slate-800/50 hover:bg-slate-800/70 border border-slate-700'
+                                    }`}
+                                >
+                                    {/* Glow effect when active */}
+                                    {isActive && (
+                                        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
+                                    )}
+                                    
+                                    <div className="relative z-10">
+                                        <Icon className={`w-8 h-8 mx-auto mb-2 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                                        <div className={`font-bold text-lg mb-1 ${isActive ? 'text-white' : 'text-slate-300'}`}>
+                                            {tab.label}
+                                        </div>
+                                        <div className={`text-xs ${isActive ? 'text-white/80' : 'text-slate-500'}`}>
+                                            {tab.description}
+                                        </div>
+                                    </div>
+
+                                    {/* Active indicator */}
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="activeTab"
+                                            className="absolute bottom-0 left-0 right-0 h-1 bg-white"
+                                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                        />
+                                    )}
+                                </motion.button>
+                            );
+                        })}
+                    </div>
                 </div>
 
                 {/* Overview Tab */}
