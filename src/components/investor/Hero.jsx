@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap } from 'lucide-react';
+import { ArrowRight, Zap, Calculator } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function Hero({ scrollToSection }) {
     return (
@@ -58,6 +60,16 @@ export default function Hero({ scrollToSection }) {
                             Investment Details
                             <ArrowRight className="ml-2 w-5 h-5" />
                         </Button>
+                        <Link to={createPageUrl('ROICalculator')}>
+                            <Button 
+                                size="lg"
+                                variant="outline"
+                                className="border-purple-500 text-purple-400 hover:bg-purple-950 hover:text-purple-300 text-lg px-8 py-6"
+                            >
+                                <Calculator className="mr-2 w-5 h-5" />
+                                ROI Calculator
+                            </Button>
+                        </Link>
                         <Button 
                             size="lg"
                             variant="outline"
