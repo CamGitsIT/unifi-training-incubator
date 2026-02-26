@@ -50,12 +50,14 @@
 import Home from './pages/Home';
 import InvestorPayments from './pages/InvestorPayments';
 import ROICalculator from './pages/ROICalculator';
+import MarketIntelligence from './pages/MarketIntelligence';
 
 
 export const PAGES = {
     "Home": Home,
     "InvestorPayments": InvestorPayments,
     "ROICalculator": ROICalculator,
+    "MarketIntelligence": MarketIntelligence,
 }
 
 export const pagesConfig = {
