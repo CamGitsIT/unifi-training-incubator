@@ -12,6 +12,7 @@ import Property from '../components/investor/Property';
 import Team from '../components/investor/Team';
 import SocialImpact from '../components/investor/SocialImpact';
 import CTA from '../components/investor/CTA';
+import Pledge from '../components/investor/Pledge';
 
 export default function Home() {
     const scrollToSection = (id) => {
@@ -39,6 +40,7 @@ export default function Home() {
                             <button onClick={() => scrollToSection('solution')} className="text-slate-300 hover:text-cyan-400 transition-colors">Our Solution</button>
                             <button onClick={() => scrollToSection('financials')} className="text-slate-300 hover:text-cyan-400 transition-colors">Financials</button>
                             <button onClick={() => scrollToSection('investment')} className="text-slate-300 hover:text-cyan-400 transition-colors">Investment</button>
+                            <button onClick={() => scrollToSection('pledge')} className="text-slate-300 hover:text-cyan-400 transition-colors">Pledge</button>
                         </div>
                         <Button 
                             onClick={() => scrollToSection('cta')}
@@ -62,6 +64,7 @@ export default function Home() {
                 <Investment />
                 <Team />
                 <SocialImpact />
+                <Pledge />
                 <CTA />
             </div>
 
