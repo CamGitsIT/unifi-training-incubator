@@ -47,20 +47,20 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import ChatConversations from './pages/ChatConversations';
 import Home from './pages/Home';
 import InvestorPayments from './pages/InvestorPayments';
 import MarketIntelligence from './pages/MarketIntelligence';
 import ROICalculator from './pages/ROICalculator';
-import ChatConversations from './pages/ChatConversations';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "ChatConversations": ChatConversations,
     "Home": Home,
     "InvestorPayments": InvestorPayments,
     "MarketIntelligence": MarketIntelligence,
     "ROICalculator": ROICalculator,
-    "ChatConversations": ChatConversations,
 }
 
 export const pagesConfig = {
