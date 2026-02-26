@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 
 export default function ChatwootWidget() {
     useEffect(() => {
+        const BASE_URL = "https://doorqueens-u63843.vm.elestio.app";
+        
         // Chatwoot SDK setup
         window.chatwootSettings = {
             hideMessageBubble: false,
@@ -12,14 +14,13 @@ export default function ChatwootWidget() {
 
         // Load Chatwoot script
         const script = document.createElement('script');
-        script.src = `${import.meta.env.VITE_CHATWOOT_BASE_URL || 'https://app.chatwoot.com'}/packs/js/sdk.js`;
-        script.defer = true;
+        script.src = `${BASE_URL}/packs/js/sdk.js`;
         script.async = true;
         
         script.onload = () => {
             window.chatwootSDK.run({
-                websiteToken: import.meta.env.VITE_CHATWOOT_WEBSITE_TOKEN,
-                baseUrl: import.meta.env.VITE_CHATWOOT_BASE_URL || 'https://app.chatwoot.com',
+                websiteToken: 'nStCKWqqtdYoHEJJc3Dg9uwS',
+                baseUrl: BASE_URL,
             });
         };
 
@@ -30,7 +31,9 @@ export default function ChatwootWidget() {
             if (window.$chatwoot) {
                 window.$chatwoot.reset();
             }
-            document.body.removeChild(script);
+            if (script.parentNode) {
+                document.body.removeChild(script);
+            }
         };
     }, []);
 

@@ -261,7 +261,7 @@ export default function ChatConversations() {
 
                             <div className="flex justify-between items-center pt-4">
                                 <a
-                                    href={`${import.meta.env.VITE_CHATWOOT_BASE_URL}/app/accounts/${import.meta.env.VITE_CHATWOOT_ACCOUNT_ID}/conversations/${selectedConversation.conversation_id}`}
+                                    href={`https://doorqueens-u63843.vm.elestio.app/app/accounts/${selectedConversation.conversation_id}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-600 hover:underline text-sm flex items-center gap-1"
