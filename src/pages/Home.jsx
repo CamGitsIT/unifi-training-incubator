@@ -32,7 +32,7 @@ export default function Home() {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Shield className="w-6 h-6 text-cyan-400" />
-                            <span className="font-bold text-xl text-white">OverIT</span>
+                            <span className="font-bold text-xl text-white">OverISP</span>
                             <span className="text-slate-400 text-sm hidden md:inline">UniFi Experience Center</span>
                         </div>
                         <div className="hidden md:flex items-center gap-6 text-sm">
@@ -75,7 +75,7 @@ export default function Home() {
                         <div>
                             <div className="flex items-center gap-2 mb-4">
                                 <Shield className="w-5 h-5 text-cyan-400" />
-                                <span className="font-bold text-white">OverIT</span>
+                                <span className="font-bold text-white">OverISP</span>
                             </div>
                             <p className="text-slate-400 text-sm">
                                 Liberating properties and businesses from oppressive subscription fees with UniFi technology.
@@ -97,7 +97,7 @@ export default function Home() {
                         </div>
                     </div>
                     <div className="mt-8 pt-8 border-t border-slate-800 flex items-center justify-between text-slate-500 text-sm">
-                        <span>© 2026 OverIT. Building freedom through technology.</span>
+                        <span>© 2026 OverISP. Building freedom through technology.</span>
                         <a 
                             href="https://sba.overithelp.com/" 
                             target="_blank" 
