@@ -49,11 +49,13 @@
  */
 import Home from './pages/Home';
 import ROICalculator from './pages/ROICalculator';
+import InvestorPayments from './pages/InvestorPayments';
 
 
 export const PAGES = {
     "Home": Home,
     "ROICalculator": ROICalculator,
+    "InvestorPayments": InvestorPayments,
 }
 
 export const pagesConfig = {
