@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Building2, Users, TrendingUp, Shield, Zap, DollarSign } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import Hero from '../components/investor/Hero';
 import Problem from '../components/investor/Problem';
 import Solution from '../components/investor/Solution';
