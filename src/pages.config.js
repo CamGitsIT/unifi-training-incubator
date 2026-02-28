@@ -53,6 +53,8 @@ import InvestorPayments from './pages/InvestorPayments';
 import MarketIntelligence from './pages/MarketIntelligence';
 import ROICalculator from './pages/ROICalculator';
 import ScheduleMeeting from './pages/ScheduleMeeting';
+import Ecosystem from './pages/Ecosystem';
+import Training from './pages/Training';
 import __Layout from './Layout.jsx';
 
 
@@ -63,6 +65,8 @@ export const PAGES = {
     "MarketIntelligence": MarketIntelligence,
     "ROICalculator": ROICalculator,
     "ScheduleMeeting": ScheduleMeeting,
+    "Ecosystem": Ecosystem,
+    "Training": Training,
 }
 
 export const pagesConfig = {
