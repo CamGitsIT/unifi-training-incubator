@@ -41,7 +41,8 @@ export default function Home() {
                             <button onClick={() => scrollToSection('mission')} className="text-slate-300 hover:text-cyan-400 transition-colors">Mission</button>
                             <button onClick={() => scrollToSection('problem')} className="text-slate-300 hover:text-cyan-400 transition-colors">Problem</button>
                             <button onClick={() => scrollToSection('solution')} className="text-slate-300 hover:text-cyan-400 transition-colors">Solution</button>
-                            <button onClick={() => scrollToSection('property')} className="text-slate-300 hover:text-cyan-400 transition-colors">Property</button>
+                            <Link to={createPageUrl('Ecosystem')} className="text-slate-300 hover:text-cyan-400 transition-colors">Ecosystem</Link>
+                            <Link to={createPageUrl('Training')} className="text-slate-300 hover:text-purple-400 transition-colors">Training</Link>
                             <button onClick={() => scrollToSection('team')} className="text-slate-300 hover:text-cyan-400 transition-colors">Team</button>
                         </div>
                         <Button 
