@@ -40,7 +40,7 @@ export default function Team() {
                     className="grid md:grid-cols-2 gap-6 mb-12 max-w-2xl mx-auto"
                 >
                     {[
-                        { name: "John Shea", role: "Principal/Trainer", image: "https://sba.overithelp.com/public/johnshea.png" },
+                        { name: "John Shea", role: "Principal/Trainer", image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/5d62c10c2_7A9EAD90-F0F1-49B4-ABAF-13F22710AFD7.PNG" },
                         { name: "Cameron Champion", role: "Principal/Operations", image: "https://sba.overithelp.com/public/cameron-champion.png" }
                     ].map((person, i) => (
                         <div key={i} className="bg-slate-800/30 border border-slate-700 rounded-2xl p-6 text-center group hover:border-cyan-500/50 transition-colors">
