@@ -107,7 +107,7 @@ export default function Pledge() {
                                     Your help launches the flagship experience center that creates jobs and independent businesses across Georgia.
                                 </p>
                                 <Button
-                                    onClick={() => window.open('https://donate.stripe.com/test_7sI16G9A17IN2AwaEE', '_blank')}
+                                    onClick={() => window.open('https://donate.stripe.com/aEU8xB9kM7IL8mo5kl', '_blank')}
                                     className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold px-8 py-6 text-lg rounded-xl shadow-lg"
                                 >
                                     <DollarSign className="w-5 h-5 mr-2" />
