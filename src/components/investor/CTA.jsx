@@ -6,14 +6,6 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function CTA() {
-    const [submitted, setSubmitted] = useState(false);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setSubmitted(true);
-        setTimeout(() => setSubmitted(false), 3000);
-    };
-
     return (
         <section id="cta" className="py-24 bg-gradient-to-b from-slate-900 to-slate-950">
             <div className="max-w-4xl mx-auto px-6">
@@ -33,6 +25,7 @@ export default function CTA() {
                 </motion.div>
 
                 <div className="grid md:grid-cols-3 gap-6 mb-12">
+                    {/* Block 1: Invest as a Friend */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -47,103 +40,56 @@ export default function CTA() {
                         </p>
                     </motion.div>
 
+                    {/* Block 2: Feeling Generous */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.2 }}
-                        className="bg-slate-800/30 border border-slate-700 rounded-xl p-6 text-center hover:border-purple-500/50 transition-all"
+                        className="bg-slate-800/30 border border-slate-700 rounded-xl p-6 text-center hover:border-purple-500/50 transition-all flex flex-col items-center"
                     >
-                        <FileText className="w-8 h-8 text-purple-400 mx-auto mb-3" />
-                        <h3 className="font-bold text-white mb-2">Review Full Docs</h3>
-                        <p className="text-slate-400 text-sm">
-                            Access complete business plan, financials, and SBA application materials.
+                        <Sparkles className="w-8 h-8 text-purple-400 mx-auto mb-3" />
+                        <h3 className="font-bold text-white mb-2">Feeling Generous?</h3>
+                        <p className="text-slate-400 text-sm mb-4">
+                            Your help launches the flagship experience center and creates jobs that are independent businesses across Georgia.
                         </p>
+                        <Button
+                            onClick={() => window.open('https://donate.stripe.com/aEU8xB9kM7IL8mo5kl', '_blank')}
+                            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold text-sm px-4 py-2 rounded-lg"
+                        >
+                            Make a Donation
+                        </Button>
                     </motion.div>
 
+                    {/* Block 3: Schedule a Visit */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.3 }}
-                        className="bg-slate-800/30 border border-slate-700 rounded-xl p-6 text-center hover:border-green-500/50 transition-all"
+                        className="bg-slate-800/30 border border-slate-700 rounded-xl p-6 text-center hover:border-green-500/50 transition-all flex flex-col items-center"
                     >
                         <Calendar className="w-8 h-8 text-green-400 mx-auto mb-3" />
                         <h3 className="font-bold text-white mb-2">Schedule a Visit</h3>
-                        <p className="text-slate-400 text-sm">
+                        <p className="text-slate-400 text-sm mb-4">
                             See the Sager Lofts property and understand the vision in person.
                         </p>
+                        <Link to={createPageUrl('ScheduleMeeting')}>
+                            <Button className="bg-green-700 hover:bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded-lg">
+                                Schedule a Visit
+                            </Button>
+                        </Link>
                     </motion.div>
                 </div>
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="bg-gradient-to-br from-cyan-950/30 to-purple-950/30 border border-cyan-700/50 rounded-2xl p-8"
-                >
-                    <h3 className="text-2xl font-bold text-white mb-6 text-center">Get in Touch</h3>
-                    <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl mx-auto">
-                        <div className="grid md:grid-cols-2 gap-4">
-                            <Input 
-                                placeholder="Your Name" 
-                                required
-                                className="bg-slate-900/50 border-slate-700 text-white placeholder:text-slate-500"
-                            />
-                            <Input 
-                                type="email" 
-                                placeholder="Your Email" 
-                                required
-                                className="bg-slate-900/50 border-slate-700 text-white placeholder:text-slate-500"
-                            />
-                        </div>
-                        <Textarea 
-                            placeholder="I'm interested in... (investing, learning more, scheduling a visit, etc.)"
-                            rows={4}
-                            required
-                            className="bg-slate-900/50 border-slate-700 text-white placeholder:text-slate-500"
-                        />
-                        <Button 
-                            type="submit"
-                            size="lg"
-                            className="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-semibold text-lg"
-                            disabled={submitted}
-                        >
-                            {submitted ? (
-                                <>
-                                    <CheckCircle className="w-5 h-5 mr-2" />
-                                    Message Sent!
-                                </>
-                            ) : (
-                                <>
-                                    <Send className="w-5 h-5 mr-2" />
-                                    Send Message
-                                </>
-                            )}
-                        </Button>
-                    </form>
-
-                    {submitted && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="mt-4 text-center text-green-400 text-sm"
-                        >
-                            Thank you! We'll be in touch soon.
-                        </motion.div>
-                    )}
-                </motion.div>
-
-                <motion.div
+                <motion.p
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
-                    className="mt-12 text-center"
+                    className="mt-4 text-center text-slate-400 text-sm"
                 >
-                    <p className="text-slate-400 text-sm">
-                        This is an opportunity to be part of something meaningful. Let's build freedom together.
-                    </p>
-                </motion.div>
+                    This is an opportunity to be part of something meaningful. Let's build freedom together.
+                </motion.p>
             </div>
         </section>
     );
