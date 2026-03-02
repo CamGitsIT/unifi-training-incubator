@@ -32,15 +32,16 @@ export default function Hero({ scrollToSection }) {
                     </div>
                     
                     <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-                        Free Communities from
+                        Freedom from
                         <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-                            Subscription Prison
+                            Subscriptions
                         </span>
                     </h1>
                     
                     <p className="text-xl md:text-2xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-                        We're building the Southeast's premier UniFi Experience Center to train technicians, 
-                        retrofit multi-family properties, and rescue businesses from the weight of oppressive recurring fees.
+                        We're going into business because there is a very real opportunity to do good — 
+                        disrupting the greed that has left everyone entangled in subscriptions and unhappy about it. 
+                        Every business line we enter is a win-win for everyone involved.
                     </p>
                     
                     <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">

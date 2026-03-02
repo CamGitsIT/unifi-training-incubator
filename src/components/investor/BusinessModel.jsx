@@ -64,10 +64,10 @@ export default function BusinessModel() {
                     className="text-center mb-16"
                 >
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                        Three Revenue Engines, One Mission
+                        One Mission, One Room
                     </h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                        Diversified, high-margin business model with defensive resilience in any economy.
+                        Multiple Lines of Business — all operating under one roof, sharing costs, sharing mission, multiplying impact.
                     </p>
                 </motion.div>
 
