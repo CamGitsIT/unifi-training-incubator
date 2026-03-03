@@ -101,21 +101,13 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                                 <ArrowDown className="w-5 h-5" />
                             </motion.button>
 
-                            {!canClick ? (
+                            {!canClick && (
                                 <motion.p
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     className="text-slate-400 text-sm"
                                 >
                                     Available in <span className="text-cyan-400 font-bold tabular-nums">{countdown}s</span>
-                                </motion.p>
-                            ) : (
-                                <motion.p
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="text-slate-400 text-sm"
-                                >
-                                    Auto-advancing in <span className="text-amber-400 font-bold tabular-nums">{autoCountdown}s</span>
                                 </motion.p>
                             )}
                         </div>
