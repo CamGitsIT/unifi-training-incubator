@@ -91,10 +91,18 @@ const colorMap = {
 const TOTAL_REVENUE = '$1,060,000';
 const NET_MARGIN = '~$740,000';
 
-export default function Slide5BusinessModel({ onInteracted }) {
+export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
     const [expanded, setExpanded] = useState(new Set());
     const [timerDone, setTimerDone] = useState(false);
     const [secondsLeft, setSecondsLeft] = useState(60);
+
+    useEffect(() => {
+        if (timerDone) {
+            if (onUnlockMessage) onUnlockMessage(null);
+            return;
+        }
+        if (onUnlockMessage) onUnlockMessage(`Unlocking in ${secondsLeft}s — or expand all 8 cards to unlock now`);
+    }, [secondsLeft, timerDone]);
 
     useEffect(() => {
         if (timerDone) return;
