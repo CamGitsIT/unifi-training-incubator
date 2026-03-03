@@ -7,7 +7,8 @@ const features = [
     '11-foot ceilings, floor-to-ceiling windows',
     'CMR zoning (Commercial Mixed-Use Residential)',
     '2-car private garage + guest parking',
-    'Perfect for SBA owner-occupied financing'
+    'Perfect for SBA owner-occupied financing',
+    'Live, pilot early adopter'
 ];
 
 export default function Slide6Property({ onInteracted, onUnlockMessage }) {
@@ -48,7 +49,7 @@ export default function Slide6Property({ onInteracted, onUnlockMessage }) {
         <div className="min-h-screen flex items-center justify-center bg-slate-950 py-24 px-6">
             <div className="max-w-6xl mx-auto w-full">
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">The Foundation that Makes it All Possible</h2>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Foundation of it All: The Space</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-4">
                         Award-winning Sager Lofts — a live-work masterpiece in Atlanta's Old Fourth Ward. A best-fit property with built-in adoption, prime positioning on the BeltLine, and the ideal stage to spread the mission, first-of-its-kind host the experience, and promote knowledge.
                     </p>
@@ -74,7 +75,7 @@ export default function Slide6Property({ onInteracted, onUnlockMessage }) {
                             <div className="flex justify-between items-start mb-4">
                                 <div>
                                     <div className="text-sm text-slate-400 mb-1">Purchase Price</div>
-                                    <div className="text-3xl font-bold text-white">$800,000</div>
+                                    <div className="text-3xl font-bold text-white">$825,000</div>
                                 </div>
                                 <div className="text-right">
                                     <div className="text-sm text-slate-400 mb-1">Appraised Value</div>
