@@ -125,7 +125,7 @@ export default function SideNav({ current, seen, interacted = [], onNavigate }) 
                                         ? 'bg-cyan-500/20 border border-cyan-500/40'
                                         : isAccessible
                                             ? 'hover:bg-slate-800/60 border border-transparent cursor-pointer'
-                                            : 'border border-transparent cursor-not-allowed opacity-40'
+                                            : 'bg-slate-800/40 border border-slate-700/50 cursor-not-allowed opacity-70'
                                     }
                                 `}
                                 whileHover={isAccessible ? { x: 2 } : {}}
