@@ -6,11 +6,29 @@ import { Slider } from "@/components/ui/slider";
 export default function Slide8Investment({ onInteracted }) {
     const [investmentAmount, setInvestmentAmount] = useState(25000);
     const [hasSlid, setHasSlid] = useState(false);
+    const [timerDone, setTimerDone] = useState(false);
+    const [secondsLeft, setSecondsLeft] = useState(10);
 
     const targetReturn = investmentAmount * 1.10;
     const avgMonthlyRevenue = 50530;
     const monthlyPayment = avgMonthlyRevenue * 0.05;
     const estimatedMonths = Math.ceil(targetReturn / monthlyPayment);
+
+    React.useEffect(() => {
+        if (timerDone || hasSlid) return;
+        const interval = setInterval(() => {
+            setSecondsLeft(s => {
+                if (s <= 1) {
+                    clearInterval(interval);
+                    setTimerDone(true);
+                    onInteracted();
+                    return 0;
+                }
+                return s - 1;
+            });
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [timerDone, hasSlid]);
 
     const handleSlide = (val) => {
         setInvestmentAmount(val[0]);
