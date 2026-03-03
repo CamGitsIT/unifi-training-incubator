@@ -40,22 +40,25 @@ export default function Home() {
         });
     };
 
+    const goToSlide = (index) => {
+        setCurrent(index);
+        setSeen(prev => { const next = [...prev]; next[index] = true; return next; });
+        window.scrollTo({ top: 0 });
+        if (slideRef.current) slideRef.current.scrollTop = 0;
+    };
+
     const goNext = () => {
         if (current < SLIDES.length - 1) {
-            setCurrent(c => c + 1);
-            window.scrollTo({ top: 0 });
-            if (slideRef.current) slideRef.current.scrollTop = 0;
+            const next = current + 1;
+            goToSlide(next);
         }
     };
 
     const goPrev = () => {
         if (current > 0) {
             const prevIndex = current - 1;
-            setCurrent(prevIndex);
-            // Mark the previous slide as already interacted so Next is available immediately
             markInteracted(prevIndex);
-            window.scrollTo({ top: 0 });
-            if (slideRef.current) slideRef.current.scrollTop = 0;
+            goToSlide(prevIndex);
         }
     };
 
