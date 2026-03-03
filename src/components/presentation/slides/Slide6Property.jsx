@@ -10,10 +10,18 @@ const features = [
     'Perfect for SBA owner-occupied financing'
 ];
 
-export default function Slide6Property({ onInteracted }) {
+export default function Slide6Property({ onInteracted, onUnlockMessage }) {
     const [checkedFeatures, setCheckedFeatures] = useState(new Set());
     const [timerDone, setTimerDone] = useState(false);
     const [secondsLeft, setSecondsLeft] = useState(10);
+
+    useEffect(() => {
+        if (timerDone) {
+            if (onUnlockMessage) onUnlockMessage(null);
+            return;
+        }
+        if (onUnlockMessage) onUnlockMessage(`Unlocking navigation in ${secondsLeft}s — explore freely in the meantime`);
+    }, [secondsLeft, timerDone]);
 
     useEffect(() => {
         const interval = setInterval(() => {
