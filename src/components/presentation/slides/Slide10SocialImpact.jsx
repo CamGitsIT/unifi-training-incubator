@@ -50,6 +50,39 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     <p className="text-sm text-cyan-400 animate-pulse">👇 Click all 5 certification badges to continue</p>
                 </motion.div>
 
+                {/* Certifications That Change Lives — summary panel */}
+                <div className="grid md:grid-cols-2 gap-6 mb-8 bg-slate-800/30 border border-slate-700 rounded-2xl p-6">
+                    <div>
+                        <h3 className="text-xl font-bold text-white mb-3">Certifications That Change Lives</h3>
+                        <p className="text-slate-300 text-sm mb-3">
+                            Since 2012, Ubiquiti Academy's certification program has rapidly expanded, overseeing the training of more than <strong className="text-white">50,000 students worldwide</strong>. OverIT is bringing this engine to the local community.
+                        </p>
+                        <p className="text-slate-300 text-sm mb-3">
+                            <strong className="text-white">The OverIT Multiplier Effect:</strong> We explicitly <em>do not</em> employ a massive army of W-2 installers. Instead, we train and certify professionals, and then feed our sold retrofit and retail projects directly to our Alumni network.
+                        </p>
+                        <p className="text-cyan-400 text-sm font-medium">
+                            By approving this loan, the SBA is not just funding a building; it is funding an incubator that creates independent contractors and tax-contributing small businesses across the region.
+                        </p>
+                    </div>
+                    <div className="bg-slate-900/60 border border-slate-600 rounded-xl p-5">
+                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Certifications Granted</h4>
+                        <ul className="space-y-3">
+                            {[
+                                { emoji: '✨', name: 'UniFi Full Stack Pro (UFSP)' },
+                                { emoji: '📡', name: 'UniFi Wireless Admin (UWA)' },
+                                { emoji: '🔒', name: 'UniFi Security Admin (URSCA)' },
+                                { emoji: '🌐', name: 'UISP Broadband Specialist' },
+                                { emoji: '🖥️', name: 'UniFi Network Pro (UNP)' },
+                            ].map((cert, i) => (
+                                <li key={i} className="flex items-center gap-3 text-slate-200 text-sm">
+                                    <span className="text-lg">{cert.emoji}</span>
+                                    {cert.name}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+
                 <Tabs value={activeCert} onValueChange={handleTab} className="w-full">
                     <TabsList className="grid w-full grid-cols-5 bg-slate-800/50 p-2 rounded-xl mb-6">
                         {certifications.map(cert => (
