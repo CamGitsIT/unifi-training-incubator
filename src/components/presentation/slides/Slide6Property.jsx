@@ -84,7 +84,7 @@ export default function Slide6Property({ onInteracted }) {
                         <div className="bg-gradient-to-br from-cyan-950/30 to-purple-950/30 border border-cyan-700/50 rounded-xl p-6">
                             <Building className="w-8 h-8 text-cyan-400 mb-3" />
                             <div className="text-white font-semibold mb-2">Multi-Functional Asset</div>
-                            <p className="text-slate-300 text-sm">Experience Center + Training Studio + Pilot Site + Executive Workspace. One property, four revenue-generating functions.</p>
+                            <p className="text-slate-300 text-sm">Experience Center + Training Studio + Pilot Property + Executive Workspace — multiple revenue-generating functions that provide a flagship property to experience the possibilities.</p>
                         </div>
                     </motion.div>
                 </div>
