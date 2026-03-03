@@ -103,9 +103,14 @@ export default function Slide8Investment({ onInteracted }) {
                     </div>
                 </div>
 
-                {hasSlid && (
+                {(hasSlid || timerDone) && (
                     <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold">
                         ✓ Click Next to meet the team
+                    </motion.p>
+                )}
+                {!hasSlid && !timerDone && (
+                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-cyan-400 text-sm">
+                        Or unlock in {secondsLeft}s
                     </motion.p>
                 )}
             </div>
