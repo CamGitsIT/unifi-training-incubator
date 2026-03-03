@@ -7,11 +7,11 @@ import { Lock, ChevronRight } from 'lucide-react';
 const NAV_SECTIONS = [
     { label: 'Intro: Our Mission', slideIndices: [0] },
     { label: 'One Mission, One Roof', slideIndices: [1] },
-    { label: 'The Next IT Workforce', slideIndices: [2] },
-    { label: 'The Foundation: Live-work Space', slideIndices: [3] },
-    { label: 'Financials and Repayment', slideIndices: [4, 5] },
-    { label: 'The Team', slideIndices: [6] },
-    { label: 'Contribute!', slideIndices: [7] },
+    { label: 'Job Creation', slideIndices: [2] },
+    { label: 'The Foundation: Live-work Property', slideIndices: [3] },
+    { label: 'Financials: Forecast & Loan Repayment', slideIndices: [4, 5] },
+    { label: 'Our Team', slideIndices: [6] },
+    { label: 'Support Our Mission', slideIndices: [7] },
 ];
 
 export default function SideNav({ current, seen, interacted = [], onNavigate }) {
