@@ -28,6 +28,7 @@ const SLIDES = [
 export default function Home() {
     const [current, setCurrent] = useState(0);
     const [interacted, setInteracted] = useState(new Array(SLIDES.length).fill(false));
+    const [countdown, setCountdown] = useState(AUTO_ADVANCE_SECONDS);
     const slideRef = useRef(null);
 
     const markInteracted = (index) => {
