@@ -103,7 +103,7 @@ export default function Home() {
             </nav>
 
             {/* Side Nav */}
-            <SideNav current={current} seen={seen} onNavigate={goToSlide} />
+            <SideNav current={current} seen={seen} interacted={interacted} onNavigate={goToSlide} />
 
             {/* Slide Area */}
             <div ref={slideRef} className="flex-1 pt-16 pb-20 overflow-y-auto pl-48">
