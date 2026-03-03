@@ -30,7 +30,19 @@ export default function Home() {
     const [interacted, setInteracted] = useState(new Array(SLIDES.length).fill(false));
     const [seen, setSeen] = useState(() => { const s = new Array(SLIDES.length).fill(false); s[0] = true; return s; });
     const [unlockMessage, setUnlockMessage] = useState(null);
+    const [easterEggClicks, setEasterEggClicks] = useState(0);
+    const [easterEggMode, setEasterEggMode] = useState(false);
     const slideRef = useRef(null);
+
+    const handleEasterEggClick = () => {
+        const newClicks = easterEggClicks + 1;
+        setEasterEggClicks(newClicks);
+        if (newClicks === 4) {
+            setEasterEggMode(true);
+            setInteracted(new Array(SLIDES.length).fill(true));
+        }
+        setTimeout(() => setEasterEggClicks(0), 2000);
+    };
 
     const markInteracted = (index) => {
         setInteracted(prev => {
