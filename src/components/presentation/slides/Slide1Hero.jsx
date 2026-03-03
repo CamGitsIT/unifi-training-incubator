@@ -58,7 +58,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         {[
                             { label: 'The Global Disruption', text: 'Organizations are switching to owned, all-in-one infrastructure—networking, cameras, access, and storage—cutting out "rent forever" subscriptions for core operations.' },
                             { label: 'Proof & ROI', text: 'Across our first eight industries, UniFi cuts ongoing costs and vendor sprawl while improving security and saving money. You have to experience it to believe it.' },
-                            { label: 'Why Us', text: 'As certified experts proving the capabilities with live early-adopters, we\'ll introduce just eight initial revenue streams showcasing the capabilities of this newly emerging offering.' },
+                            { label: 'Why Us', text: 'We\'re certified experts with early-adopter proof, outlining eight revenue streams that showcase what this platform can do.' },
                         ].map((b, i) => (
                             <div key={i} className="flex items-start gap-4 bg-slate-800/40 border border-slate-700 rounded-xl px-5 py-4">
                                 <div className="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0 mt-2" />
