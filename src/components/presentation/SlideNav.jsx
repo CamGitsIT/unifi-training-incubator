@@ -2,7 +2,7 @@ import React from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function SlideNav({ current, total, onNext, onPrev, canAdvance, slideLabel, hideNext }) {
+export default function SlideNav({ current, total, onNext, onPrev, canAdvance, slideLabel, hideNext, countdown }) {
     return (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-md border-t border-slate-800">
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
