@@ -36,16 +36,19 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-8">
                         <Zap className="w-4 h-4 text-cyan-400" />
-                        <span className="text-cyan-400 text-sm font-medium">Everything works together. Finally.</span>
+                        <span className="text-cyan-400 text-sm font-medium">Turn subscription fees into futures.</span>
                     </div>
 
                     <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                        The Mission:
+                        Everything works together.
                         <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-                            Your hardware. Your data. Your rules
+                            Finally.
                         </span>
-                        – subscription free
                     </h1>
+
+                    <p className="text-xl md:text-2xl font-semibold text-slate-300 mb-6 max-w-3xl mx-auto">
+                        The Mission: Your hardware. Your data. Your rules – subscription free
+                    </p>
 
                     <p className="text-lg md:text-xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed">
                         Launch a live-work <strong className="text-white">UniFi Experience Center and UniFi Training Hub</strong> that proves a modern, owned technology stack can run organizations <strong className="text-white">more securely and efficiently—without subscriptions in perpetuity</strong>.
