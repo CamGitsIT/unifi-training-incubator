@@ -41,7 +41,7 @@ export default function Slide1Hero({ onInteracted }) {
                         {[
                             { label: 'The global disruption', text: 'Businesses are moving to superior, integrated infrastructure—Networking, Security, Access, Cameras, Storage, and Multi-Site management—that they own and control, breaking the "rent forever" subscription model for core operations.' },
                             { label: 'The proof & ROI', text: 'Across our first 8 target industries, adoption delivers measurable ROI through lower recurring costs, fewer vendors, simpler administration, and stronger security—and the value is easiest to understand when it\'s seen live in a working environment.' },
-                            { label: 'Why us', text: 'As certified experts with pilot validation, we\'ll turn this into a walk-through demo + training program that spreads the expertise, accelerates adoption, and is sustained through 8 independent revenue streams.' },
+                            { label: 'Why us', text: 'As certified experts and live and proven pilot market validation, we\'ll introduce just eight initial revenue streams showcasing the capabilities of this newly emerging offering.' },
                         ].map((b, i) => (
                             <div key={i} className="flex items-start gap-4 bg-slate-800/40 border border-slate-700 rounded-xl px-5 py-4">
                                 <div className="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0 mt-2" />
