@@ -47,7 +47,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </h1>
 
                     <p className="text-xl md:text-2xl font-semibold text-slate-300 mb-6 max-w-3xl mx-auto">
-                        The Mission: Your hardware. Your data. Your rules – subscription free
+                        Your Hardware. Your Data. Your Rules. NoSubscriptions.
                     </p>
 
                     <p className="text-lg md:text-lg text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed">
