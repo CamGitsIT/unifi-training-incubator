@@ -14,27 +14,25 @@ const NAV_SECTIONS = [
     { label: 'Contribute!', slideIndices: [7] },
 ];
 
-export default function SideNav({ current, seen, onNavigate }) {
-    // A section is "seen" if ANY of its slides have been seen
-    // A section is "active" if the current slide is one of its slides
-    // A section is "accessible" if ALL previous sections have been seen (at least one slide each)
-
+export default function SideNav({ current, seen, interacted = [], onNavigate }) {
+    // A section is "accessible" if ALL prior sections have had their slides interacted with
     const getSectionState = (sectionIdx) => {
         const section = NAV_SECTIONS[sectionIdx];
         const isActive = section.slideIndices.includes(current);
         const isSeen = section.slideIndices.some(i => seen[i]);
 
-        // Check if this section is accessible (all prior sections have been seen)
+        // First section is always accessible
+        if (sectionIdx === 0) return { isActive, isSeen, isAccessible: true };
+
+        // Check all prior sections: at least one of their slides must have been interacted with
         let isAccessible = true;
         for (let i = 0; i < sectionIdx; i++) {
             const prev = NAV_SECTIONS[i];
-            if (!prev.slideIndices.some(idx => seen[idx])) {
+            if (!prev.slideIndices.some(idx => interacted[idx])) {
                 isAccessible = false;
                 break;
             }
         }
-        // First section is always accessible
-        if (sectionIdx === 0) isAccessible = true;
 
         return { isActive, isSeen, isAccessible };
     };
