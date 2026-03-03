@@ -83,7 +83,7 @@ export default function Slide8Investment({ onInteracted }) {
                             {!hasSlid && (
                                 <p className="text-xs text-cyan-400 text-center mb-2 animate-bounce">👈 Drag the slider to calculate 👉</p>
                             )}
-                            <Slider value={[investmentAmount]} onValueChange={handleSlide} min={5000} max={100000} step={5000} className="mb-2" />
+                            <Slider value={[investmentAmount]} onValueChange={handleSlide} min={5000} max={100000} step={5000} className="mb-2 [&>span]:bg-cyan-400" />
                             <div className="flex justify-between text-xs text-slate-500">
                                 <span>$5,000</span><span>$100,000</span>
                             </div>
