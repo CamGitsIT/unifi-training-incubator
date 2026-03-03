@@ -103,7 +103,11 @@ export default function Home() {
                         exit={{ opacity: 0, x: -60 }}
                         transition={{ duration: 0.35, ease: 'easeInOut' }}
                     >
-                        <SlideComponent onInteracted={() => markInteracted(current)} onNext={goNext} />
+                        <SlideComponent
+                            onInteracted={() => markInteracted(current)}
+                            onNext={goNext}
+                            onUnlockMessage={setUnlockMessage}
+                        />
                     </motion.div>
                 </AnimatePresence>
             </div>
