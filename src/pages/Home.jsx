@@ -11,6 +11,8 @@ import Slide9Team from '../components/presentation/slides/Slide9Team';
 import Slide10SocialImpact from '../components/presentation/slides/Slide10SocialImpact';
 import Slide11CTA from '../components/presentation/slides/Slide11CTA';
 
+const AUTO_ADVANCE_SECONDS = 10;
+
 const SLIDES = [
     { component: Slide1Hero, label: 'Welcome' },
     { component: Slide5BusinessModel, label: 'Business Model' },
