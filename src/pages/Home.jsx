@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Shield } from 'lucide-react';
 import SlideNav from '../components/presentation/SlideNav';
+import SideNav from '../components/presentation/SideNav';
 import Slide1Hero from '../components/presentation/slides/Slide1Hero';
 import Slide5BusinessModel from '../components/presentation/slides/Slide5BusinessModel';
 import Slide6Property from '../components/presentation/slides/Slide6Property';
