@@ -136,6 +136,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
         if (allExpanded && !timerDone) {
             setTimerDone(true);
             onInteracted();
+            if (onUnlockMessage) onUnlockMessage(null);
         }
     }, [allExpanded]);
 
