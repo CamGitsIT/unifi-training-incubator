@@ -91,7 +91,13 @@ export default function Home() {
                     <div className="flex items-center gap-2">
                         <Shield className="w-6 h-6 text-cyan-400" />
                         <span className="font-bold text-xl text-white">OverISP</span>
-                        <span className="text-slate-400 text-sm hidden md:inline">UniFi Experience Center</span>
+                        <button
+                            onClick={handleEasterEggClick}
+                            className="text-slate-400 text-sm hidden md:inline cursor-pointer hover:text-slate-300 transition-colors px-2 py-1 rounded hover:bg-slate-800/30"
+                        >
+                            UniFi Experience Center
+                        </button>
+                        <span className="text-slate-400 text-sm md:hidden">UniFi Experience Center</span>
                     </div>
                     <div className="flex items-center gap-3">
                         <span className="text-slate-500 text-sm hidden md:inline">
