@@ -70,8 +70,7 @@ export default function SideNav({ current, seen, interacted = [], onNavigate }) 
                                 <div key={idx}>
                                     <div className={`
                                         w-full text-left flex items-center gap-2 px-3 py-2.5 rounded-xl transition-all duration-200
-                                        ${isActive ? 'bg-cyan-500/20 border border-cyan-500/40' : 'border border-transparent'}
-                                        ${isAccessible ? '' : 'opacity-40'}
+                                        ${isActive ? 'bg-cyan-500/20 border border-cyan-500/40' : isAccessible ? 'border border-transparent' : 'bg-slate-800/40 border border-slate-700/50 opacity-70'}
                                     `}>
                                         {/* Indicator dot */}
                                         <div className={`
