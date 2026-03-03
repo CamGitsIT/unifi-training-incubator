@@ -93,12 +93,32 @@ const NET_MARGIN = '~$740,000';
 
 export default function Slide5BusinessModel({ onInteracted }) {
     const [expanded, setExpanded] = useState(new Set());
+    const [timerDone, setTimerDone] = useState(false);
+    const [secondsLeft, setSecondsLeft] = useState(10);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setSecondsLeft(s => {
+                if (s <= 1) {
+                    clearInterval(interval);
+                    setTimerDone(true);
+                    onInteracted();
+                    return 0;
+                }
+                return s - 1;
+            });
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleExpand = (i) => {
         const next = new Set(expanded);
-        next.add(i);
+        if (next.has(i)) {
+            next.delete(i);
+        } else {
+            next.add(i);
+        }
         setExpanded(next);
-        if (next.size === businessLines.length) onInteracted();
     };
 
     const allExpanded = expanded.size === businessLines.length;
