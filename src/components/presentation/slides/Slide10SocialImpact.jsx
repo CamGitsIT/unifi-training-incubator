@@ -100,14 +100,17 @@ export default function Slide10SocialImpact({ onInteracted }) {
 
                 <Tabs value={activeCert} onValueChange={handleTab} className="w-full">
                     <TabsList className="grid w-full grid-cols-5 bg-slate-800/50 p-2 rounded-xl mb-6">
-                        {certifications.map(cert => (
-                            <TabsTrigger key={cert.id} value={cert.id} className={`data-[state=active]:bg-slate-700 rounded-lg hover:scale-110 transition-transform relative`}>
-                                <img src={cert.badge} alt={cert.name} className="w-8 h-8" />
-                                {visited.has(cert.id) && cert.id !== activeCert && (
-                                    <div className="absolute top-1 right-1 w-2 h-2 bg-green-400 rounded-full" />
-                                )}
-                            </TabsTrigger>
-                        ))}
+                        {certifications.map(cert => {
+                            const IconComponent = cert.icon;
+                            return (
+                                <TabsTrigger key={cert.id} value={cert.id} className={`data-[state=active]:bg-slate-700 rounded-lg hover:scale-110 transition-transform relative`}>
+                                    <IconComponent className="w-5 h-5" />
+                                    {visited.has(cert.id) && cert.id !== activeCert && (
+                                        <div className="absolute top-1 right-1 w-2 h-2 bg-green-400 rounded-full" />
+                                    )}
+                                </TabsTrigger>
+                            );
+                        })}
                     </TabsList>
 
                     <AnimatePresence mode="wait">
