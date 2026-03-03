@@ -39,9 +39,9 @@ export default function Slide1Hero({ onInteracted }) {
 
                     <div className="text-left max-w-3xl mx-auto mb-10 space-y-4">
                         {[
-                            { label: 'The shift', text: 'Businesses are moving to superior, integrated infrastructure—Networking, Security, Access, Cameras, Storage, and Multi-Site management—that they own and control, breaking the "rent forever" subscription model for core operations.' },
+                            { label: 'The global disruption', text: 'Businesses are moving to superior, integrated infrastructure—Networking, Security, Access, Cameras, Storage, and Multi-Site management—that they own and control, breaking the "rent forever" subscription model for core operations.' },
                             { label: 'The proof & ROI', text: 'Across our first 8 target industries, adoption delivers measurable ROI through lower recurring costs, fewer vendors, simpler administration, and stronger security—and the value is easiest to understand when it\'s seen live in a working environment.' },
-                            { label: 'Why us / why now', text: 'As certified experts with pilot validation, we\'ll turn this into a walk-through demo + training program that spreads the expertise, accelerates adoption, and is sustained through 8 independent revenue streams.' },
+                            { label: 'Why us', text: 'As certified experts with pilot validation, we\'ll turn this into a walk-through demo + training program that spreads the expertise, accelerates adoption, and is sustained through 8 independent revenue streams.' },
                         ].map((b, i) => (
                             <div key={i} className="flex items-start gap-4 bg-slate-800/40 border border-slate-700 rounded-xl px-5 py-4">
                                 <div className="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0 mt-2" />
