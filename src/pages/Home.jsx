@@ -64,20 +64,8 @@ export default function Home() {
     useEffect(() => {
         window.scrollTo({ top: 0 });
         if (slideRef.current) slideRef.current.scrollTop = 0;
-        setCountdown(AUTO_ADVANCE_SECONDS);
         setSeen(prev => { const next = [...prev]; next[current] = true; return next; });
     }, [current]);
-
-    // Auto-advance countdown (only for slides that aren't the first or last)
-    useEffect(() => {
-        if (current === 0 || current === SLIDES.length - 1) return;
-        if (countdown <= 0) {
-            markInteracted(current);
-            return;
-        }
-        const t = setTimeout(() => setCountdown(c => c - 1), 1000);
-        return () => clearTimeout(t);
-    }, [countdown, current]);
 
     const SlideComponent = SLIDES[current].component;
     const canAdvance = interacted[current];
