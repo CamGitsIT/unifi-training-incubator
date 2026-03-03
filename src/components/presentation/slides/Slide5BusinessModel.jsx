@@ -129,13 +129,13 @@ export default function Slide5BusinessModel({ onInteracted }) {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">One Mission, One Roof</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                        Initial Launch: Eight lines of business promoting clear ROI, spreading the mission through education and job creation, and demonstrating the infinite capabilities of adoption of groundbreaking UniFi systems.
+                        A Common Vision: 8 Markets
                     </p>
                     {!timerDone ? (
                         <p className="text-sm text-slate-400 mt-4">
                             <span className="inline-flex items-center gap-2">
                                 <span className="inline-block w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
-                                Unlocking navigation in <span className="text-cyan-400 font-bold">{secondsLeft}s</span> — explore freely in the meantime
+                                Unlocking in <span className="text-cyan-400 font-bold">{secondsLeft}s</span> — or expand all 8 cards to unlock now
                             </span>
                         </p>
                     ) : (
