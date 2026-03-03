@@ -109,7 +109,7 @@ export default function Slide5BusinessModel({ onInteracted }) {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">One Mission, One Roof</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                        8 Lines of Business — all operating under one roof, sharing costs, sharing mission, multiplying impact.
+                        Initial Launch: Eight lines of business promoting clear ROI, spreading the mission through education and job creation, and demonstrating the infinite capabilities of adoption of groundbreaking UniFi systems.
                     </p>
                     <p className="text-sm text-cyan-400 mt-4 animate-pulse">👇 Click each business line to explore</p>
                 </motion.div>
