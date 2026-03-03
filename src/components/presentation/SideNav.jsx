@@ -6,12 +6,12 @@ import { Lock, ChevronRight } from 'lucide-react';
 // SLIDES order: 0=Hero, 1=BusinessModel, 2=SocialImpact, 3=Property, 4=Financials, 5=Investment, 6=Team, 7=CTA
 const NAV_SECTIONS = [
     { label: 'Intro: Our Mission', slideIndices: [0] },
-    { label: 'One Mission, One Roof', slideIndices: [1] },
+    { label: 'One Vision, Endless Possibilities', slideIndices: [1] },
     { label: 'Job Creation', slideIndices: [2] },
     { label: 'The Foundation: Live-work Property', slideIndices: [3] },
     { label: 'Financials: Forecast & Loan Repayment', slideIndices: [4, 5] },
-    { label: 'Our Team', slideIndices: [6] },
-    { label: 'Support Our Mission', slideIndices: [7] },
+    { label: 'Contributors', slideIndices: [6] },
+    { label: 'Support Us!', slideIndices: [7] },
 ];
 
 export default function SideNav({ current, seen, interacted = [], onNavigate }) {
