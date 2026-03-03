@@ -4,7 +4,6 @@ import { Shield } from 'lucide-react';
 
 import SlideNav from '../components/presentation/SlideNav';
 import Slide1Hero from '../components/presentation/slides/Slide1Hero';
-import Slide2Mission from '../components/presentation/slides/Slide2Mission';
 import Slide5BusinessModel from '../components/presentation/slides/Slide5BusinessModel';
 import Slide6Property from '../components/presentation/slides/Slide6Property';
 import Slide7Financials from '../components/presentation/slides/Slide7Financials';
@@ -15,7 +14,6 @@ import Slide11CTA from '../components/presentation/slides/Slide11CTA';
 
 const SLIDES = [
     { component: Slide1Hero, label: 'Welcome' },
-    { component: Slide2Mission, label: 'Mission' },
     { component: Slide5BusinessModel, label: 'Business Model' },
     { component: Slide6Property, label: 'Property' },
     { component: Slide7Financials, label: 'Financials' },
