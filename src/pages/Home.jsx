@@ -48,7 +48,10 @@ export default function Home() {
 
     const goPrev = () => {
         if (current > 0) {
-            setCurrent(c => c - 1);
+            const prevIndex = current - 1;
+            setCurrent(prevIndex);
+            // Mark the previous slide as already interacted so Next is available immediately
+            markInteracted(prevIndex);
             window.scrollTo({ top: 0 });
             if (slideRef.current) slideRef.current.scrollTop = 0;
         }
