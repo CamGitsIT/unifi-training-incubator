@@ -69,9 +69,9 @@ export default function Slide1Hero({ onInteracted, onNext }) {
 
                     <div className="text-left max-w-3xl mx-auto mb-10 space-y-4">
                         {[
-                            { label: 'The global disruption', text: 'Businesses are moving to superior, integrated infrastructure—Networking, Security, Access, Cameras, Storage, and Multi-Site management—that they own and control, breaking the "rent forever" subscription model for core operations.' },
-                            { label: 'The proof & ROI', text: 'Across our first 8 target industries, adoption delivers measurable ROI through lower recurring costs, fewer vendors, simpler administration, and stronger security—and the value is easiest to understand when it\'s seen live in a working environment.' },
-                            { label: 'Why us', text: 'As certified experts and live and proven pilot market validation, we\'ll introduce just eight initial revenue streams showcasing the capabilities of this newly emerging offering.' },
+                            { label: 'The Global Disruption', text: 'Businesses are moving to superior, integrated infrastructure — Networking, Security, Access, Cameras, Storage, and Multi-Site management — that they own and control, breaking the "rent forever" subscription model for core operations.' },
+                            { label: 'Proof & ROI', text: 'Across our first eight target industries, adoption delivers measurable ROI through lower recurring costs, fewer vendors, simpler administration, and stronger security all with no recurring fees — the value is easiest to understand when it\'s seen live in a working environment.' },
+                            { label: 'Why Us', text: 'As certified experts proving the capabilities with live early-adopters, we\'ll introduce just eight initial revenue streams showcasing the capabilities of this newly emerging offering.' },
                         ].map((b, i) => (
                             <div key={i} className="flex items-start gap-4 bg-slate-800/40 border border-slate-700 rounded-xl px-5 py-4">
                                 <div className="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0 mt-2" />
