@@ -171,7 +171,7 @@ export default function Slide7Financials({ onInteracted }) {
 
                 {visitedTabs.size === tabs.length && (
                     <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
-                        ✓ Click Next to see the investment opportunity
+                        ✓ All tabs explored — click Next to continue
                     </motion.p>
                 )}
             </div>
