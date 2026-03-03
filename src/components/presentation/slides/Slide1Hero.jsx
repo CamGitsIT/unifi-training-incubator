@@ -22,21 +22,35 @@ export default function Slide1Hero({ onInteracted }) {
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-8">
                         <Zap className="w-4 h-4 text-cyan-400" />
-                        <span className="text-cyan-400 text-sm font-medium">SBA 7(a) Loan Application + Community Investment</span>
+                        <span className="text-cyan-400 text-sm font-medium">UniFi Experience Center &amp; Training Hub</span>
                     </div>
 
-                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-                        Freedom from
+                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                        Join the Mission: The
                         <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-                            Subscriptions
+                            Subscription-Free Future
                         </span>
+                        of Business Infrastructure
                     </h1>
 
-                    <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-                        We're going into business because there is a very real opportunity to do good — 
-                        disrupting the greed that has left everyone entangled in subscriptions and unhappy about it. 
-                        Every business line we enter is a win-win for everyone involved.
+                    <p className="text-lg md:text-xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed">
+                        Launch a live-work <strong className="text-white">UniFi Experience Center and UniFi Training Hub</strong> that proves a modern, owned technology stack can run organizations <strong className="text-white">more securely and efficiently—without subscriptions in perpetuity</strong>.
                     </p>
+
+                    <div className="text-left max-w-3xl mx-auto mb-10 space-y-4">
+                        {[
+                            { label: 'The shift', text: 'Businesses are moving to superior, integrated infrastructure—Networking, Security, Access, Cameras, Storage, and Multi-Site management—that they own and control, breaking the "rent forever" subscription model for core operations.' },
+                            { label: 'The proof & ROI', text: 'Across our first 8 target industries, adoption delivers measurable ROI through lower recurring costs, fewer vendors, simpler administration, and stronger security—and the value is easiest to understand when it\'s seen live in a working environment.' },
+                            { label: 'Why us / why now', text: 'As certified experts with pilot validation, we\'ll turn this into a walk-through demo + training program that spreads the expertise, accelerates adoption, and is sustained through 8 independent revenue streams.' },
+                        ].map((b, i) => (
+                            <div key={i} className="flex items-start gap-4 bg-slate-800/40 border border-slate-700 rounded-xl px-5 py-4">
+                                <div className="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0 mt-2" />
+                                <p className="text-slate-300 text-sm leading-relaxed">
+                                    <strong className="text-white">{b.label}:</strong> {b.text}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
 
                     <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
                         <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
