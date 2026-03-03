@@ -177,7 +177,7 @@ export default function Slide10SocialImpact({ onInteracted }) {
                         We don't hire installers.<br />We create them.
                     </h3>
                     <p className="text-slate-300 max-w-2xl mx-auto mb-10">
-                        Training 100+ local IT professionals per year through Ubiquiti Academy and feeding them turnkey projects. Each graduate becomes an independent small business creating jobs and tax revenue.
+                        Enabling training and expertise to enable a graduate or small business owner to explore their own passions while providing tangible value.
                     </p>
                     <div className="grid md:grid-cols-3 gap-5">
                         {[
