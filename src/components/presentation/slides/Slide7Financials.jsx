@@ -40,16 +40,37 @@ const tabs = [
 ];
 
 export default function Slide7Financials({ onInteracted }) {
-    const [visitedTabs, setVisitedTabs] = useState(new Set(['overview']));
-    const [activeTab, setActiveTab] = useState('overview');
+     const [visitedTabs, setVisitedTabs] = useState(new Set(['overview']));
+     const [activeTab, setActiveTab] = useState('overview');
+     const [timerDone, setTimerDone] = useState(false);
+     const [secondsLeft, setSecondsLeft] = useState(60);
 
-    const handleTab = (id) => {
-        setActiveTab(id);
-        const next = new Set(visitedTabs);
-        next.add(id);
-        setVisitedTabs(next);
-        if (next.size === tabs.length) onInteracted();
-    };
+     const handleTab = (id) => {
+         setActiveTab(id);
+         const next = new Set(visitedTabs);
+         next.add(id);
+         setVisitedTabs(next);
+         if (next.size === tabs.length) {
+             setTimerDone(true);
+             onInteracted();
+         }
+     };
+
+     React.useEffect(() => {
+         if (timerDone) return;
+         const interval = setInterval(() => {
+             setSecondsLeft(s => {
+                 if (s <= 1) {
+                     clearInterval(interval);
+                     setTimerDone(true);
+                     onInteracted();
+                     return 0;
+                 }
+                 return s - 1;
+             });
+         }, 1000);
+         return () => clearInterval(interval);
+     }, [timerDone]);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-950 to-slate-900 py-24 px-6">
@@ -59,28 +80,40 @@ export default function Slide7Financials({ onInteracted }) {
                         <TrendingUp className="w-4 h-4 text-green-400" />
                         <span className="text-green-400 text-sm font-medium">Financial Projections</span>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Conservative Growth, Exceptional Margins</h2>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Realistic Projections, Exceptional Margins</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">Even in the "Floor" scenario, we generate enough to service debt with massive safety margins.</p>
                     <p className="text-sm text-cyan-400 mt-4 animate-pulse">👇 Click all 3 tabs to continue</p>
                 </motion.div>
 
-                <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto mb-10">
-                    {tabs.map(tab => {
-                        const Icon = tab.icon;
-                        const isActive = activeTab === tab.id;
-                        const visited = visitedTabs.has(tab.id);
-                        return (
-                            <button
-                                key={tab.id}
-                                onClick={() => handleTab(tab.id)}
-                                className={`relative rounded-2xl p-4 transition-all duration-300 flex flex-col items-center gap-2 ${isActive ? 'bg-gradient-to-br from-cyan-500 to-blue-500 shadow-xl' : 'bg-slate-800/50 border border-slate-700 hover:border-slate-500'}`}
-                            >
-                                <Icon className={`w-6 h-6 ${isActive ? 'text-white' : visited ? 'text-green-400' : 'text-slate-400'}`} />
-                                <span className={`text-sm font-semibold ${isActive ? 'text-white' : 'text-slate-300'}`}>{tab.label}</span>
-                                {visited && !isActive && <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full" />}
-                            </button>
-                        );
-                    })}
+                <div className="flex items-start gap-6 mb-10">
+                    <div className="flex flex-col gap-2 w-full max-w-xs">
+                        {tabs.map((tab, i) => {
+                            const Icon = tab.icon;
+                            const isActive = activeTab === tab.id;
+                            const visited = visitedTabs.has(tab.id);
+                            return (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => handleTab(tab.id)}
+                                    className={`relative rounded-xl p-3 transition-all duration-300 flex items-center gap-3 text-left ${isActive ? 'bg-gradient-to-br from-cyan-500 to-blue-500 shadow-lg' : 'bg-slate-800/50 border border-slate-700 hover:border-slate-500'}`}
+                                >
+                                    <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-white' : visited ? 'text-green-400' : 'text-slate-400'}`} />
+                                    <span className={`text-sm font-semibold ${isActive ? 'text-white' : 'text-slate-300'}`}>{i + 1}. {tab.label}</span>
+                                    {visited && !isActive && <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full" />}
+                                </button>
+                            );
+                        })}
+                    </div>
+                    <div className="flex-1">
+                        {!timerDone && (
+                            <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center mb-6">
+                                <p className="text-slate-300 text-sm">
+                                    Continuing in <span className="text-cyan-400 font-bold tabular-nums">{secondsLeft}s</span>
+                                </p>
+                                <p className="text-xs text-slate-400 mt-1">Or click any tab above to start</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {activeTab === 'overview' && (
