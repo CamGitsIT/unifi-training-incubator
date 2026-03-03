@@ -124,6 +124,13 @@ export default function Slide5BusinessModel({ onInteracted }) {
 
     const allExpanded = expanded.size === businessLines.length;
 
+    useEffect(() => {
+        if (allExpanded && !timerDone) {
+            setTimerDone(true);
+            onInteracted();
+        }
+    }, [allExpanded]);
+
     return (
         <div className="min-h-screen bg-slate-900 py-24 px-6">
             <div className="max-w-5xl mx-auto w-full">
