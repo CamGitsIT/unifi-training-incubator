@@ -131,7 +131,7 @@ export default function Slide9Team({ onInteracted }) {
                             <span className="text-slate-300 text-sm">Your Contribution</span>
                             <span className="text-xl font-bold text-cyan-400">${investmentAmount.toLocaleString()}</span>
                         </div>
-                        <Slider value={[investmentAmount]} onValueChange={handleSlide} min={5000} max={100000} step={5000} />
+                        <Slider value={[investmentAmount]} onValueChange={handleSlide} min={5000} max={100000} step={5000} className="[&>span]:bg-cyan-400" />
                         <div className="grid grid-cols-2 gap-4 mt-4">
                             <div className="bg-slate-950/50 rounded-xl p-4 text-center">
                                 <div className="text-sm text-slate-400 mb-1">Your Total Return</div>
