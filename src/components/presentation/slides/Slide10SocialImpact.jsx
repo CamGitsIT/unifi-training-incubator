@@ -215,9 +215,14 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     </div>
                 </div>
 
-                {visited.size === certifications.length && (
+                {(visited.size === certifications.length || timerDone) && (
                     <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
                         ✓ Click Next to take action
+                    </motion.p>
+                )}
+                {visited.size < certifications.length && !timerDone && (
+                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-cyan-400 text-sm mt-6">
+                        Or unlock in {secondsLeft}s
                     </motion.p>
                 )}
             </div>
