@@ -41,19 +41,22 @@ export default function Home() {
     const goNext = () => {
         if (current < SLIDES.length - 1) {
             setCurrent(c => c + 1);
-            slideRef.current?.scrollTo({ top: 0 });
+            window.scrollTo({ top: 0 });
+            if (slideRef.current) slideRef.current.scrollTop = 0;
         }
     };
 
     const goPrev = () => {
         if (current > 0) {
             setCurrent(c => c - 1);
-            slideRef.current?.scrollTo({ top: 0 });
+            window.scrollTo({ top: 0 });
+            if (slideRef.current) slideRef.current.scrollTop = 0;
         }
     };
 
     useEffect(() => {
-        slideRef.current?.scrollTo({ top: 0 });
+        window.scrollTo({ top: 0 });
+        if (slideRef.current) slideRef.current.scrollTop = 0;
     }, [current]);
 
     const SlideComponent = SLIDES[current].component;
@@ -88,7 +91,7 @@ export default function Home() {
                         exit={{ opacity: 0, x: -60 }}
                         transition={{ duration: 0.35, ease: 'easeInOut' }}
                     >
-                        <SlideComponent onInteracted={() => markInteracted(current)} />
+                        <SlideComponent onInteracted={() => markInteracted(current)} onNext={goNext} />
                     </motion.div>
                 </AnimatePresence>
             </div>
