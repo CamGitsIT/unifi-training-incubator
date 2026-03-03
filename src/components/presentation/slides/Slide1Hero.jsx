@@ -51,7 +51,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </p>
 
                     <p className="text-lg md:text-lg text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed">
-                        <strong className="text-cyan-400">What drives us: </strong>Creating a live-work <strong className="text-white">UniFi Experience Center and Training Hub</strong> to demonstrate <strong className="text-white">safer, simpler business infrastructure you can own—no subscriptions for life</strong>—while training and supporting the next generation of local leaders.
+                        <strong className="text-cyan-400">What drives us: </strong>Creating a live-work <strong className="text-white">UniFi Experience Center and Training Hub</strong> to demonstrate <strong className="text-white">safer, simpler business infrastructure you can own</strong> while training and supporting the next generation of local leaders.
                     </p>
 
                     <div className="text-left max-w-3xl mx-auto mb-10 space-y-4">
