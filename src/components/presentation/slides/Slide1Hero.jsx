@@ -50,7 +50,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         The Mission: Your hardware. Your data. Your rules – subscription free
                     </p>
 
-                    <p className="text-lg md:text-xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed">
+                    <p className="text-lg md:text-lg text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed">
                         Launch a live-work <strong className="text-white">UniFi Experience Center and UniFi Training Hub</strong> that proves a modern, owned technology stack can run organizations <strong className="text-white">more securely and efficiently—without subscriptions in perpetuity</strong>.
                     </p>
 
