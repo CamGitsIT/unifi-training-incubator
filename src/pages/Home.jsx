@@ -66,6 +66,7 @@ export default function Home() {
         window.scrollTo({ top: 0 });
         if (slideRef.current) slideRef.current.scrollTop = 0;
         setCountdown(AUTO_ADVANCE_SECONDS);
+        setSeen(prev => { const next = [...prev]; next[current] = true; return next; });
     }, [current]);
 
     // Auto-advance countdown (only for slides that aren't the first or last)
