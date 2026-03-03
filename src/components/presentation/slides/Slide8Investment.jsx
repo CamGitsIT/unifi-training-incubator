@@ -25,7 +25,7 @@ export default function Slide8Investment({ onInteracted }) {
                         <Coins className="w-4 h-4 text-cyan-400" />
                         <span className="text-cyan-400 text-sm font-medium">Investment Opportunity</span>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Revenue-Based Repayment Model</h2>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Revenue-based Lending and Repayment</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-4">
                         Get paid back as we grow — quickly if things go well, flexibly if the world gets harder.
                     </p>

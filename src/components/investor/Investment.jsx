@@ -34,7 +34,7 @@ export default function Investment() {
                         <span className="text-cyan-400 text-sm font-medium">Investment Opportunity</span>
                     </div>
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                        Revenue-Based Repayment Model
+                        Revenue-based Lending and Repayment
                     </h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-4">
                         We're raising funds from friends and supporters through revenue-sharing loans. 
