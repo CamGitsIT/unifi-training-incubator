@@ -146,7 +146,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">One Mission, One Roof</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                        A Common Vision: 8 Markets
+                        One Vision with Limitless markets
                     </p>
                     <p className="text-sm text-cyan-400 mt-4 animate-pulse">👇 Click any card to expand or collapse details</p>
                 </motion.div>
