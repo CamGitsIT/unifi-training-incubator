@@ -117,6 +117,7 @@ export default function Home() {
                 canAdvance={canAdvance}
                 slideLabel={SLIDES[current].label}
                 hideNext={current === 0}
+                unlockMessage={unlockMessage}
             />
         </div>
     );
