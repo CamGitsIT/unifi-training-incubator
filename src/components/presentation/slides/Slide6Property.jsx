@@ -24,9 +24,9 @@ export default function Slide6Property({ onInteracted }) {
         <div className="min-h-screen flex items-center justify-center bg-slate-950 py-24 px-6">
             <div className="max-w-6xl mx-auto w-full">
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">The Foundation: 455 Glen Iris Drive NE</h2>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">The Foundation that Makes it All Possible</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                        Award-winning Sager Lofts in Atlanta's Old Fourth Ward — the perfect Experience Center location.
+                        Award-winning Sager Lofts — a live-work masterpiece in Atlanta's Old Fourth Ward. A best-fit property with built-in adoption, prime positioning on the BeltLine, and the ideal stage to spread the mission, host the experience, and grow the knowledge.
                     </p>
                 </motion.div>
 
