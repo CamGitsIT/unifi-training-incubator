@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Shield } from 'lucide-react';
-
-const AUTO_ADVANCE_SECONDS = 10;
-
 import SlideNav from '../components/presentation/SlideNav';
 import Slide1Hero from '../components/presentation/slides/Slide1Hero';
 import Slide5BusinessModel from '../components/presentation/slides/Slide5BusinessModel';
