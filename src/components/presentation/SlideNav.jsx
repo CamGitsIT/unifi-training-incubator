@@ -2,9 +2,17 @@ import React from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function SlideNav({ current, total, onNext, onPrev, canAdvance, slideLabel, hideNext, countdown }) {
+export default function SlideNav({ current, total, onNext, onPrev, canAdvance, slideLabel, hideNext, unlockMessage }) {
     return (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-md border-t border-slate-800">
+            {unlockMessage && (
+                <div className="text-center py-1.5 text-sm text-slate-400 border-b border-slate-800/50">
+                    <span className="inline-flex items-center gap-2">
+                        <span className="inline-block w-3.5 h-3.5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
+                        {unlockMessage}
+                    </span>
+                </div>
+            )}
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                 {/* Slide dots */}
                 <div className="flex items-center gap-2">
