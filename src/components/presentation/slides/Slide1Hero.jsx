@@ -3,12 +3,10 @@ import { motion } from 'framer-motion';
 import { Zap, ArrowDown } from 'lucide-react';
 
 const BUTTON_UNLOCK_SECONDS = 10;
-const AUTO_ADVANCE_SECONDS = 15;
 
 export default function Slide1Hero({ onInteracted, onNext }) {
     const [acknowledged, setAcknowledged] = useState(false);
     const [countdown, setCountdown] = useState(BUTTON_UNLOCK_SECONDS);
-    const [autoCountdown, setAutoCountdown] = useState(AUTO_ADVANCE_SECONDS);
 
     const canClick = countdown <= 0;
 
@@ -18,20 +16,6 @@ export default function Slide1Hero({ onInteracted, onNext }) {
         const t = setTimeout(() => setCountdown(c => c - 1), 1000);
         return () => clearTimeout(t);
     }, [countdown, acknowledged]);
-
-    // Auto-advance countdown (15s) — starts once button unlocks
-    useEffect(() => {
-        if (acknowledged || !canClick) return;
-        if (autoCountdown <= 0) {
-            // Auto advance
-            setAcknowledged(true);
-            onInteracted();
-            if (onNext) onNext();
-            return;
-        }
-        const t = setTimeout(() => setAutoCountdown(c => c - 1), 1000);
-        return () => clearTimeout(t);
-    }, [autoCountdown, canClick, acknowledged]);
 
     const handleStart = () => {
         if (!canClick) return;
