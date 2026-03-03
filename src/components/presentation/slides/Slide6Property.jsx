@@ -26,7 +26,7 @@ export default function Slide6Property({ onInteracted }) {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">The Foundation that Makes it All Possible</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                        Award-winning Sager Lofts — a live-work masterpiece in Atlanta's Old Fourth Ward. A best-fit property with built-in adoption, prime positioning on the BeltLine, and the ideal stage to spread the mission, first-of-its-kind host the experience, and promote the knowledge of what's possible.
+                        Award-winning Sager Lofts — a live-work masterpiece in Atlanta's Old Fourth Ward. A best-fit property with built-in adoption, prime positioning on the BeltLine, and the ideal stage to spread the mission, first-of-its-kind host the experience, and promote the knowledge.
                     </p>
                 </motion.div>
 
