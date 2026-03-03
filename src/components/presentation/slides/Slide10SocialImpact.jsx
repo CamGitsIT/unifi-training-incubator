@@ -23,6 +23,24 @@ const colorClasses = {
 export default function Slide10SocialImpact({ onInteracted }) {
     const [activeCert, setActiveCert] = useState('ufsp');
     const [visited, setVisited] = useState(new Set(['ufsp']));
+    const [timerDone, setTimerDone] = useState(false);
+    const [secondsLeft, setSecondsLeft] = useState(10);
+
+    useEffect(() => {
+        if (timerDone || visited.size === certifications.length) return;
+        const interval = setInterval(() => {
+            setSecondsLeft(s => {
+                if (s <= 1) {
+                    clearInterval(interval);
+                    setTimerDone(true);
+                    onInteracted();
+                    return 0;
+                }
+                return s - 1;
+            });
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [timerDone, visited]);
 
     const handleTab = (val) => {
         setActiveCert(val);
