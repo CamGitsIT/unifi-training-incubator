@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Zap, ArrowDown } from 'lucide-react';
 
-export default function Slide1Hero({ onInteracted }) {
+export default function Slide1Hero({ onInteracted, onNext }) {
     const [acknowledged, setAcknowledged] = useState(false);
 
     const handleStart = () => {
         setAcknowledged(true);
         onInteracted();
+        if (onNext) onNext();
     };
 
     return (
