@@ -148,16 +148,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">
                         A Common Vision: 8 Markets
                     </p>
-                    {!timerDone ? (
-                        <p className="text-sm text-slate-400 mt-4">
-                            <span className="inline-flex items-center gap-2">
-                                <span className="inline-block w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
-                                Unlocking in <span className="text-cyan-400 font-bold">{secondsLeft}s</span> — or expand all 8 cards to unlock now
-                            </span>
-                        </p>
-                    ) : (
-                        <p className="text-sm text-cyan-400 mt-4 animate-pulse">👇 Click any card to expand or collapse details</p>
-                    )}
+                    <p className="text-sm text-cyan-400 mt-4 animate-pulse">👇 Click any card to expand or collapse details</p>
                 </motion.div>
 
                 <div className="space-y-3">
