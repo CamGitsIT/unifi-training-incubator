@@ -104,6 +104,7 @@ export default function Home() {
                 onPrev={goPrev}
                 canAdvance={canAdvance}
                 slideLabel={SLIDES[current].label}
+                hideNext={current === 0}
             />
         </div>
     );
