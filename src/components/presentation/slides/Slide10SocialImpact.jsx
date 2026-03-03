@@ -171,13 +171,29 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     </AnimatePresence>
                 </Tabs>
 
-                <div className="mt-8 bg-gradient-to-r from-emerald-950/50 to-cyan-950/50 border border-emerald-700/50 rounded-2xl p-8 text-center">
-                    <Lightbulb className="w-10 h-10 text-emerald-400 mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold text-white mb-3">We don't hire installers. We create them.</h3>
-                    <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto mt-4">
-                        <div className="bg-slate-900/50 rounded-xl p-4"><div className="text-3xl font-bold text-emerald-400 mb-1">100+</div><div className="text-slate-300 text-sm">Technicians Trained/Year</div></div>
-                        <div className="bg-slate-900/50 rounded-xl p-4"><div className="text-3xl font-bold text-cyan-400 mb-1">$60K+</div><div className="text-slate-300 text-sm">Average Starting Salary</div></div>
-                        <div className="bg-slate-900/50 rounded-xl p-4"><div className="text-3xl font-bold text-purple-400 mb-1">85%</div><div className="text-slate-300 text-sm">Career Placement Rate</div></div>
+                <div className="mt-8 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 p-10 text-center">
+                    <p className="text-emerald-400 text-sm font-semibold uppercase tracking-widest mb-4">SBA Community Win</p>
+                    <h3 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
+                        We don't hire installers.<br />We create them.
+                    </h3>
+                    <p className="text-slate-300 max-w-2xl mx-auto mb-10">
+                        Training 100+ local IT professionals per year through Ubiquiti Academy and feeding them turnkey projects. Each graduate becomes an independent small business creating jobs and tax revenue.
+                    </p>
+                    <div className="grid md:grid-cols-3 gap-5">
+                        {[
+                            { label: 'Hands-On Training', img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80' },
+                            { label: 'Real-World Projects', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80' },
+                            { label: 'Independent Businesses', img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80' },
+                        ].map((item, i) => (
+                            <div key={i} className="bg-slate-800/60 rounded-2xl overflow-hidden border border-slate-700">
+                                <div className="h-44 overflow-hidden">
+                                    <img src={item.img} alt={item.label} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                                </div>
+                                <div className="p-4">
+                                    <p className="text-white font-bold text-lg">{item.label}</p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
 
