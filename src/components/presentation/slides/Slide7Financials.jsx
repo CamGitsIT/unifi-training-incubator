@@ -118,14 +118,21 @@ export default function Slide7Financials({ onInteracted }) {
 
                 {activeTab === 'revenue' && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-slate-800/30 border border-slate-700 rounded-2xl p-6">
-                        <h3 className="text-xl font-bold text-white mb-4">2028 Revenue Breakdown</h3>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={revenueBreakdown2028}>
+                        <h3 className="text-xl font-bold text-white mb-2">Revenue Growth by Business Line</h3>
+                        <p className="text-slate-400 text-sm mb-4">All 8 lines across Year 1 → Year 3</p>
+                        <ResponsiveContainer width="100%" height={320}>
+                            <BarChart data={businessLineData} margin={{ bottom: 60 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                                <XAxis dataKey="name" stroke="#94a3b8" />
-                                <YAxis stroke="#94a3b8" />
-                                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', borderRadius: '8px' }} />
-                                <Bar dataKey="value" fill="#22d3ee" radius={[8, 8, 0, 0]} />
+                                <XAxis dataKey="name" stroke="#94a3b8" tick={{ fontSize: 11 }} angle={-30} textAnchor="end" interval={0} />
+                                <YAxis stroke="#94a3b8" tickFormatter={formatK} />
+                                <Tooltip
+                                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', borderRadius: '8px' }}
+                                    formatter={(v) => [`$${v.toLocaleString()}`, '']}
+                                />
+                                <Legend verticalAlign="top" />
+                                <Bar dataKey="y1" name="Year 1" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="y2" name="Year 2" fill="#22d3ee" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="y3" name="Year 3" fill="#4ade80" radius={[4, 4, 0, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
                     </motion.div>
