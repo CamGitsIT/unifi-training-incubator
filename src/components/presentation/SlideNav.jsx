@@ -63,15 +63,10 @@ export default function SlideNav({ current, total, onNext, onPrev, canAdvance, s
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
-                                    className="flex flex-col items-center gap-0.5 text-sm font-medium select-none"
+                                    className="flex items-center gap-1 text-sm font-medium select-none"
                                 >
-                                    {countdown > 0 && (
-                                        <span className="text-cyan-400 font-bold tabular-nums text-xs">{countdown}s</span>
-                                    )}
-                                    <div className="flex items-center gap-1">
-                                        <span className="text-slate-600">Interact to continue</span>
-                                        <ChevronRight className="w-5 h-5 text-slate-600" />
-                                    </div>
+                                    <span className="text-slate-600">Interact to continue</span>
+                                    <ChevronRight className="w-5 h-5 text-slate-600" />
                                 </motion.div>
                             )
                         ) : null}
