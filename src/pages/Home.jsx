@@ -1,117 +1,111 @@
-import React from 'react';
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Building2, Users, TrendingUp, Shield, Zap, DollarSign } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
-import Hero from '../components/investor/Hero';
-import Problem from '../components/investor/Problem';
-import Solution from '../components/investor/Solution';
-import BusinessModel from '../components/investor/BusinessModel';
-import Financials from '../components/investor/Financials';
-import Investment from '../components/investor/Investment';
-import Mission from '../components/investor/Mission';
-import Property from '../components/investor/Property';
-import Team from '../components/investor/Team';
-import SocialImpact from '../components/investor/SocialImpact';
-import CTA from '../components/investor/CTA';
-import Pledge from '../components/investor/Pledge';
+import React, { useState, useEffect, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Shield } from 'lucide-react';
+
+import SlideNav from '../components/presentation/SlideNav';
+import Slide1Hero from '../components/presentation/slides/Slide1Hero';
+import Slide2Mission from '../components/presentation/slides/Slide2Mission';
+import Slide3Problem from '../components/presentation/slides/Slide3Problem';
+import Slide4Solution from '../components/presentation/slides/Slide4Solution';
+import Slide5BusinessModel from '../components/presentation/slides/Slide5BusinessModel';
+import Slide6Property from '../components/presentation/slides/Slide6Property';
+import Slide7Financials from '../components/presentation/slides/Slide7Financials';
+import Slide8Investment from '../components/presentation/slides/Slide8Investment';
+import Slide9Team from '../components/presentation/slides/Slide9Team';
+import Slide10SocialImpact from '../components/presentation/slides/Slide10SocialImpact';
+import Slide11CTA from '../components/presentation/slides/Slide11CTA';
+
+const SLIDES = [
+    { component: Slide1Hero, label: 'Welcome' },
+    { component: Slide2Mission, label: 'Mission' },
+    { component: Slide3Problem, label: 'Problem' },
+    { component: Slide4Solution, label: 'Solution' },
+    { component: Slide5BusinessModel, label: 'Business Model' },
+    { component: Slide6Property, label: 'Property' },
+    { component: Slide7Financials, label: 'Financials' },
+    { component: Slide8Investment, label: 'Investment' },
+    { component: Slide9Team, label: 'Team' },
+    { component: Slide10SocialImpact, label: 'Impact' },
+    { component: Slide11CTA, label: 'Join Us' },
+];
 
 export default function Home() {
-    const scrollToSection = (id) => {
-        const element = document.getElementById(id);
-        if (element) {
-            const yOffset = -80; // Account for fixed nav
-            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({ top: y, behavior: 'auto' }); // instant jump
+    const [current, setCurrent] = useState(0);
+    const [interacted, setInteracted] = useState(new Array(SLIDES.length).fill(false));
+    const slideRef = useRef(null);
+
+    const markInteracted = (index) => {
+        setInteracted(prev => {
+            const next = [...prev];
+            next[index] = true;
+            return next;
+        });
+    };
+
+    const goNext = () => {
+        if (current < SLIDES.length - 1) {
+            setCurrent(c => c + 1);
+            slideRef.current?.scrollTo({ top: 0 });
         }
     };
 
+    const goPrev = () => {
+        if (current > 0) {
+            setCurrent(c => c - 1);
+            slideRef.current?.scrollTo({ top: 0 });
+        }
+    };
+
+    useEffect(() => {
+        slideRef.current?.scrollTo({ top: 0 });
+    }, [current]);
+
+    const SlideComponent = SLIDES[current].component;
+    const canAdvance = interacted[current];
+
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-            {/* Fixed Navigation */}
+        <div className="min-h-screen bg-slate-950 flex flex-col">
+            {/* Top Nav */}
             <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
-                <div className="max-w-7xl mx-auto px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <Shield className="w-6 h-6 text-cyan-400" />
-                            <span className="font-bold text-xl text-white">OverISP</span>
-                            <span className="text-slate-400 text-sm hidden md:inline">UniFi Experience Center</span>
-                        </div>
-                        <div className="hidden md:flex items-center gap-6 text-sm">
-                            <button onClick={() => scrollToSection('mission')} className="text-slate-300 hover:text-cyan-400 transition-colors">Mission</button>
-                            <button onClick={() => scrollToSection('problem')} className="text-slate-300 hover:text-cyan-400 transition-colors">Problem</button>
-                            <button onClick={() => scrollToSection('solution')} className="text-slate-300 hover:text-cyan-400 transition-colors">Solution</button>
-                            <Link to={createPageUrl('Ecosystem')} className="text-slate-300 hover:text-cyan-400 transition-colors">Ecosystem</Link>
-                            <Link to={createPageUrl('Training')} className="text-slate-300 hover:text-purple-400 transition-colors">Training</Link>
-                            <button onClick={() => scrollToSection('team')} className="text-slate-300 hover:text-cyan-400 transition-colors">Team</button>
-                        </div>
-                        <Button 
-                            onClick={() => scrollToSection('pledge')}
-                            className="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-semibold hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200"
-                        >
-                            Pledge Capital
-                        </Button>
+                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <Shield className="w-6 h-6 text-cyan-400" />
+                        <span className="font-bold text-xl text-white">OverISP</span>
+                        <span className="text-slate-400 text-sm hidden md:inline">UniFi Experience Center</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <span className="text-slate-500 text-sm hidden md:inline">
+                            {SLIDES[current].label}
+                        </span>
+                        <span className="text-slate-600 text-sm">{current + 1} / {SLIDES.length}</span>
                     </div>
                 </div>
             </nav>
 
-            {/* Main Content */}
-            <div className="pt-16">
-                <Hero scrollToSection={scrollToSection} />
-                <Mission />
-                <Problem />
-                <Solution />
-                <BusinessModel />
-                <Property />
-                <Financials />
-                <Investment />
-                <Team />
-                <SocialImpact />
-                <Pledge />
-                <CTA />
+            {/* Slide Area */}
+            <div ref={slideRef} className="flex-1 pt-16 pb-20 overflow-y-auto">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={current}
+                        initial={{ opacity: 0, x: 60 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -60 }}
+                        transition={{ duration: 0.35, ease: 'easeInOut' }}
+                    >
+                        <SlideComponent onInteracted={() => markInteracted(current)} />
+                    </motion.div>
+                </AnimatePresence>
             </div>
 
-            {/* Footer */}
-            <footer className="border-t border-slate-800 bg-slate-950">
-                <div className="max-w-7xl mx-auto px-6 py-12">
-                    <div className="grid md:grid-cols-3 gap-8">
-                        <div>
-                            <div className="flex items-center gap-2 mb-4">
-                                <Shield className="w-5 h-5 text-cyan-400" />
-                                <span className="font-bold text-white">OverISP</span>
-                            </div>
-                            <p className="text-slate-400 text-sm">
-                                Liberating properties and businesses from oppressive subscription fees with UniFi technology.
-                            </p>
-                        </div>
-                        <div>
-                            <h4 className="font-semibold text-white mb-4">Location</h4>
-                            <p className="text-slate-400 text-sm">
-                                455 Glen Iris Drive NE<br />
-                                Sager Lofts, Old Fourth Ward<br />
-                                Atlanta, GA 30308
-                            </p>
-                        </div>
-                        <div>
-                            <h4 className="font-semibold text-white mb-4">The Mission</h4>
-                            <p className="text-slate-400 text-sm">
-                                Train technicians. Eliminate subscriptions. Empower communities.
-                            </p>
-                        </div>
-                    </div>
-                    <div className="mt-8 pt-8 border-t border-slate-800 flex items-center justify-between text-slate-500 text-sm">
-                        <span>© 2026 OverISP. Building freedom through technology.</span>
-                        <a 
-                            href="https://sba.overithelp.com/" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-slate-600 hover:text-slate-400 transition-colors text-xs"
-                        >
-                            Versions
-                        </a>
-                    </div>
-                </div>
-            </footer>
+            {/* Bottom Nav */}
+            <SlideNav
+                current={current}
+                total={SLIDES.length}
+                onNext={goNext}
+                onPrev={goPrev}
+                canAdvance={canAdvance}
+                slideLabel={SLIDES[current].label}
+            />
         </div>
     );
 }
