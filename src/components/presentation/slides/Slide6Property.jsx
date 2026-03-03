@@ -52,16 +52,7 @@ export default function Slide6Property({ onInteracted, onUnlockMessage }) {
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-4">
                         Award-winning Sager Lofts — a live-work masterpiece in Atlanta's Old Fourth Ward. A best-fit property with built-in adoption, prime positioning on the BeltLine, and the ideal stage to spread the mission, first-of-its-kind host the experience, and promote knowledge.
                     </p>
-                    {!timerDone ? (
-                        <p className="text-sm text-slate-400">
-                            <span className="inline-flex items-center gap-2">
-                                <span className="inline-block w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
-                                Unlocking navigation in <span className="text-cyan-400 font-bold">{secondsLeft}s</span> — explore freely in the meantime
-                            </span>
-                        </p>
-                    ) : (
-                        <p className="text-sm text-cyan-400 animate-pulse">👇 Click any feature to mark it reviewed</p>
-                    )}
+                    <p className="text-sm text-cyan-400 animate-pulse">👇 Click any feature to mark it reviewed</p>
                 </motion.div>
 
                 <div className="grid md:grid-cols-2 gap-8 mb-8">
