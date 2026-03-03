@@ -1,11 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Zap, ArrowDown } from 'lucide-react';
 
+const BUTTON_UNLOCK_SECONDS = 10;
+const AUTO_ADVANCE_SECONDS = 15;
+
 export default function Slide1Hero({ onInteracted, onNext }) {
     const [acknowledged, setAcknowledged] = useState(false);
+    const [countdown, setCountdown] = useState(BUTTON_UNLOCK_SECONDS);
+    const [autoCountdown, setAutoCountdown] = useState(AUTO_ADVANCE_SECONDS);
+
+    const canClick = countdown <= 0;
+
+    // Button unlock countdown (10s)
+    useEffect(() => {
+        if (acknowledged || countdown <= 0) return;
+        const t = setTimeout(() => setCountdown(c => c - 1), 1000);
+        return () => clearTimeout(t);
+    }, [countdown, acknowledged]);
+
+    // Auto-advance countdown (15s) — starts once button unlocks
+    useEffect(() => {
+        if (acknowledged || !canClick) return;
+        if (autoCountdown <= 0) {
+            // Auto advance
+            setAcknowledged(true);
+            onInteracted();
+            if (onNext) onNext();
+            return;
+        }
+        const t = setTimeout(() => setAutoCountdown(c => c - 1), 1000);
+        return () => clearTimeout(t);
+    }, [autoCountdown, canClick, acknowledged]);
 
     const handleStart = () => {
+        if (!canClick) return;
         setAcknowledged(true);
         onInteracted();
         if (onNext) onNext();
@@ -69,16 +98,43 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </div>
 
                     {!acknowledged ? (
-                        <motion.button
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 1 }}
-                            onClick={handleStart}
-                            className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-lg px-10 py-5 rounded-2xl shadow-2xl shadow-cyan-500/30 transition-all hover:-translate-y-1 flex items-center gap-3 mx-auto"
-                        >
-                            Start Here
-                            <ArrowDown className="w-5 h-5" />
-                        </motion.button>
+                        <div className="flex flex-col items-center gap-3">
+                            <motion.button
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5 }}
+                                onClick={handleStart}
+                                disabled={!canClick}
+                                className={`
+                                    font-bold text-lg px-10 py-5 rounded-2xl shadow-2xl transition-all flex items-center gap-3 mx-auto
+                                    ${canClick
+                                        ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-cyan-500/30 hover:-translate-y-1 cursor-pointer'
+                                        : 'bg-slate-700 text-slate-400 cursor-not-allowed shadow-none'
+                                    }
+                                `}
+                            >
+                                Start Here
+                                <ArrowDown className="w-5 h-5" />
+                            </motion.button>
+
+                            {!canClick ? (
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="text-slate-400 text-sm"
+                                >
+                                    Available in <span className="text-cyan-400 font-bold tabular-nums">{countdown}s</span>
+                                </motion.p>
+                            ) : (
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="text-slate-400 text-sm"
+                                >
+                                    Auto-advancing in <span className="text-amber-400 font-bold tabular-nums">{autoCountdown}s</span>
+                                </motion.p>
+                            )}
+                        </div>
                     ) : (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
