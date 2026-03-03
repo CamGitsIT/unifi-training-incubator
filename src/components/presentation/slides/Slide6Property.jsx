@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Building, TrendingUp, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -12,12 +12,28 @@ const features = [
 
 export default function Slide6Property({ onInteracted }) {
     const [checkedFeatures, setCheckedFeatures] = useState(new Set());
+    const [timerDone, setTimerDone] = useState(false);
+    const [secondsLeft, setSecondsLeft] = useState(10);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setSecondsLeft(s => {
+                if (s <= 1) {
+                    clearInterval(interval);
+                    setTimerDone(true);
+                    onInteracted();
+                    return 0;
+                }
+                return s - 1;
+            });
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleFeature = (i) => {
         const next = new Set(checkedFeatures);
         next.add(i);
         setCheckedFeatures(next);
-        if (next.size === features.length) onInteracted();
     };
 
     return (
