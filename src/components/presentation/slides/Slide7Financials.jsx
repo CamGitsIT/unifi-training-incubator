@@ -3,18 +3,35 @@ import { TrendingUp, PieChart, Shield, BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const yearlyData = [
-    { year: '2026', revenue: 160552, profit: 97858 },
-    { year: '2027', revenue: 346602, profit: 226632 },
-    { year: '2028', revenue: 606360, profit: 470753 }
+// All 8 business lines, Year 1 / Year 2 / Year 3 revenue (aligned with Slide5 Yr3 totals)
+const businessLineData = [
+    { name: 'Experience Center',        y1: 30000,  y2: 75000,  y3: 120000 },
+    { name: 'Keyless Retrofit',         y1: 54000,  y2: 135000, y3: 216000 },
+    { name: 'UniFi Training',           y1: 76000,  y2: 190000, y3: 304000 },
+    { name: 'Multi-Location Retail',    y1: 18000,  y2: 45000,  y3: 72000  },
+    { name: 'Pro Monitoring',           y1: 24000,  y2: 60000,  y3: 96000  },
+    { name: 'Tech Rentals',             y1: 12000,  y2: 30000,  y3: 48000  },
+    { name: 'Refrigeration Monitoring', y1: 15000,  y2: 37500,  y3: 60000  },
+    { name: 'Micro ISP',                y1: 36000,  y2: 90000,  y3: 144000 },
 ];
 
-const revenueBreakdown2028 = [
-    { name: 'Training', value: 303821 },
-    { name: 'Retrofit', value: 216039 },
-    { name: 'Experience Center', value: 72000 },
-    { name: 'Sager Project', value: 14500 }
+const totalByYear = (key) => businessLineData.reduce((s, b) => s + b[key], 0);
+const y1Total = totalByYear('y1');  // 265000
+const y2Total = totalByYear('y2');  // 662500
+const y3Total = totalByYear('y3'); // 1060000
+
+// Estimated net margins
+const y1Profit = Math.round(y1Total * 0.61);
+const y2Profit = Math.round(y2Total * 0.65);
+const y3Profit = Math.round(y3Total * 0.70);
+
+const yearlyData = [
+    { year: 'Year 1', revenue: y1Total, profit: y1Profit },
+    { year: 'Year 2', revenue: y2Total, profit: y2Profit },
+    { year: 'Year 3', revenue: y3Total, profit: y3Profit },
 ];
+
+const formatK = (v) => `$${(v / 1000).toFixed(0)}K`;
 
 const tabs = [
     { id: 'overview', label: 'Overview', icon: PieChart },
