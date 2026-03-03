@@ -27,11 +27,11 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </div>
 
                     <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                        Join the Mission: The
+                        The Mission: A
                         <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
                             Subscription-Free Future
                         </span>
-                        of Business Infrastructure
+                        of Business and Residential Infrastructure
                     </h1>
 
                     <p className="text-lg md:text-xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed">
