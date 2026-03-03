@@ -67,16 +67,10 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     <div className="bg-slate-900/60 border border-slate-600 rounded-xl p-5">
                         <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Certifications Granted</h4>
                         <ul className="space-y-3">
-                            {[
-                                { emoji: '✨', name: 'UniFi Full Stack Pro (UFSP)' },
-                                { emoji: '📡', name: 'UniFi Wireless Admin (UWA)' },
-                                { emoji: '🔒', name: 'UniFi Security Admin (URSCA)' },
-                                { emoji: '🌐', name: 'UISP Broadband Specialist' },
-                                { emoji: '🖥️', name: 'UniFi Network Pro (UNP)' },
-                            ].map((cert, i) => (
-                                <li key={i} className="flex items-center gap-3 text-slate-200 text-sm">
-                                    <span className="text-lg">{cert.emoji}</span>
-                                    {cert.name}
+                            {certifications.map((cert) => (
+                                <li key={cert.id} className="flex items-center gap-3 text-slate-200 text-sm">
+                                    <img src={cert.badge} alt={cert.name} className="w-8 h-8 flex-shrink-0" />
+                                    <span>{cert.name}</span>
                                 </li>
                             ))}
                         </ul>
