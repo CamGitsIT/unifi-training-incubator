@@ -6,10 +6,28 @@ import { Slider } from "@/components/ui/slider";
 export default function Slide9Team({ onInteracted }) {
     const [investmentAmount, setInvestmentAmount] = useState(25000);
     const [hasInteracted, setHasInteracted] = useState(false);
+    const [timerDone, setTimerDone] = useState(false);
+    const [secondsLeft, setSecondsLeft] = useState(10);
 
     const targetReturn = investmentAmount * 1.10;
     const monthlyPayment = 50530 * 0.05;
     const estimatedMonths = Math.ceil(targetReturn / monthlyPayment);
+
+    React.useEffect(() => {
+        if (timerDone || hasInteracted) return;
+        const interval = setInterval(() => {
+            setSecondsLeft(s => {
+                if (s <= 1) {
+                    clearInterval(interval);
+                    setTimerDone(true);
+                    onInteracted();
+                    return 0;
+                }
+                return s - 1;
+            });
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [timerDone, hasInteracted]);
 
     const handleSlide = (val) => {
         setInvestmentAmount(val[0]);
