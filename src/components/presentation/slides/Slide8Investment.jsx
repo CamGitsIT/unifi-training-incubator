@@ -29,7 +29,7 @@ export default function Slide8Investment({ onInteracted }) {
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-4">
                         Get paid back as we grow — quickly if things go well, flexibly if the world gets harder.
                     </p>
-                    <p className="text-lg text-cyan-400 font-semibold">No equity given up. Ever.</p>
+                    <p className="text-lg text-cyan-400 font-semibold">Conservative projections. Revenue-based repayment model with guaranteed interest.</p>
                 </motion.div>
 
                 <div className="grid md:grid-cols-2 gap-8 mb-10">
