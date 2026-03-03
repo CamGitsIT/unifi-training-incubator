@@ -131,7 +131,16 @@ export default function Slide5BusinessModel({ onInteracted }) {
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">
                         Initial Launch: Eight lines of business promoting clear ROI, spreading the mission through education and job creation, and demonstrating the infinite capabilities of adoption of groundbreaking UniFi systems.
                     </p>
-                    <p className="text-sm text-cyan-400 mt-4 animate-pulse">👇 Click each business line to explore</p>
+                    {!timerDone ? (
+                        <p className="text-sm text-slate-400 mt-4">
+                            <span className="inline-flex items-center gap-2">
+                                <span className="inline-block w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
+                                Unlocking navigation in <span className="text-cyan-400 font-bold">{secondsLeft}s</span> — explore freely in the meantime
+                            </span>
+                        </p>
+                    ) : (
+                        <p className="text-sm text-cyan-400 mt-4 animate-pulse">👇 Click any card to expand or collapse details</p>
+                    )}
                 </motion.div>
 
                 <div className="space-y-3">
