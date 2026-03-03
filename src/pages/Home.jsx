@@ -102,8 +102,11 @@ export default function Home() {
                 </div>
             </nav>
 
+            {/* Side Nav */}
+            <SideNav current={current} seen={seen} onNavigate={goToSlide} />
+
             {/* Slide Area */}
-            <div ref={slideRef} className="flex-1 pt-16 pb-20 overflow-y-auto">
+            <div ref={slideRef} className="flex-1 pt-16 pb-20 overflow-y-auto pl-48">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={current}
