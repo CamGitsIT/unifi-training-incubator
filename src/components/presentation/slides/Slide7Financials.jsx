@@ -87,10 +87,10 @@ export default function Slide7Financials({ onInteracted }) {
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                         <div className="grid md:grid-cols-4 gap-4">
                             {[
-                                { label: 'Year 1 Revenue', value: '$161K', sub: '61% net margin' },
-                                { label: 'Year 2 Revenue', value: '$347K', sub: '65% net margin' },
-                                { label: 'Year 3 Revenue', value: '$606K', sub: '78% net margin' },
-                                { label: 'Year 3 Profit', value: '$471K', sub: 'Free cash flow' }
+                                { label: 'Year 1 Revenue', value: formatK(y1Total), sub: '61% net margin' },
+                                { label: 'Year 2 Revenue', value: formatK(y2Total), sub: '65% net margin' },
+                                { label: 'Year 3 Revenue', value: formatK(y3Total), sub: '70% net margin' },
+                                { label: 'Year 3 Profit', value: formatK(y3Profit), sub: 'Free cash flow' }
                             ].map((s, i) => (
                                 <div key={i} className="bg-slate-800/30 border border-slate-700 rounded-xl p-5">
                                     <div className="text-sm text-slate-400 mb-2">{s.label}</div>
