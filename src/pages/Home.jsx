@@ -29,6 +29,7 @@ export default function Home() {
     const [current, setCurrent] = useState(0);
     const [interacted, setInteracted] = useState(new Array(SLIDES.length).fill(false));
     const [seen, setSeen] = useState(() => { const s = new Array(SLIDES.length).fill(false); s[0] = true; return s; });
+    const [unlockMessage, setUnlockMessage] = useState(null);
     const slideRef = useRef(null);
 
     const markInteracted = (index) => {
