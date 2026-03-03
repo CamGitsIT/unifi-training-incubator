@@ -13,22 +13,7 @@ export default function SlideNav({ current, total, onNext, onPrev, canAdvance, s
                     </span>
                 </div>
             )}
-            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                {/* Slide dots */}
-                <div className="flex items-center gap-2">
-                    {Array.from({ length: total }).map((_, i) => (
-                        <div
-                            key={i}
-                            className={`rounded-full transition-all duration-300 ${
-                                i === current
-                                    ? 'w-6 h-2 bg-cyan-400'
-                                    : i < current
-                                    ? 'w-2 h-2 bg-slate-500'
-                                    : 'w-2 h-2 bg-slate-700'
-                            }`}
-                        />
-                    ))}
-                </div>
+            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-end">
 
                 {/* Right side: Back + Next grouped together */}
                 <div className="flex items-center gap-4">
