@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Lock, ChevronRight } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Menu } from 'lucide-react';
 
 // Maps slide indices to nav section indices
 // SLIDES order: 0=Hero, 1=BusinessModel, 2=SocialImpact, 3=Property, 4=Financials, 5=Investment, 6=Team, 7=CTA
