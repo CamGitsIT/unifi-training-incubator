@@ -7,7 +7,7 @@ import Slide1Hero from '../components/presentation/slides/Slide1Hero';
 import Slide5BusinessModel from '../components/presentation/slides/Slide5BusinessModel';
 import Slide6Property from '../components/presentation/slides/Slide6Property';
 import Slide7Financials from '../components/presentation/slides/Slide7Financials';
-import Slide8Investment from '../components/presentation/slides/Slide8Investment';
+// import Slide8Investment from '../components/presentation/slides/Slide8Investment';
 import Slide9Team from '../components/presentation/slides/Slide9Team';
 import Slide10SocialImpact from '../components/presentation/slides/Slide10SocialImpact';
 import Slide11CTA from '../components/presentation/slides/Slide11CTA';
