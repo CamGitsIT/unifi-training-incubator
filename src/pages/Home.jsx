@@ -20,7 +20,7 @@ const SLIDES = [
     { component: Slide10SocialImpact, label: 'Impact' },
     { component: Slide6Property, label: 'Property' },
     { component: Slide7Financials, label: 'Financials' },
-    { component: Slide8Investment, label: 'Investment' },
+    // { component: Slide8Investment, label: 'Investment' },
     { component: Slide9Team, label: 'Team' },
     { component: Slide11CTA, label: 'Join Us' },
 ];
