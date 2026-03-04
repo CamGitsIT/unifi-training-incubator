@@ -152,9 +152,7 @@ function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
                                 )}
                             </motion.button>
                         );
-                    })}
-                </div>
-            </div>
+            })}
         </div>
     );
 }
