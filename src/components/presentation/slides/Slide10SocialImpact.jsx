@@ -82,19 +82,20 @@ export default function Slide10SocialImpact({ onInteracted }) {
                             By approving this loan, the SBA is not just funding a building; it is funding an incubator that creates independent contractors and tax-contributing small businesses across the region.
                         </p>
                     </div>
-                    <div className="bg-slate-900/60 border border-slate-600 rounded-xl p-5">
-                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Certifications Granted</h4>
-                        <ul className="space-y-3">
-                            {certifications.map((cert) => {
-                                const IconComponent = cert.icon;
-                                return (
-                                    <li key={cert.id} className="flex items-center gap-3 text-slate-200 text-sm">
-                                        <IconComponent className={`w-5 h-5 flex-shrink-0 ${colorClasses[cert.color].text}`} />
-                                        <span>{cert.name}</span>
-                                    </li>
-                                );
-                            })}
-                        </ul>
+                    <div className="bg-slate-900/60 border border-slate-600 rounded-xl p-5 flex flex-col gap-4">
+                       <img
+                           src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/6c072e701_certification-program2.png"
+                           alt="Ubiquiti Certifications"
+                           className="w-full rounded-lg object-contain"
+                       />
+                       <ul className="space-y-2">
+                           {certifications.map((cert) => (
+                               <li key={cert.id} className="flex items-center gap-3 text-slate-200 text-sm">
+                                   <img src={cert.badge} alt={cert.name} className="w-7 h-7 flex-shrink-0 rounded-md" />
+                                   <span>{cert.name}</span>
+                               </li>
+                           ))}
+                       </ul>
                     </div>
                 </div>
 
