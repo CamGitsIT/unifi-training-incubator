@@ -1,210 +1,408 @@
-import React, { useState } from 'react';
-import { TrendingUp, PieChart, Shield, BarChart3 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useState, useCallback } from 'react';
+import { TrendingUp, Globe, Zap, Shield, RefreshCw } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Slider } from "@/components/ui/slider";
 
-// All 8 business lines, Year 1 / Year 2 / Year 3 revenue (aligned with Slide5 Yr3 totals)
-const businessLineData = [
-    { name: 'Experience Center',        y1: 30000,  y2: 75000,  y3: 120000 },
-    { name: 'Keyless Retrofit',         y1: 54000,  y2: 135000, y3: 216000 },
-    { name: 'UniFi Training',           y1: 76000,  y2: 190000, y3: 304000 },
-    { name: 'Multi-Location Retail',    y1: 18000,  y2: 45000,  y3: 72000  },
-    { name: 'Pro Monitoring',           y1: 24000,  y2: 60000,  y3: 96000  },
-    { name: 'Tech Rentals',             y1: 12000,  y2: 30000,  y3: 48000  },
-    { name: 'Refrigeration Monitoring', y1: 15000,  y2: 37500,  y3: 60000  },
-    { name: 'Micro ISP',                y1: 36000,  y2: 90000,  y3: 144000 },
+// Business line definitions
+const DEFAULT_LINES = [
+    {
+        id: 'experience',
+        name: 'Experience Center',
+        emoji: '🏢',
+        color: '#22d3ee',
+        locationIndependent: false,
+        tagline: 'The physical hub. Local, but it powers everything else.',
+        unit: 'visitors/mo',
+        unitLabel: 'Monthly Visitors',
+        min: 10, max: 200, step: 10, default: 40,
+        revenuePerUnit: 50, // $50 avg per visitor (demos, consultations)
+        description: 'Live demo space generates leads for all other lines.',
+    },
+    {
+        id: 'retrofit',
+        name: 'Keyless Retrofit',
+        emoji: '🔑',
+        color: '#818cf8',
+        locationIndependent: false,
+        tagline: 'Local installs, but the playbook scales anywhere.',
+        unit: 'installs/mo',
+        unitLabel: 'Monthly Installs',
+        min: 1, max: 20, step: 1, default: 4,
+        revenuePerUnit: 1125,
+        description: 'One install = ~$1,125 avg. Local anchor, national blueprint.',
+    },
+    {
+        id: 'training',
+        name: 'UniFi Training',
+        emoji: '🎓',
+        color: '#f472b6',
+        locationIndependent: true,
+        tagline: '🌐 No geography. Anyone, anywhere, any time.',
+        unit: 'students/mo',
+        unitLabel: 'Monthly Students',
+        min: 1, max: 60, step: 1, default: 8,
+        revenuePerUnit: 792,
+        description: 'Online cohorts + in-person intensives. Scales globally.',
+    },
+    {
+        id: 'retail',
+        name: 'Multi-Location Retail',
+        emoji: '🏪',
+        color: '#fb923c',
+        locationIndependent: true,
+        tagline: '🌐 Retail chains exist everywhere. You work remote.',
+        unit: 'sites/mo',
+        unitLabel: 'Sites Served/Mo',
+        min: 1, max: 20, step: 1, default: 2,
+        revenuePerUnit: 750,
+        description: 'Franchise & chain rollouts. You consult, they deploy.',
+    },
+    {
+        id: 'monitoring',
+        name: 'Pro Monitoring',
+        emoji: '👁️',
+        color: '#34d399',
+        locationIndependent: true,
+        tagline: '🌐 Recurring revenue. Monitored from anywhere.',
+        unit: 'sites monitored',
+        unitLabel: 'Active Sites',
+        min: 5, max: 100, step: 5, default: 20,
+        revenuePerUnit: 100,
+        description: 'Monthly recurring. Pure margin after setup.',
+    },
+    {
+        id: 'rentals',
+        name: 'Tech Rentals',
+        emoji: '📦',
+        color: '#a78bfa',
+        locationIndependent: true,
+        tagline: '🌐 Ship gear anywhere. Events, pop-ups, temporary sites.',
+        unit: 'rentals/mo',
+        unitLabel: 'Monthly Rentals',
+        min: 1, max: 30, step: 1, default: 5,
+        revenuePerUnit: 200,
+        description: 'Gear rental for events, staging, temp installs.',
+    },
+    {
+        id: 'refrigeration',
+        name: 'Fridge Monitoring',
+        emoji: '🌡️',
+        color: '#38bdf8',
+        locationIndependent: true,
+        tagline: '🌐 Cold chain compliance. 100% remote delivery.',
+        unit: 'sensors/mo',
+        unitLabel: 'Active Sensors',
+        min: 5, max: 100, step: 5, default: 15,
+        revenuePerUnit: 83,
+        description: 'Set sensors, collect monthly. FDA-compliant reporting.',
+    },
+    {
+        id: 'isp',
+        name: 'Micro ISP',
+        emoji: '📡',
+        color: '#facc15',
+        locationIndependent: false,
+        tagline: 'Local infrastructure — but the model exports anywhere.',
+        unit: 'subscribers',
+        unitLabel: 'Active Subscribers',
+        min: 10, max: 200, step: 10, default: 30,
+        revenuePerUnit: 100,
+        description: 'Community mesh wifi. High margin, high loyalty.',
+    },
 ];
 
-const totalByYear = (key) => businessLineData.reduce((s, b) => s + b[key], 0);
-const y1Total = totalByYear('y1');  // 265000
-const y2Total = totalByYear('y2');  // 662500
-const y3Total = totalByYear('y3'); // 1060000
+const ANNUAL_DEBT_SERVICE = 55200;
 
-// Estimated net margins
-const y1Profit = Math.round(y1Total * 0.61);
-const y2Profit = Math.round(y2Total * 0.65);
-const y3Profit = Math.round(y3Total * 0.70);
+const formatDollar = (v) => {
+    if (v >= 1000000) return `$${(v / 1000000).toFixed(1)}M`;
+    if (v >= 1000) return `$${(v / 1000).toFixed(0)}K`;
+    return `$${v}`;
+};
 
-const yearlyData = [
-    { year: 'Year 1', revenue: y1Total, profit: y1Profit },
-    { year: 'Year 2', revenue: y2Total, profit: y2Profit },
-    { year: 'Year 3', revenue: y3Total, profit: y3Profit },
-];
+const MARGIN = 0.63;
 
-const formatK = (v) => `$${(v / 1000).toFixed(0)}K`;
-
-const tabs = [
-    { id: 'overview', label: 'Overview', icon: PieChart },
-    { id: 'revenue', label: 'Revenue Growth', icon: BarChart3 },
-    { id: 'safety', label: 'Safety Margins', icon: Shield }
-];
-
-export default function Slide7Financials({ onInteracted }) {
-     const [visitedTabs, setVisitedTabs] = useState(new Set(['overview']));
-     const [activeTab, setActiveTab] = useState('overview');
-     const [timerDone, setTimerDone] = useState(false);
-     const [secondsLeft, setSecondsLeft] = useState(60);
-
-     const handleTab = (id) => {
-         setActiveTab(id);
-         const next = new Set(visitedTabs);
-         next.add(id);
-         setVisitedTabs(next);
-         if (next.size === tabs.length) {
-             setTimerDone(true);
-             onInteracted();
-         }
-     };
-
-     React.useEffect(() => {
-         if (timerDone) return;
-         const interval = setInterval(() => {
-             setSecondsLeft(s => {
-                 if (s <= 1) {
-                     clearInterval(interval);
-                     setTimerDone(true);
-                     onInteracted();
-                     return 0;
-                 }
-                 return s - 1;
-             });
-         }, 1000);
-         return () => clearInterval(interval);
-     }, [timerDone]);
+function LineCard({ line, value, onChange }) {
+    const monthlyRev = value * line.revenuePerUnit;
+    const annualRev = monthlyRev * 12;
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-950 to-slate-900 py-24 px-6">
-            <div className="max-w-7xl mx-auto w-full">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 mb-6">
-                        <TrendingUp className="w-4 h-4 text-green-400" />
-                        <span className="text-green-400 text-sm font-medium">Financial Projections</span>
+        <motion.div
+            layout
+            className="bg-slate-800/40 border border-slate-700 rounded-2xl p-4 hover:border-opacity-80 transition-all"
+            style={{ borderColor: `${line.color}40` }}
+        >
+            <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-2">
+                    <span className="text-2xl">{line.emoji}</span>
+                    <div>
+                        <div className="text-white font-semibold text-sm">{line.name}</div>
+                        <div className="text-xs mt-0.5" style={{ color: line.color }}>
+                            {line.locationIndependent ? '🌐 Location-free' : '📍 Anchor line'}
+                        </div>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Realistic Projections, Exceptional Margins</h2>
-                    <p className="text-xl text-slate-300 max-w-3xl mx-auto">Even in the "Floor" scenario, we generate enough to service debt with massive safety margins.</p>
-                    <p className="text-sm text-cyan-400 mt-4 animate-pulse">👇 Click all 3 tabs to continue</p>
+                </div>
+                <div className="text-right">
+                    <div className="text-lg font-bold" style={{ color: line.color }}>{formatDollar(annualRev)}</div>
+                    <div className="text-xs text-slate-500">/yr</div>
+                </div>
+            </div>
+
+            <p className="text-xs text-slate-400 mb-3 italic leading-relaxed">"{line.tagline}"</p>
+
+            <div className="flex items-center gap-3">
+                <div className="text-xs text-slate-400 w-28 flex-shrink-0">
+                    {value} {line.unit}
+                </div>
+                <Slider
+                    value={[value]}
+                    onValueChange={(v) => onChange(v[0])}
+                    min={line.min}
+                    max={line.max}
+                    step={line.step}
+                    className="flex-1"
+                    style={{ '--slider-color': line.color }}
+                />
+            </div>
+            <div className="flex justify-between text-xs text-slate-600 mt-1">
+                <span>{line.min} {line.unit}</span>
+                <span>{line.max} {line.unit}</span>
+            </div>
+        </motion.div>
+    );
+}
+
+export default function Slide7Financials({ onInteracted }) {
+    const [values, setValues] = useState(() =>
+        Object.fromEntries(DEFAULT_LINES.map(l => [l.id, l.default]))
+    );
+    const [hasInteracted, setHasInteracted] = useState(false);
+    const [timerDone, setTimerDone] = useState(false);
+    const [secondsLeft, setSecondsLeft] = useState(45);
+
+    React.useEffect(() => {
+        if (timerDone) return;
+        const interval = setInterval(() => {
+            setSecondsLeft(s => {
+                if (s <= 1) {
+                    clearInterval(interval);
+                    setTimerDone(true);
+                    onInteracted();
+                    return 0;
+                }
+                return s - 1;
+            });
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [timerDone]);
+
+    const handleChange = useCallback((id, val) => {
+        setValues(prev => ({ ...prev, [id]: val }));
+        if (!hasInteracted) {
+            setHasInteracted(true);
+            onInteracted();
+        }
+    }, [hasInteracted]);
+
+    const handleReset = () => {
+        setValues(Object.fromEntries(DEFAULT_LINES.map(l => [l.id, l.default])));
+    };
+
+    // Totals
+    const lineRevenues = DEFAULT_LINES.map(l => ({
+        ...l,
+        monthly: values[l.id] * l.revenuePerUnit,
+        annual: values[l.id] * l.revenuePerUnit * 12,
+    }));
+
+    const totalAnnual = lineRevenues.reduce((s, l) => s + l.annual, 0);
+    const totalProfit = Math.round(totalAnnual * MARGIN);
+    const dscr = (totalProfit / ANNUAL_DEBT_SERVICE).toFixed(1);
+    const dscrColor = parseFloat(dscr) >= 10 ? '#4ade80' : parseFloat(dscr) >= 3 ? '#22d3ee' : '#facc15';
+
+    const locationFreeRevenue = lineRevenues
+        .filter(l => l.locationIndependent)
+        .reduce((s, l) => s + l.annual, 0);
+    const locationFreePct = totalAnnual > 0 ? Math.round((locationFreeRevenue / totalAnnual) * 100) : 0;
+
+    const chartData = lineRevenues.map(l => ({
+        name: l.name.replace(' ', '\n'),
+        revenue: l.annual,
+        color: l.color,
+    }));
+
+    return (
+        <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 py-16 px-4 md:px-6">
+            <div className="max-w-7xl mx-auto w-full">
+
+                {/* Header */}
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 mb-4">
+                        <TrendingUp className="w-4 h-4 text-green-400" />
+                        <span className="text-green-400 text-sm font-medium">Interactive Financial Playground</span>
+                    </div>
+                    <h2 className="text-3xl md:text-5xl font-bold text-white mb-3">
+                        8 Lines. One Ecosystem.
+                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 text-2xl md:text-3xl mt-1">
+                            Most of it works from anywhere on Earth.
+                        </span>
+                    </h2>
+                    <p className="text-slate-300 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+                        We're not chasing all of these at once — it's a <strong className="text-white">menu</strong>, not a mandate.
+                        Each line supports the others. Drag sliders to see how they harmonize.
+                    </p>
                 </motion.div>
 
-                <div className="flex items-start gap-6 mb-10">
-                    <div className="flex flex-col gap-2 w-full max-w-xs">
-                        {tabs.map((tab, i) => {
-                            const Icon = tab.icon;
-                            const isActive = activeTab === tab.id;
-                            const visited = visitedTabs.has(tab.id);
-                            return (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => handleTab(tab.id)}
-                                    className={`relative rounded-xl p-3 transition-all duration-300 flex items-center gap-3 text-left ${isActive ? 'bg-gradient-to-br from-cyan-500 to-blue-500 shadow-lg' : 'bg-slate-800/50 border border-slate-700 hover:border-slate-500'}`}
-                                >
-                                    <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-white' : visited ? 'text-green-400' : 'text-slate-400'}`} />
-                                    <span className={`text-sm font-semibold ${isActive ? 'text-white' : 'text-slate-300'}`}>{i + 1}. {tab.label}</span>
-                                    {visited && !isActive && <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full" />}
-                                </button>
-                            );
-                        })}
+                {/* Summary Bar */}
+                <motion.div
+                    layout
+                    className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8"
+                >
+                    {[
+                        { label: 'Total Annual Revenue', value: formatDollar(totalAnnual), color: 'text-white', sub: `${formatDollar(Math.round(totalAnnual/12))}/mo` },
+                        { label: 'Net Profit (~63%)', value: formatDollar(totalProfit), color: 'text-green-400', sub: 'After ops & overhead' },
+                        { label: 'Debt Coverage Ratio', value: `${dscr}x`, color: dscrColor, sub: `vs $${(ANNUAL_DEBT_SERVICE/1000).toFixed(0)}K/yr debt service` },
+                        { label: '% Location-Free Revenue', value: `${locationFreePct}%`, color: 'text-cyan-400', sub: 'Earnable from anywhere' },
+                    ].map((s, i) => (
+                        <motion.div
+                            key={i}
+                            layout
+                            className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center"
+                        >
+                            <div className="text-xs text-slate-400 mb-1">{s.label}</div>
+                            <motion.div
+                                key={s.value}
+                                initial={{ scale: 0.9, opacity: 0.5 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                className={`text-2xl md:text-3xl font-bold ${s.color}`}
+                            >
+                                {s.value}
+                            </motion.div>
+                            <div className="text-xs text-slate-500 mt-1">{s.sub}</div>
+                        </motion.div>
+                    ))}
+                </motion.div>
+
+                {/* Debt context */}
+                <div className="mb-6 bg-gradient-to-r from-green-950/30 to-slate-800/30 border border-green-900/50 rounded-xl px-5 py-3 flex flex-wrap items-center gap-3">
+                    <Shield className="w-5 h-5 text-green-400 flex-shrink-0" />
+                    <p className="text-sm text-slate-300 flex-1">
+                        <strong className="text-white">Annual debt service: $55,200/yr ($4,600/mo).</strong>{' '}
+                        Training revenue alone — a single line, delivered entirely online — covers this <em>multiple times over</em>.
+                        The other 7 lines are essentially free cash flow.
+                    </p>
+                </div>
+
+                {/* Location freedom callout */}
+                <div className="mb-6 bg-gradient-to-r from-cyan-950/30 to-slate-800/30 border border-cyan-900/50 rounded-xl px-5 py-3 flex flex-wrap items-center gap-3">
+                    <Globe className="w-5 h-5 text-cyan-400 flex-shrink-0" />
+                    <p className="text-sm text-slate-300 flex-1">
+                        <strong className="text-white">5 of 8 lines have zero geography.</strong>{' '}
+                        Training, monitoring, retail consulting, rentals, cold-chain sensing — these work from a laptop, a coffee shop, a beach.
+                        The Experience Center is our showroom. The internet is our territory.
+                    </p>
+                </div>
+
+                <div className="grid lg:grid-cols-2 gap-6 mb-8">
+                    {/* Sliders */}
+                    <div>
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-white font-semibold flex items-center gap-2">
+                                <Zap className="w-4 h-4 text-cyan-400" />
+                                Adjust Each Line
+                            </h3>
+                            <button
+                                onClick={handleReset}
+                                className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
+                            >
+                                <RefreshCw className="w-3 h-3" /> Reset
+                            </button>
+                        </div>
+                        <div className="space-y-3 max-h-[520px] overflow-y-auto pr-1">
+                            {DEFAULT_LINES.map(line => (
+                                <LineCard
+                                    key={line.id}
+                                    line={line}
+                                    value={values[line.id]}
+                                    onChange={(v) => handleChange(line.id, v)}
+                                />
+                            ))}
+                        </div>
                     </div>
-                    <div className="flex-1">
-                        {!timerDone && (
-                            <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center mb-6">
-                                <p className="text-slate-300 text-sm">
-                                    Continuing in <span className="text-cyan-400 font-bold tabular-nums">{secondsLeft}s</span>
-                                </p>
-                                <p className="text-xs text-slate-400 mt-1">Or click any tab above to start</p>
+
+                    {/* Chart + breakdown */}
+                    <div className="flex flex-col gap-4">
+                        <div className="bg-slate-800/30 border border-slate-700 rounded-2xl p-5 flex-1">
+                            <h3 className="text-white font-semibold mb-4">Annual Revenue by Line</h3>
+                            <ResponsiveContainer width="100%" height={280}>
+                                <BarChart data={chartData} margin={{ bottom: 50 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                                    <XAxis
+                                        dataKey="name"
+                                        stroke="#475569"
+                                        tick={{ fontSize: 10, fill: '#94a3b8' }}
+                                        angle={-30}
+                                        textAnchor="end"
+                                        interval={0}
+                                    />
+                                    <YAxis stroke="#475569" tick={{ fontSize: 10, fill: '#94a3b8' }} tickFormatter={formatDollar} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px', fontSize: '12px' }}
+                                        formatter={(v) => [formatDollar(v), 'Annual Revenue']}
+                                    />
+                                    <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
+                                        {chartData.map((entry, i) => (
+                                            <Cell key={i} fill={entry.color} />
+                                        ))}
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+
+                        {/* Location breakdown */}
+                        <div className="bg-slate-800/30 border border-slate-700 rounded-2xl p-4">
+                            <h4 className="text-sm font-semibold text-white mb-3">Revenue Geography</h4>
+                            <div className="flex gap-2 mb-2">
+                                <div
+                                    className="h-3 rounded-full bg-cyan-400 transition-all duration-500"
+                                    style={{ width: `${locationFreePct}%` }}
+                                />
+                                <div
+                                    className="h-3 rounded-full bg-purple-500 transition-all duration-500"
+                                    style={{ width: `${100 - locationFreePct}%` }}
+                                />
                             </div>
-                        )}
+                            <div className="flex justify-between text-xs text-slate-400">
+                                <span className="flex items-center gap-1">
+                                    <span className="w-2 h-2 rounded-full bg-cyan-400 inline-block" />
+                                    {locationFreePct}% Location-free ({formatDollar(locationFreeRevenue)})
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <span className="w-2 h-2 rounded-full bg-purple-500 inline-block" />
+                                    {100 - locationFreePct}% Anchor lines
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* The philosophy */}
+                        <div className="bg-gradient-to-br from-slate-800/40 to-purple-950/20 border border-purple-800/30 rounded-2xl p-4">
+                            <p className="text-sm text-slate-300 leading-relaxed italic">
+                                "We don't confront people with their tech difficulties. We spend our energy with calm, 
+                                content people who take care of themselves — and pay forward. 
+                                <strong className="text-white not-italic"> Most of what we do happens to support itself.</strong>"
+                            </p>
+                        </div>
                     </div>
                 </div>
 
-                {activeTab === 'overview' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-                        <div className="grid md:grid-cols-4 gap-4">
-                            {[
-                                { label: 'Year 1 Revenue', value: formatK(y1Total), sub: '61% net margin' },
-                                { label: 'Year 2 Revenue', value: formatK(y2Total), sub: '65% net margin' },
-                                { label: 'Year 3 Revenue', value: formatK(y3Total), sub: '70% net margin' },
-                                { label: 'Year 3 Profit', value: formatK(y3Profit), sub: 'Free cash flow' }
-                            ].map((s, i) => (
-                                <div key={i} className="bg-slate-800/30 border border-slate-700 rounded-xl p-5">
-                                    <div className="text-sm text-slate-400 mb-2">{s.label}</div>
-                                    <div className="text-3xl font-bold text-white mb-1">{s.value}</div>
-                                    <div className="text-xs text-green-400">{s.sub}</div>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="bg-slate-800/30 border border-slate-700 rounded-2xl p-6">
-                            <h3 className="text-xl font-bold text-white mb-4">Revenue Growth Trajectory</h3>
-                            <ResponsiveContainer width="100%" height={250}>
-                                <LineChart data={yearlyData}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                                    <XAxis dataKey="year" stroke="#94a3b8" />
-                                    <YAxis stroke="#94a3b8" />
-                                    <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', borderRadius: '8px' }} />
-                                    <Legend />
-                                    <Line type="monotone" dataKey="revenue" stroke="#22d3ee" strokeWidth={3} name="Revenue" />
-                                    <Line type="monotone" dataKey="profit" stroke="#4ade80" strokeWidth={3} name="Net Profit" />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </motion.div>
+                {!hasInteracted && !timerDone && (
+                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-cyan-400 text-sm">
+                        👆 Drag any slider to explore — or continue in {secondsLeft}s
+                    </motion.p>
                 )}
-
-                {activeTab === 'revenue' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-slate-800/30 border border-slate-700 rounded-2xl p-6">
-                        <h3 className="text-xl font-bold text-white mb-2">Revenue Growth by Business Line</h3>
-                        <p className="text-slate-400 text-sm mb-4">All 8 lines across Year 1 → Year 3</p>
-                        <ResponsiveContainer width="100%" height={320}>
-                            <BarChart data={businessLineData} margin={{ bottom: 60 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                                <XAxis dataKey="name" stroke="#94a3b8" tick={{ fontSize: 11 }} angle={-30} textAnchor="end" interval={0} />
-                                <YAxis stroke="#94a3b8" tickFormatter={formatK} />
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', borderRadius: '8px' }}
-                                    formatter={(v) => [`$${v.toLocaleString()}`, '']}
-                                />
-                                <Legend verticalAlign="top" />
-                                <Bar dataKey="y1" name="Year 1" fill="#6366f1" radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="y2" name="Year 2" fill="#22d3ee" radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="y3" name="Year 3" fill="#4ade80" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </motion.div>
-                )}
-
-                {activeTab === 'safety' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-                        <div className="bg-gradient-to-br from-green-950/30 to-slate-900/30 border border-green-900/50 rounded-2xl p-6">
-                            <div className="flex items-center gap-3 mb-4">
-                                <Shield className="w-8 h-8 text-green-400" />
-                                <h3 className="text-xl font-bold text-white">Debt Service Coverage Ratio (DSCR)</h3>
-                            </div>
-                            <p className="text-slate-300 mb-4 text-sm">Banking standard requires 1.25x. We exceed this even in worst-case scenarios.</p>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="bg-slate-950/50 rounded-xl p-5">
-                                    <div className="text-sm text-slate-400 mb-1">"Floor" Model (Conservative)</div>
-                                    <div className="text-5xl font-bold text-green-400 mb-1">1.54x</div>
-                                    <div className="text-slate-300 text-sm">Training revenue alone covers debt 10x over</div>
-                                </div>
-                                <div className="bg-slate-950/50 rounded-xl p-5">
-                                    <div className="text-sm text-slate-400 mb-1">"Base" Model (Market Potential)</div>
-                                    <div className="text-5xl font-bold text-cyan-400 mb-1">52.9x</div>
-                                    <div className="text-slate-300 text-sm">Could pay off building in under 18 months</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-slate-900/50 border border-slate-700 rounded-xl p-5">
-                            <h4 className="font-semibold text-white mb-2">Annual Debt Service</h4>
-                            <div className="flex items-baseline gap-2">
-                                <span className="text-3xl font-bold text-white">$55,200</span>
-                                <span className="text-slate-400">/ year ($4,600/month)</span>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-
-                {visitedTabs.size === tabs.length && (
-                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
-                        ✓ All tabs explored — click Next to continue
+                {(hasInteracted || timerDone) && (
+                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold">
+                        ✓ Click Next to continue
                     </motion.p>
                 )}
             </div>
