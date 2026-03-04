@@ -58,6 +58,7 @@ function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
              ? section.subItems[subIdx].slideIndices[0]
              : (section.parent ? section.subItems[0].slideIndices[0] : section.slideIndices[0]);
          onNavigate(slideIdx);
+         if (onClose) onClose();
      };
 
     return (
