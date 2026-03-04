@@ -23,7 +23,7 @@ const NAV_SECTIONS = [
     { label: 'Support Us!', slideIndices: [7] },
 ];
 
-export default function SideNav({ current, seen, interacted = [], onNavigate }) {
+function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
      // A section is "accessible" if ALL prior sections have had their slides interacted with
      const getSectionState = (sectionIdx) => {
          const section = NAV_SECTIONS[sectionIdx];
