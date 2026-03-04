@@ -159,3 +159,35 @@ function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
         </div>
     );
 }
+
+export default function SideNav({ current, seen, interacted = [], onNavigate }) {
+    const [open, setOpen] = React.useState(false);
+
+    return (
+        <>
+            {/* Desktop: fixed sidebar */}
+            <div className="hidden md:flex fixed left-0 top-16 bottom-16 z-40 flex-col justify-center pointer-events-none">
+                <div className="bg-slate-900/80 backdrop-blur-md border-r border-slate-800 rounded-r-2xl py-4 px-3 pointer-events-auto shadow-xl">
+                    <NavContent current={current} seen={seen} interacted={interacted} onNavigate={onNavigate} />
+                </div>
+            </div>
+
+            {/* Mobile: hamburger + sheet */}
+            <div className="md:hidden fixed left-3 top-[18px] z-[60]">
+                <Sheet open={open} onOpenChange={setOpen}>
+                    <SheetTrigger asChild>
+                        <button className="p-2 rounded-lg bg-slate-800/80 backdrop-blur border border-slate-700 text-slate-300">
+                            <Menu className="w-5 h-5" />
+                        </button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="w-72 p-0 bg-slate-900 border-slate-800">
+                        <div className="pt-4 px-2">
+                            <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold px-3 mb-3">Navigation</p>
+                            <NavContent current={current} seen={seen} interacted={interacted} onNavigate={onNavigate} onClose={() => setOpen(false)} />
+                        </div>
+                    </SheetContent>
+                </Sheet>
+            </div>
+        </>
+    );
+}
