@@ -62,9 +62,8 @@ function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
      };
 
     return (
-        <div className="bg-slate-900 py-4 px-3">
-            <div className="space-y-1">
-                    {NAV_SECTIONS.map((section, idx) => {
+        <div className="space-y-1">
+            {NAV_SECTIONS.map((section, idx) => {
                         const { isActive, isSeen, isAccessible } = getSectionState(idx);
                         
                         if (section.parent) {
