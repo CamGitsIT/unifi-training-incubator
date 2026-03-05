@@ -56,9 +56,9 @@ export default function Slide1Hero({ onInteracted, onNext }) {
 
                     <div className="text-left max-w-3xl mx-auto mb-10 space-y-4">
                         {[
-                            { label: 'The Global Disruption', text: 'Organizations are switching to owned, all-in-one infrastructure—networking, cameras, access, and storage—cutting out "rent forever" subscriptions for core operations.' },
-                            { label: 'Proof & ROI', text: 'Across our first eight industries, UniFi cuts ongoing costs and vendor sprawl while improving security and saving money. You have to experience it to believe it.' },
-                            { label: 'Why Us', text: 'We\'re certified experts with early-adopter proof, outlining eight revenue streams that showcase what this platform can do.' },
+                            { label: 'The Global Disruption', text: 'Organizations are switching from stacked IT vendors to owned, integrated infrastructure and escaping "rent forever" fees.' },
+                            { label: 'Proof & ROI', text: 'Early deployments reduce recurring spend, simplify operations, and strengthen security — too good to be true until you experience it.' },
+                            { label: 'Why Us', text: 'We\'re certified experts with early-adopter proof, outlining eight revenue streams that show only some of the scalable possibilities.' },
                         ].map((b, i) => (
                             <div key={i} className="flex items-start gap-4 bg-slate-800/40 border border-slate-700 rounded-xl px-5 py-4">
                                 <div className="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0 mt-2" />
