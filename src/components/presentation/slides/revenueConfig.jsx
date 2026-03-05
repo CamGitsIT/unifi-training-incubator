@@ -47,10 +47,10 @@ export const STREAMS = [
     tags: ['Pipeline Driver', 'Anchor'],
     color: '#22d3ee',
     emoji: '🏢',
-    what: 'A physical showroom where prospects experience the full UniFi stack in a working building — turning skeptics into buyers for every other revenue line.',
-    whoServes: 'HOA boards, property managers, retail chains, and prospective training students.',
-    howWeEarn: 'Modeled secondary revenue from hosted events, product demos, and sponsorships. Primary value is the qualified pipeline it generates for all downstream streams.',
-    liveProof: 'This Experience Center will sit inside a building that is already retrofitted — so the entire property is a live demo on day one.',
+    what: 'A physical showroom where prospects experience the full UniFi stack in a working building. Every visitor is a potential entry point into any of the other 7 revenue lines — retrofit, training, monitoring, retail, ISP, rentals, and cold chain.',
+    whoServes: 'HOA boards, property managers, retail chains, prospective training students, MSPs, developers — anyone who needs to see it to believe it.',
+    howWeEarn: 'Secondary revenue from hosted events, demos, and sponsorships. The real value is the qualified pipeline it feeds into all downstream streams. A single motivated visitor can convert into a retrofit project, a training cohort, a monitoring contract, or a retail chain rollout.',
+    liveProof: 'This Experience Center will sit inside a building that is already retrofitted — so the entire property is a live demo on day one. Every tour is already a proof of concept.',
     isPipelinePrimary: true,
     pipelineOutputs: {
       retrofitConversion: 0.12,  // 12% of qualified visits → retrofit inquiry

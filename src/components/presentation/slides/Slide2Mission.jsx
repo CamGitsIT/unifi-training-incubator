@@ -88,10 +88,10 @@ export default function Slide2Mission({ onInteracted }) {
                             <span className="text-cyan-400 text-xs font-semibold tracking-wide">Revenue Streams Console</span>
                         </div>
                         <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 leading-tight">
-                            One Mission, One Roof
+                            One Mission. Coalescing Possibilities.
                         </h2>
                         <p className="text-slate-400 text-base leading-relaxed">
-                            Eight revenue lines that compound under one facility and one trusted brand.
+                            Just eight revenue lines built on one UniFi expertise engine powered by training, the Experience Center, and an expanding partner network that scales demand worldwide.
                         </p>
                     </div>
 
