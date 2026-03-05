@@ -224,7 +224,7 @@ export const STREAMS = [
     tags: ['Recurring', 'Location-free', 'Niche'],
     color: '#38bdf8',
     emoji: '🌡️',
-    what: 'IoT sensor monitoring for food-service and pharmaceutical refrigeration with automated FDA-compliant compliance reports. ,
+    what: 'IoT sensor monitoring for food-service and pharmaceutical refrigeration with automated FDA-compliant compliance reports.',
     howWeEarn: '$83/location/month — sensor hardware + cloud reporting service. Chains that discover us through monitoring or the Experience Center can add cold-chain sensing to every location at once (Modeled placeholder).',
     driver: {
       name: 'Locations monitored',
