@@ -18,7 +18,7 @@ export const DEPENDENCIES = [
   { upstream: 'experience',    downstream: 'training',      elasticity: 0.60 },
   { upstream: 'experience',    downstream: 'retrofit',      elasticity: 0.50 },
   { upstream: 'training',      downstream: 'retrofit',      elasticity: 0.30 },
-  { upstream: 'training',      downstream: 'retail',        elasticity: 0.30 },
+  { upstream: 'training',      downstream: 'retail',        elasticity: 0.15 },
   { upstream: 'training',      downstream: 'rentals',       elasticity: 0.30 },
   { upstream: 'training',      downstream: 'refrigeration', elasticity: 0.30 },
   { upstream: 'training',      downstream: 'isp',           elasticity: 0.40 },
