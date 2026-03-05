@@ -1,285 +1,257 @@
 // ============================================================
-// REVENUE STREAMS CONFIG
-// TODO: Replace placeholder formulas + assumptions with values
-//       pulled from the Master Forecast Google Sheet via API.
+// REVENUE STREAMS CONFIG — Slide 2: Revenue Streams Console
+// TODO: Replace placeholder formulas + assumptions with live
+//       values pulled from the Master Forecast Google Sheet via API.
 // ============================================================
 
 export const SCENARIO_MULTIPLIERS = {
-  conservative: { revenue: 0.8, label: 'Conservative', color: '#f59e0b' },
-  base: { revenue: 1.0, label: 'Base', color: '#22d3ee' },
-  stretch: { revenue: 1.25, label: 'Stretch', color: '#a78bfa' },
+  conservative: { revenue: 0.8,  label: 'Conservative', color: '#f59e0b' },
+  base:         { revenue: 1.0,  label: 'Base',          color: '#22d3ee' },
+  stretch:      { revenue: 1.25, label: 'Stretch',        color: '#a78bfa' },
 };
 
 // Year ramp factors (relative to run-rate)
+// TODO: Replace with Master Forecast ramp schedule when available.
 export const YEAR_RAMP = {
-  y1: 0.45,
-  y2: 0.75,
-  y3: 0.95,
+  y1:      0.40,
+  y2:      0.72,
+  y3:      0.92,
   runRate: 1.0,
 };
 
-// Pilot client — proof strip, not a stream card
-export const PILOT_CLIENT = {
-  label: 'Pilot Client',
-  description: 'Keyless Property Access Retrofit — proven and expanding.',
-  metric: '~40 doors migrated · 3 properties in pipeline',
-  badge: 'Proven',
-};
-
 // -------------------------------------------------------
-// computeRevenue helper
-// driverValue × unitRevenue × 12 (annualized) × ramp × scenario
+// Core compute helper
+// driverValue × unitRevenue × 12 × scenarioMult × rampFactor
 // -------------------------------------------------------
-function makeCompute({ unitRevenue, rampOverride }) {
+function makeCompute({ unitRevenue }) {
   return function computeRevenue(driverValue, scenario, yearView) {
     const scenarioMult = SCENARIO_MULTIPLIERS[scenario].revenue;
-    const ramp = rampOverride?.[yearView] ?? YEAR_RAMP[yearView];
     const annualRunRate = driverValue * unitRevenue * 12;
-    const value = Math.round(annualRunRate * scenarioMult * ramp);
     return {
-      y1: Math.round(annualRunRate * scenarioMult * (rampOverride?.y1 ?? YEAR_RAMP.y1)),
-      y2: Math.round(annualRunRate * scenarioMult * (rampOverride?.y2 ?? YEAR_RAMP.y2)),
-      y3: Math.round(annualRunRate * scenarioMult * (rampOverride?.y3 ?? YEAR_RAMP.y3)),
-      runRate: Math.round(annualRunRate * scenarioMult),
-      selectedYear: value,
+      y1:           Math.round(annualRunRate * scenarioMult * YEAR_RAMP.y1),
+      y2:           Math.round(annualRunRate * scenarioMult * YEAR_RAMP.y2),
+      y3:           Math.round(annualRunRate * scenarioMult * YEAR_RAMP.y3),
+      runRate:      Math.round(annualRunRate * scenarioMult),
+      selectedYear: Math.round(annualRunRate * scenarioMult * YEAR_RAMP[yearView]),
     };
   };
 }
 
 export const STREAMS = [
-  // ── 1. Experience Center ──────────────────────────────────
+
+  // ── 1. Experience Center ─────────────────────────────────────
   {
     id: 'experience',
     title: 'Experience Center',
-    subtitle: 'Live Demo + Demand Engine',
+    subtitle: 'Live demo environment & top-of-funnel demand engine',
     tags: ['Pipeline Driver', 'Anchor'],
     color: '#22d3ee',
     emoji: '🏢',
-    what: 'A physical showroom where prospects experience our full UniFi stack live — turning skeptics into buyers.',
+    what: 'A physical showroom where prospects experience the full UniFi stack in a working building — turning skeptics into buyers for every other revenue line.',
     whoServes: 'HOA boards, property managers, retail chains, and prospective training students.',
-    howWeEarn: 'Modeled contribution from hosted events, sponsorships, and facilitation fees. Primary value is pipeline generated for all other streams.',
+    howWeEarn: 'Modeled secondary revenue from hosted events, product demos, and sponsorships. Primary value is the qualified pipeline it generates for all downstream streams.',
+    liveProof: 'This Experience Center will sit inside a building that is already retrofitted — so the entire property is a live demo on day one.',
     isPipelinePrimary: true,
     pipelineOutputs: {
-      retrofitConversion: 0.12, // 12% of visits → retrofit inquiry
-      trainingConversion: 0.08, // 8% of visits → training inquiry
+      retrofitConversion: 0.12,  // 12% of qualified visits → retrofit inquiry
+      trainingConversion: 0.08,  // 8%  of qualified visits → training inquiry
     },
     driver: {
       name: 'Qualified visits per month',
       unitLabel: 'visits/mo',
-      min: 10,
-      max: 200,
-      step: 5,
-      defaultValue: 40,
+      min: 10, max: 200, step: 5, defaultValue: 40,
     },
-    // Modeled optional revenue (events/sponsorships)
     assumptions: {
-      unitRevenue: 30, // $ per visit (Modeled placeholder)
-      scenarioNote: 'Revenue is secondary; pipeline generation is primary value.',
+      unitRevenue: 30, // $ per visit — Modeled placeholder (events/sponsorships)
+      scenarioNote: 'Revenue is secondary to pipeline generation. Conservative/Stretch adjusts event frequency.',
     },
-    proof: [],
+    proof: [
+      'Building already retrofitted — instant live demo environment',
+      'Demand gen for 7 downstream revenue lines',
+    ],
     computeRevenue: makeCompute({ unitRevenue: 30 }),
   },
 
-  // ── 2. Keyless Property Access Retrofit ───────────────────
+  // ── 2. Keyless Property Access Retrofit ──────────────────────
   {
     id: 'retrofit',
     title: 'Keyless Property Access',
-    subtitle: 'Retrofit — Partner-Executed',
+    subtitle: 'Retrofit scoping & sales — partner-executed installs',
     tags: ['Proven', 'Project', 'Partner-executed'],
     color: '#818cf8',
     emoji: '🔑',
-    what: 'We scope and sell property access retrofits. Partners handle installation — no labor bottleneck.',
+    what: 'We scope, sell, and manage property access retrofits. Licensed partners handle installation — no labor bottleneck on our end.',
     whoServes: 'HOAs, multi-family property managers, commercial landlords.',
-    howWeEarn: 'Fee on project value. Avg project: $9,000 · Our fee: ~12.5% = ~$1,125/project (Modeled placeholder).',
+    howWeEarn: 'Fee on project value. Avg project: $9,000 · Our fee: ~12.5% = ~$1,125/project.',
+    liveProof: 'Proven in practice: the building we\'re acquiring is already running the retrofit. The Experience Center is our live case study.',
     proven: true,
-    proofBadge: 'Pilot Client Expanding',
+    proofBadge: 'Live in Production',
     driver: {
       name: 'Projects sold per month',
       unitLabel: 'projects/mo',
-      min: 1,
-      max: 20,
-      step: 1,
-      defaultValue: 4,
+      min: 1, max: 20, step: 1, defaultValue: 4,
     },
     assumptions: {
-      unitRevenue: 1125, // per project (Modeled placeholder)
+      unitRevenue: 1125,
       avgProjectValue: 9000,
       feePercent: 12.5,
-      scenarioNote: 'Conservative/Stretch adjusts avg deal size ±20%.',
+      scenarioNote: 'Conservative/Stretch adjusts avg deal size ±20%. Partner-executed; no install labor bottleneck.',
     },
     proof: [
-      'Pilot client onboarded — ~40 doors',
+      'Pilot client live — ~40 doors retrofitted',
       '3 additional properties in active pipeline',
       'Partner installer network operational',
     ],
     computeRevenue: makeCompute({ unitRevenue: 1125 }),
   },
 
-  // ── 3. Certification Training ──────────────────────────────
+  // ── 3. UniFi Certification Training ──────────────────────────
   {
     id: 'training',
     title: 'UniFi Certification Training',
-    subtitle: 'Multi-day Courses (URSCA, Full-Stack)',
+    subtitle: 'Multi-day bootcamps — URSCA, Full-Stack, and more',
     tags: ['Recurring', 'Location-free', 'High-margin'],
     color: '#f472b6',
     emoji: '🎓',
-    what: 'Multi-day certification bootcamps for technicians and IT professionals — delivered in-person and online.',
-    whoServes: 'IT professionals, career-changers, property managers seeking self-sufficiency.',
-    howWeEarn: '$2,000 per seat. Group cohorts of 4–12 students. Delivered remotely or at Experience Center.',
+    what: 'Multi-day Ubiquiti certification courses for IT professionals and technicians, delivered in-person at the Experience Center or fully online. Completely separate from demo/demand activity.',
+    whoServes: 'IT professionals, career-changers, property managers pursuing self-sufficiency, MSPs.',
+    howWeEarn: '$2,000 per seat — cohorts of 4–12 students. Delivered in-person or remotely.',
     driver: {
       name: 'Seats per month',
       unitLabel: 'seats/mo',
-      min: 1,
-      max: 60,
-      step: 1,
-      defaultValue: 8,
+      min: 1, max: 60, step: 1, defaultValue: 8,
     },
     assumptions: {
-      unitRevenue: 2000, // REAL: $2,000/seat
+      unitRevenue: 2000, // REAL: $2,000/seat — not a placeholder
       avgCohortSize: 6,
-      scenarioNote: 'Conservative = fewer cohorts; Stretch = waitlist demand, online scale.',
+      scenarioNote: 'Conservative = fewer cohorts/mo; Stretch = waitlist demand + online scale.',
     },
     proof: [
-      'Course curriculum drafted',
-      'Ubiquiti cert framework validated',
+      'Course curriculum drafted and validated',
+      'Ubiquiti certification framework confirmed',
+      '$2,000/seat is a real, validated price point',
     ],
     computeRevenue: makeCompute({ unitRevenue: 2000 }),
   },
 
-  // ── 4. Multi-Location Retail ───────────────────────────────
+  // ── 4. Multi-Location Retail ──────────────────────────────────
   {
     id: 'retail',
     title: 'Multi-Location Retail',
-    subtitle: 'Franchise & Chain Rollouts',
+    subtitle: 'Franchise & chain UniFi rollouts — remote consulting',
     tags: ['Project', 'Location-free', 'Recurring'],
     color: '#fb923c',
     emoji: '🏪',
-    what: 'Consulting + managed rollouts for retail brands replacing legacy access/security with UniFi.',
-    whoServes: 'Regional chains, franchise operators, QSR brands (20–200+ locations).',
-    howWeEarn: 'Per-account annual consulting retainer. Avg: $6,000/year per brand account (Modeled placeholder).',
+    what: 'Consulting and managed rollouts for retail brands replacing legacy access/security systems with UniFi infrastructure across dozens or hundreds of locations.',
+    whoServes: 'Regional chains, franchise operators, QSR brands with 20–200+ locations.',
+    howWeEarn: 'Annual consulting retainer per brand account. Avg: $6,000/year per account (Modeled placeholder).',
     driver: {
       name: 'Active brand accounts',
       unitLabel: 'accounts',
-      min: 1,
-      max: 20,
-      step: 1,
-      defaultValue: 2,
+      min: 1, max: 20, step: 1, defaultValue: 2,
     },
     assumptions: {
-      unitRevenue: 500, // per account per month ($6k/yr ÷ 12)
+      unitRevenue: 500, // per account per month ($6k/yr ÷ 12) — Modeled placeholder
       avgAnnualPerAccount: 6000,
-      scenarioNote: 'Stretch assumes 2 national accounts adding significant volume.',
+      scenarioNote: 'Stretch assumes 2 national accounts adding significant project volume.',
     },
     proof: [],
     computeRevenue: makeCompute({ unitRevenue: 500 }),
   },
 
-  // ── 5. Professional Monitoring ─────────────────────────────
+  // ── 5. Professional Monitoring ────────────────────────────────
   {
     id: 'monitoring',
     title: 'Professional Monitoring',
-    subtitle: 'Managed SOC-lite for Properties',
+    subtitle: 'Managed SOC-lite — recurring revenue per property',
     tags: ['Recurring', 'Location-free', 'High-margin'],
     color: '#34d399',
     emoji: '👁️',
-    what: 'Remote monitoring of security cameras and access control systems. Alerts, reports, and escalation.',
+    what: 'Remote monitoring of security cameras and access control systems with alerting, reporting, and escalation procedures.',
     whoServes: 'Property managers, HOAs, retail chains already on UniFi infrastructure.',
-    howWeEarn: '$100/site/month recurring. Pure margin after onboarding (Modeled placeholder).',
+    howWeEarn: '$100/site/month recurring. High-margin after onboarding (Modeled placeholder).',
     driver: {
       name: 'Active monitored sites',
       unitLabel: 'sites',
-      min: 5,
-      max: 150,
-      step: 5,
-      defaultValue: 20,
+      min: 5, max: 150, step: 5, defaultValue: 20,
     },
     assumptions: {
-      unitRevenue: 100, // per site per month
+      unitRevenue: 100, // per site per month — Modeled placeholder
       churnRate: 0.03,
-      scenarioNote: 'Conservative = slower site acquisition; Stretch = referral flywheel.',
+      scenarioNote: 'Conservative = slower site acquisition; Stretch = referral flywheel via retrofit clients.',
     },
     proof: [],
     computeRevenue: makeCompute({ unitRevenue: 100 }),
   },
 
-  // ── 6. Tech Infrastructure Rentals (Film & Production) ────
+  // ── 6. Tech Infrastructure Rentals ───────────────────────────
   {
     id: 'rentals',
     title: 'Tech Infrastructure Rentals',
-    subtitle: 'Film, Production & Event Deployments',
-    tags: ['Project', 'Pipeline', 'Location-free'],
+    subtitle: 'UniFi kits for film, production & events',
+    tags: ['Project', 'Location-free'],
     color: '#a78bfa',
     emoji: '🎬',
-    what: 'Rent full UniFi infrastructure kits to film crews, event producers, and pop-up deployments.',
+    what: 'Rent complete UniFi infrastructure kits to film crews, event producers, and pop-up operators who need enterprise-grade connectivity without a permanent install.',
     whoServes: 'Film production companies, event coordinators, real estate stagers, pop-up retailers.',
-    howWeEarn: '$800/production rental avg (gear + 1-day setup support) (Modeled placeholder).',
+    howWeEarn: '$800 avg per production rental (gear + remote setup support) (Modeled placeholder).',
     driver: {
-      name: 'Productions per month',
+      name: 'Productions served per month',
       unitLabel: 'productions/mo',
-      min: 1,
-      max: 30,
-      step: 1,
-      defaultValue: 5,
+      min: 1, max: 30, step: 1, defaultValue: 5,
     },
     assumptions: {
-      unitRevenue: 800, // per production
-      scenarioNote: 'Stretch assumes film industry relationships driving volume.',
+      unitRevenue: 800, // per production — Modeled placeholder
+      scenarioNote: 'Stretch assumes established film industry relationships and repeat clients.',
     },
     proof: [],
     computeRevenue: makeCompute({ unitRevenue: 800 }),
   },
 
-  // ── 7. Refrigeration & Temperature Monitoring ─────────────
+  // ── 7. Refrigeration & Temperature Monitoring ─────────────────
   {
     id: 'refrigeration',
     title: 'Refrigeration & Temp Monitoring',
-    subtitle: 'FDA-Compliant Cold Chain Sensing',
+    subtitle: 'FDA-compliant cold chain IoT sensing — recurring',
     tags: ['Recurring', 'Location-free', 'Niche'],
     color: '#38bdf8',
     emoji: '🌡️',
-    what: 'IoT sensor monitoring for food-service and pharma refrigeration with automated compliance reports.',
+    what: 'IoT sensor monitoring for food-service and pharmaceutical refrigeration with automated FDA-compliant compliance reports.',
     whoServes: 'Restaurants, grocery chains, pharmacies, food distributors.',
-    howWeEarn: '$83/location/month (sensor + reporting service) (Modeled placeholder).',
+    howWeEarn: '$83/location/month — sensor hardware + cloud reporting service (Modeled placeholder).',
     driver: {
       name: 'Locations monitored',
       unitLabel: 'locations',
-      min: 5,
-      max: 100,
-      step: 5,
-      defaultValue: 15,
+      min: 5, max: 100, step: 5, defaultValue: 15,
     },
     assumptions: {
-      unitRevenue: 83, // per location per month
+      unitRevenue: 83, // per location per month — Modeled placeholder
       scenarioNote: 'Stretch assumes chain-level contracts (50+ locations per client).',
     },
     proof: [],
     computeRevenue: makeCompute({ unitRevenue: 83 }),
   },
 
-  // ── 8. Micro ISP ───────────────────────────────────────────
+  // ── 8. Micro ISP ──────────────────────────────────────────────
   {
     id: 'isp',
     title: 'Micro ISP',
-    subtitle: 'Community Mesh Broadband',
+    subtitle: 'Community mesh broadband — owned infrastructure',
     tags: ['Recurring', 'Anchor', 'High-loyalty'],
     color: '#facc15',
     emoji: '📡',
-    what: 'Deploy and operate community-owned mesh WiFi networks for underserved residential buildings.',
+    what: 'Deploy and operate community-owned mesh WiFi networks for residential buildings and communities — internet as an owned amenity, not a rented dependency.',
     whoServes: 'Apartment buildings, mobile home communities, HOAs seeking internet as an amenity.',
-    howWeEarn: '$100/subscriber/month (ISP margin after upstream wholesale cost) (Modeled placeholder).',
+    howWeEarn: '$100/building/month net margin after upstream wholesale cost (Modeled placeholder).',
     driver: {
-      name: 'Active subscribers',
-      unitLabel: 'subscribers',
-      min: 10,
-      max: 200,
-      step: 10,
-      defaultValue: 30,
+      name: 'Buildings served',
+      unitLabel: 'buildings',
+      min: 1, max: 50, step: 1, defaultValue: 3,
     },
     assumptions: {
-      unitRevenue: 100, // per subscriber per month
-      wholesaleCost: 30, // upstream cost per sub
-      netMarginPerSub: 70,
-      scenarioNote: 'Conservative = single building; Stretch = 3+ buildings at capacity.',
+      unitRevenue: 100, // per building per month net — Modeled placeholder
+      wholesaleCostPerBuilding: 30,
+      scenarioNote: 'Conservative = single building pilot; Stretch = 5+ buildings with anchor subscriber density.',
     },
     proof: [],
     computeRevenue: makeCompute({ unitRevenue: 100 }),
