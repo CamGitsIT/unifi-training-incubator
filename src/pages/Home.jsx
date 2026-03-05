@@ -104,7 +104,7 @@ export default function Home() {
                             <Shield className="w-6 h-6 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
                         </button>
                         <span className="font-bold text-xl text-white">OverISP</span>
-                        <span className="text-slate-400 text-sm hidden md:inline">UniFi Experience Center</span>
+                        <span className="text-slate-400 text-sm hidden md:inline">UniFi Experience Center & Training Hub</span>
                     </div>
                     <div className="flex items-center gap-3">
                         <span className="text-slate-500 text-sm hidden md:inline">
