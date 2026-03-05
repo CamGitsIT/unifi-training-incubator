@@ -168,7 +168,7 @@ export const STREAMS = [
   {
     id: 'monitoring',
     fedBy: 'Every revenue stream that deploys infrastructure: Keyless Retrofit clients, Retail Rollout clients, Micro ISP clients, and even Training graduates whose clients they upgrade. More deployed sites across any stream = more monitoring ARR without additional sales effort.',
-    feedsInto: 'Refrigeration & Temp Monitoring — a client already letting us watch their cameras is a natural next conversation for cold-chain compliance.',
+    feedsInto: 'Refrigeration & Temp Monitoring — a referral client with UniFi equipment or a net-new client would rely only on sensors rather than manual temperature checks to be notified.',
     title: 'Professional Monitoring',
     subtitle: 'Managed SOC-lite — recurring revenue per property',
     tags: ['Recurring', 'Location-free', 'High-margin'],
