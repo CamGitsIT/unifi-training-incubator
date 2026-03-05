@@ -89,6 +89,20 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                 {/* ── Scrollable Body ── */}
                 <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
 
+                    {/* Feed / feeder callout for connected streams */}
+                    {stream.feedsInto && (
+                        <div className="rounded-xl px-4 py-3 border border-cyan-900/40 bg-cyan-950/20">
+                            <p className="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-1.5">🔗 Feeds Into</p>
+                            <p className="text-slate-300 text-sm leading-relaxed">{stream.feedsInto}</p>
+                        </div>
+                    )}
+                    {stream.fedBy && (
+                        <div className="rounded-xl px-4 py-3 border border-purple-900/40 bg-purple-950/20">
+                            <p className="text-xs font-bold uppercase tracking-wider text-purple-400 mb-1.5">⬆ Fed By</p>
+                            <p className="text-slate-300 text-sm leading-relaxed">{stream.fedBy}</p>
+                        </div>
+                    )}
+
                     {/* Tags */}
                     <div className="flex flex-wrap gap-2">
                         {stream.proven && (
