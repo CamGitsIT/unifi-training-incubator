@@ -113,9 +113,9 @@ export const STREAMS = [
     tags: ['Recurring', 'Location-free', 'High-margin'],
     color: '#f472b6',
     emoji: '🎓',
-    what: 'Multi-day Ubiquiti certification courses for IT professionals and technicians, delivered in-person at the Experience Center or fully online. Completely separate from demo/demand activity.',
-    whoServes: 'IT professionals, career-changers, property managers pursuing self-sufficiency, MSPs.',
-    howWeEarn: '$2,000 per seat — cohorts of 4–12 students. Delivered in-person or remotely.',
+    what: 'Multi-day Ubiquiti certification courses for IT professionals, MSPs, and technicians — in-person at the Experience Center or fully online. Every graduate is a potential pipeline feeder: an MSP who trains here will drive their entire client base toward our other streams.',
+    whoServes: 'IT professionals, career-changers, property managers pursuing self-sufficiency, MSPs, and integrators. An MSP trained here who works with retail chains can funnel dozens of sites into monitoring, retail rollouts, and refrigeration services.',
+    howWeEarn: '$2,000 per seat — cohorts of 4–12 students. Delivered in-person or remotely. A single trained MSP with 30 retail clients can trigger monitoring contracts across all 30 of those locations.',
     driver: {
       name: 'Seats per month',
       unitLabel: 'seats/mo',
