@@ -71,16 +71,19 @@ export default function Slide1Hero({ onInteracted, onNext }) {
 
                     <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
                         <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
-                            <div className="text-4xl font-bold text-cyan-400 mb-2">77%</div>
-                            <div className="text-slate-300 text-sm">TCO Savings vs. Legacy Systems</div>
+                            <div className="text-4xl font-bold text-cyan-400 mb-2">$300K</div>
+                            <div className="text-white text-sm font-semibold mb-1">Raise</div>
+                            <div className="text-slate-400 text-xs">Unlocks SBA-backed purchase</div>
                         </div>
                         <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
-                            <div className="text-4xl font-bold text-purple-400 mb-2">16 mo</div>
-                            <div className="text-slate-300 text-sm">Investment Tipping Point</div>
+                            <div className="text-4xl font-bold text-purple-400 mb-2">$850K</div>
+                            <div className="text-white text-sm font-semibold mb-1">Facility</div>
+                            <div className="text-slate-400 text-xs">Experience Center + Training Hub</div>
                         </div>
                         <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
-                            <div className="text-4xl font-bold text-green-400 mb-2">$6.7B</div>
-                            <div className="text-slate-300 text-sm">Total Addressable Market</div>
+                            <div className="text-4xl font-bold text-green-400 mb-2">8</div>
+                            <div className="text-white text-sm font-semibold mb-1">Initial Revenue Streams</div>
+                            <div className="text-slate-400 text-xs">Diversified, repeatable model and clear ROI</div>
                         </div>
                     </div>
 
