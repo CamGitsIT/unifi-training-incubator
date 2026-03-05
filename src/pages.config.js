@@ -55,6 +55,7 @@ import MarketIntelligence from './pages/MarketIntelligence';
 import ROICalculator from './pages/ROICalculator';
 import ScheduleMeeting from './pages/ScheduleMeeting';
 import Training from './pages/Training';
+import ForecastEngine from './pages/ForecastEngine';
 import __Layout from './Layout.jsx';
 
 
@@ -67,6 +68,7 @@ export const PAGES = {
     "ROICalculator": ROICalculator,
     "ScheduleMeeting": ScheduleMeeting,
     "Training": Training,
+    "ForecastEngine": ForecastEngine,
 }
 
 export const pagesConfig = {
