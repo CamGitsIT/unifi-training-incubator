@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { RotateCcw, Building2 } from 'lucide-react';
-import { STREAMS, PILOT_CLIENT, SCENARIO_MULTIPLIERS } from './revenueConfig';
+import { STREAMS, SCENARIO_MULTIPLIERS } from './revenueConfig';
 import StreamDrawer from './StreamDrawer';
 
 const YEAR_OPTIONS = [
@@ -138,20 +138,6 @@ export default function Slide2Mission({ onInteracted }) {
                             Reset to Base
                         </button>
                     </div>
-                </motion.div>
-
-                {/* Pilot Client proof strip */}
-                <motion.div
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="flex items-center gap-3 bg-green-950/40 border border-green-800/40 rounded-xl px-4 py-3 mb-6"
-                >
-                    <span className="text-green-400 font-bold text-xs uppercase tracking-wide bg-green-900/50 px-2 py-0.5 rounded-full">0 · Proof</span>
-                    <span className="text-green-300 text-sm font-semibold">{PILOT_CLIENT.label}</span>
-                    <span className="text-slate-400 text-sm hidden md:inline">—</span>
-                    <span className="text-slate-400 text-sm hidden md:inline">{PILOT_CLIENT.description}</span>
-                    <span className="ml-auto text-xs text-green-400/70 hidden md:inline">{PILOT_CLIENT.metric}</span>
                 </motion.div>
 
                 {/* Stream Cards */}
