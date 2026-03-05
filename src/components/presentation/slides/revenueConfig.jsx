@@ -216,9 +216,9 @@ export const STREAMS = [
     tags: ['Recurring', 'Location-free', 'Niche'],
     color: '#38bdf8',
     emoji: '🌡️',
-    what: 'IoT sensor monitoring for food-service and pharmaceutical refrigeration with automated FDA-compliant compliance reports.',
-    whoServes: 'Restaurants, grocery chains, pharmacies, food distributors.',
-    howWeEarn: '$83/location/month — sensor hardware + cloud reporting service (Modeled placeholder).',
+    what: 'IoT sensor monitoring for food-service and pharmaceutical refrigeration with automated FDA-compliant compliance reports. Often introduced through Professional Monitoring relationships — a client already letting us watch their cameras is a natural candidate for cold-chain compliance.',
+    whoServes: 'Restaurants, grocery chains, pharmacies, food distributors. Likely discovered through monitoring referrals, Experience Center visits, or word of mouth from an existing client. Not a cold-call sale — it comes in warm.',
+    howWeEarn: '$83/location/month — sensor hardware + cloud reporting service. Chains that discover us through monitoring or the Experience Center can add cold-chain sensing to every location at once (Modeled placeholder).',
     driver: {
       name: 'Locations monitored',
       unitLabel: 'locations',
