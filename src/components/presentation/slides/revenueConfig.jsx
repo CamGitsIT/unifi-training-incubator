@@ -218,6 +218,7 @@ export const STREAMS = [
   // ── 7. Refrigeration & Temperature Monitoring ─────────────────
   {
     id: 'refrigeration',
+    fedBy: 'Professional Monitoring (warm referrals from existing camera/access clients), Experience Center visits from food-service operators, and word of mouth from satisfied clients in the restaurant or retail space.',
     title: 'Refrigeration & Temp Monitoring',
     subtitle: 'FDA-compliant cold chain IoT sensing — recurring',
     tags: ['Recurring', 'Location-free', 'Niche'],
