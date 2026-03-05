@@ -73,7 +73,7 @@ export const STREAMS = [
     emoji: '🏢',
     what: 'A physical showroom where prospects experience the full UniFi stack in a working building. Every visitor is a potential entry point into any of the other 7 revenue lines.',
     whoServes: 'HOA boards, property managers, retail chains, prospective training students, MSPs, developers.',
-    howWeEarn: 'Secondary revenue from hosted events, demos, and sponsorships. The real value is the qualified pipeline it feeds into all downstream streams.',
+    howWeEarn: 'Secondary revenue from retail sales and training signups. The real value is the qualified pipeline it feeds downstream.',
     liveProof: 'This Experience Center will sit inside a building that is already retrofitted — so the entire property is a live demo on day one.',
     feedsInto: 'All 7 other revenue streams via dependency elasticities — training (0.6×), retrofit (0.5×).',
     isPipelinePrimary: true,
