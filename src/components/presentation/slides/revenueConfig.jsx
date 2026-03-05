@@ -1,17 +1,19 @@
 // ============================================================
-// REVENUE STREAMS CONFIG — Slide 2: Revenue Streams Console
-// TODO: Replace placeholder formulas + assumptions with live
-//       values pulled from the Master Forecast Google Sheet via API.
+// REVENUE STREAMS CONFIG — Slide 2 Revenue Streams Console
+// Numbers now flow from the shared Forecast Engine (forecastEngine.js)
 // ============================================================
 
+import { BASELINE_STREAMS, STREAM_COLORS, SCENARIO_MULTIPLIERS as ENGINE_SCENARIOS, runForecast } from '@/components/forecast/forecastEngine';
+
+// Re-export scenario multipliers in the shape Slide2 / StreamDrawer expect
 export const SCENARIO_MULTIPLIERS = {
   conservative: { revenue: 0.8,  label: 'Conservative', color: '#f59e0b' },
   base:         { revenue: 1.0,  label: 'Base',          color: '#22d3ee' },
   stretch:      { revenue: 1.25, label: 'Stretch',        color: '#a78bfa' },
 };
 
-// Year ramp factors (relative to run-rate)
-// TODO: Replace with Master Forecast ramp schedule when available.
+// Year ramp is now expressed as fractional totals from the engine (Y1 = mo1-12 sum, etc.)
+// This is kept for the Assumptions accordion display only
 export const YEAR_RAMP = {
   y1:      0.40,
   y2:      0.72,
@@ -20,21 +22,43 @@ export const YEAR_RAMP = {
 };
 
 // -------------------------------------------------------
-// Core compute helper
-// driverValue × unitRevenue × 12 × scenarioMult × rampFactor
+// computeRevenue — wraps runForecast for a single stream.
+// Called with (driverValue, scenario, yearView) to match
+// the existing Slide2 / StreamDrawer interface.
 // -------------------------------------------------------
-function makeCompute({ unitRevenue }) {
+function makeCompute(streamId) {
   return function computeRevenue(driverValue, scenario, yearView) {
-    const scenarioMult = SCENARIO_MULTIPLIERS[scenario].revenue;
-    const annualRunRate = driverValue * unitRevenue * 12;
+    // Build stream list with this stream's driver overridden
+    const streams = BASELINE_STREAMS.map(s =>
+      s.stream_id === streamId
+        ? { ...s, plan_driver_m1: driverValue }
+        : { ...s }
+    );
+
+    const result = runForecast(streams, scenario);
+    const sr = result.streams[streamId];
+
+    const runRate = sr.runRateM36; // M36 = "run-rate"
+
+    const selectedYear =
+      yearView === 'y1'      ? sr.y1 :
+      yearView === 'y2'      ? sr.y2 :
+      yearView === 'y3'      ? sr.y3 :
+      yearView === 'runRate' ? runRate : sr.y1;
+
     return {
-      y1:           Math.round(annualRunRate * scenarioMult * YEAR_RAMP.y1),
-      y2:           Math.round(annualRunRate * scenarioMult * YEAR_RAMP.y2),
-      y3:           Math.round(annualRunRate * scenarioMult * YEAR_RAMP.y3),
-      runRate:      Math.round(annualRunRate * scenarioMult),
-      selectedYear: Math.round(annualRunRate * scenarioMult * YEAR_RAMP[yearView]),
+      y1:           sr.y1,
+      y2:           sr.y2,
+      y3:           sr.y3,
+      runRate:      runRate,
+      selectedYear: selectedYear,
     };
   };
+}
+
+// Helper to map baseline stream data to STREAMS shape expected by Slide2/Drawer
+function baseline(id) {
+  return BASELINE_STREAMS.find(s => s.stream_id === id);
 }
 
 export const STREAMS = [
@@ -45,32 +69,32 @@ export const STREAMS = [
     title: 'Experience Center',
     subtitle: 'Live demo environment & top-of-funnel demand engine',
     tags: ['Pipeline Driver', 'Anchor'],
-    color: '#22d3ee',
+    color: STREAM_COLORS.experience,
     emoji: '🏢',
-    what: 'A physical showroom where prospects experience the full UniFi stack in a working building. Every visitor is a potential entry point into any of the other 7 revenue lines — retrofit, training, monitoring, retail, ISP, rentals, and cold chain.',
-    whoServes: 'HOA boards, property managers, retail chains, prospective training students, MSPs, developers — anyone who needs to see it to believe it.',
-    howWeEarn: 'Secondary revenue from hosted events, demos, and sponsorships. The real value is the qualified pipeline it feeds into all downstream streams. A single motivated visitor can convert into a retrofit project, a training cohort, a monitoring contract, or a retail chain rollout.',
-    liveProof: 'This Experience Center will sit inside a building that is already retrofitted — so the entire property is a live demo on day one. Every tour is already a proof of concept.',
-    feedsInto: 'All 7 other revenue streams. Every visitor is a potential retrofit client, training student, monitoring subscriber, retail chain contact, rental customer, or ISP prospect. This is the top of every funnel.',
+    what: 'A physical showroom where prospects experience the full UniFi stack in a working building. Every visitor is a potential entry point into any of the other 7 revenue lines.',
+    whoServes: 'HOA boards, property managers, retail chains, prospective training students, MSPs, developers.',
+    howWeEarn: 'Secondary revenue from hosted events, demos, and sponsorships. The real value is the qualified pipeline it feeds into all downstream streams.',
+    liveProof: 'This Experience Center will sit inside a building that is already retrofitted — so the entire property is a live demo on day one.',
+    feedsInto: 'All 7 other revenue streams via dependency elasticities — training (0.6×), retrofit (0.5×).',
     isPipelinePrimary: true,
     pipelineOutputs: {
-      retrofitConversion: 0.12,  // 12% of qualified visits → retrofit inquiry
-      trainingConversion: 0.08,  // 8%  of qualified visits → training inquiry
+      retrofitConversion: 0.12,
+      trainingConversion: 0.08,
     },
     driver: {
-      name: 'Qualified visits per month',
-      unitLabel: 'visits/mo',
-      min: 10, max: 200, step: 5, defaultValue: 40,
+      name: baseline('experience').driver_name,
+      unitLabel: baseline('experience').driver_unit,
+      min: 5, max: 200, step: 5, defaultValue: baseline('experience').plan_driver_m1,
     },
     assumptions: {
-      unitRevenue: 30, // $ per visit — Modeled placeholder (events/sponsorships)
+      unitRevenue: baseline('experience').unit_revenue,
       scenarioNote: 'Revenue is secondary to pipeline generation. Conservative/Stretch adjusts event frequency.',
     },
     proof: [
       'Building already retrofitted — instant live demo environment',
       'Demand gen for 7 downstream revenue lines',
     ],
-    computeRevenue: makeCompute({ unitRevenue: 30 }),
+    computeRevenue: makeCompute('experience'),
   },
 
   // ── 2. Keyless Property Access Retrofit ──────────────────────
@@ -79,55 +103,55 @@ export const STREAMS = [
     title: 'Keyless Property Access',
     subtitle: 'Retrofit scoping & sales — partner-executed installs',
     tags: ['Proven', 'Project', 'Partner-executed'],
-    color: '#818cf8',
+    color: STREAM_COLORS.retrofit,
     emoji: '🔑',
-    what: 'We scope, sell, and manage property access retrofits. Licensed partners handle installation — no labor bottleneck on our end. The flywheel compounds: executed retrofits become live references, and those references bring in developers, HOAs, and property managers who already trust the proof.',
-    whoServes: 'HOAs, multi-family property managers, commercial landlords, and developers. Leads come from: a.) Experience Center visits by decision-makers who see the live retrofit b.) References from existing clients whose boards or networks know other property managers.',
-    howWeEarn: 'Fee on project value. Avg project: $9,000 · Our fee: ~12.5% = ~$1,125/project. Each completed property is a compounding referral asset — every property manager has a network of other managers.',
-    liveProof: 'Proven in practice: the building we\'re acquiring is already running the retrofit. The Experience Center is our live case study. A developer who walked this building signed a letter of intent the same week.',
-    feedsInto: 'Professional Monitoring (every retrofitted property is a monitoring candidate), Micro ISP (properties with new access infrastructure often want managed internet too), and compounding referrals to more retrofit projects.',
-    fedBy: 'Experience Center visits by HOA boards and property managers, plus word-of-mouth from executed projects. Each completed retrofit becomes a live reference that generates the next lead organically.',
+    what: 'We scope, sell, and manage property access retrofits. Licensed partners handle installation.',
+    whoServes: 'HOAs, multi-family property managers, commercial landlords, and developers.',
+    howWeEarn: `Fee on project value. Avg project: $9,000 · Our fee: ~12.5% = ~$1,125/project.`,
+    liveProof: 'Proven in practice: the building we\'re acquiring is already running the retrofit.',
+    feedsInto: 'Professional Monitoring (every retrofitted property is a monitoring candidate via 0.14× elasticity).',
+    fedBy: 'Experience Center visits (0.5× elasticity) + Training graduates (0.3× elasticity).',
     proven: true,
     proofBadge: 'Live in Production',
     driver: {
-      name: 'Projects sold per month',
-      unitLabel: 'projects/mo',
-      min: 1, max: 20, step: 1, defaultValue: 4,
+      name: baseline('retrofit').driver_name,
+      unitLabel: baseline('retrofit').driver_unit,
+      min: 1, max: 20, step: 1, defaultValue: baseline('retrofit').plan_driver_m1,
     },
     assumptions: {
-      unitRevenue: 1125,
+      unitRevenue: baseline('retrofit').unit_revenue,
       avgProjectValue: 9000,
       feePercent: 12.5,
-      scenarioNote: 'Conservative/Stretch adjusts avg deal size ±20%. Partner-executed; no install labor bottleneck.',
+      scenarioNote: 'Conservative/Stretch adjusts scenario multiplier. Partner-executed; no install labor bottleneck.',
     },
     proof: [
       'Pilot client live — ~40 doors retrofitted',
       '3 additional properties in active pipeline',
       'Partner installer network operational',
     ],
-    computeRevenue: makeCompute({ unitRevenue: 1125 }),
+    computeRevenue: makeCompute('retrofit'),
   },
 
   // ── 3. UniFi Certification Training ──────────────────────────
   {
     id: 'training',
-    feedsInto: 'All other revenue streams via graduates. An MSP who trains here and manages 30 retail locations triggers monitoring contracts, retail rollouts, and potentially refrigeration sensing at every one of those sites. Training is the force multiplier for demand at scale.',
-    fedBy: 'Experience Center visits by IT professionals and MSPs who saw the demo and want to get certified.',
     title: 'UniFi Certification Training',
     subtitle: 'Multi-day bootcamps — URSCA, Full-Stack, and more',
     tags: ['Recurring', 'Location-free', 'High-margin'],
-    color: '#f472b6',
+    color: STREAM_COLORS.training,
     emoji: '🎓',
-    what: 'Multi-day Ubiquiti certification courses for IT professionals, MSPs, and technicians — in-person at the Experience Center or fully online. Every graduate is a potential pipeline feeder: an MSP who trains here will drive their entire client base toward our other streams.',
-    whoServes: 'IT professionals, career-changers, property managers pursuing self-sufficiency, MSPs, and integrators. An MSP trained here who works with retail chains can funnel dozens of sites into monitoring, retail rollouts, and refrigeration services.',
-    howWeEarn: '$2,000 per seat — cohorts of 4–12 students. Delivered in-person or remotely. A single trained MSP with 30 retail clients can trigger monitoring contracts across all 30 of those locations.',
+    what: 'Multi-day Ubiquiti certification courses for IT professionals, MSPs, and technicians.',
+    whoServes: 'IT professionals, career-changers, property managers, MSPs, and integrators.',
+    howWeEarn: '$2,000 per seat — cohorts of 4–12 students. In-person or remote.',
+    feedsInto: 'Retrofit (0.3×), Retail (0.3×), Rentals (0.3×), Refrigeration (0.3×), Micro ISP (0.4×) via dependency elasticities.',
+    fedBy: 'Experience Center visits by IT professionals and MSPs (0.6× elasticity).',
     driver: {
-      name: 'Seats per month',
-      unitLabel: 'seats/mo',
-      min: 1, max: 60, step: 1, defaultValue: 8,
+      name: baseline('training').driver_name,
+      unitLabel: baseline('training').driver_unit,
+      min: 1, max: 60, step: 1, defaultValue: baseline('training').plan_driver_m1,
     },
     assumptions: {
-      unitRevenue: 2000, // REAL: $2,000/seat — not a placeholder
+      unitRevenue: baseline('training').unit_revenue,
       avgCohortSize: 6,
       scenarioNote: 'Conservative = fewer cohorts/mo; Stretch = waitlist demand + online scale.',
     },
@@ -136,7 +160,7 @@ export const STREAMS = [
       'Ubiquiti certification framework confirmed',
       '$2,000/seat is a real, validated price point',
     ],
-    computeRevenue: makeCompute({ unitRevenue: 2000 }),
+    computeRevenue: makeCompute('training'),
   },
 
   // ── 4. Multi-Location Retail ──────────────────────────────────
@@ -145,50 +169,51 @@ export const STREAMS = [
     title: 'Multi-Location Retail',
     subtitle: 'Franchise & chain UniFi rollouts — remote consulting',
     tags: ['Project', 'Location-free', 'Recurring'],
-    color: '#fb923c',
+    color: STREAM_COLORS.retail,
     emoji: '🏪',
-    what: 'Consulting and managed rollouts for retail brands replacing legacy access/security systems with UniFi infrastructure across dozens or hundreds of locations.',
+    what: 'Consulting and managed rollouts for retail brands replacing legacy access/security systems.',
     whoServes: 'Regional chains, franchise operators, QSR brands with 20–200+ locations.',
-    howWeEarn: 'Annual consulting retainer per brand account. Avg: $6,000/year per account (Modeled placeholder).',
+    howWeEarn: 'Retainer per brand account × 20 sites/account × $3,500/site/mo.',
+    fedBy: 'Training graduates via MSP relationships (0.3× elasticity).',
+    feedsInto: 'Professional Monitoring (0.14× elasticity on monitoring driver).',
     driver: {
-      name: 'Active brand accounts',
-      unitLabel: 'accounts',
-      min: 1, max: 20, step: 1, defaultValue: 2,
+      name: baseline('retail').driver_name,
+      unitLabel: baseline('retail').driver_unit,
+      min: 1, max: 20, step: 1, defaultValue: baseline('retail').plan_driver_m1,
     },
     assumptions: {
-      unitRevenue: 500, // per account per month ($6k/yr ÷ 12) — Modeled placeholder
-      avgAnnualPerAccount: 6000,
+      unitRevenue: baseline('retail').unit_revenue,
+      avgAnnualPerAccount: baseline('retail').unit_revenue * 20 * 12,
       scenarioNote: 'Stretch assumes 2 national accounts adding significant project volume.',
     },
     proof: [],
-    computeRevenue: makeCompute({ unitRevenue: 500 }),
+    computeRevenue: makeCompute('retail'),
   },
 
   // ── 5. Professional Monitoring ────────────────────────────────
   {
     id: 'monitoring',
-    fedBy: 'Every revenue stream that deploys infrastructure: Keyless Retrofit clients, Retail Rollout clients, Micro ISP clients, and even Training graduates whose clients they upgrade. More deployed sites across any stream = more monitoring ARR without additional sales effort.',
-    feedsInto: 'Refrigeration & Temp Monitoring — a referral client with UniFi equipment or a net-new client would rely only on sensors rather than manual temperature checks to be notified.',
     title: 'Professional Monitoring',
     subtitle: 'Managed SOC-lite — recurring revenue per property',
     tags: ['Recurring', 'Location-free', 'High-margin'],
-    color: '#34d399',
+    color: STREAM_COLORS.monitoring,
     emoji: '👁️',
-    what: 'Remote monitoring of security cameras and access control systems with alerting, reporting, and escalation. Every other stream that installs or expands UniFi infrastructure is a direct feeder — more deployed sites = more monitoring contracts.',
-    whoServes: 'Property managers, HOAs, retail chains, and any client whose infrastructure we touched through retrofit, retail rollout, training, or ISP. An MSP trained by us who converts their retail clients also converts those clients into monitoring subscribers.',
-    howWeEarn: '$100/site/month recurring — the more we deploy through other streams, the larger this base grows without additional sales effort. A single retail chain rollout of 40 locations = $4,000/mo in monitoring recurring revenue.',
+    what: 'Remote monitoring of security cameras and access control systems with alerting, reporting, and escalation.',
+    whoServes: 'Property managers, HOAs, retail chains, and any client whose infrastructure we touched.',
+    howWeEarn: '$100/site/month recurring. A single retail chain rollout of 40 locations = $4,000/mo MRR.',
+    fedBy: 'Every revenue stream that deploys infrastructure: Retrofit, Retail, Rentals, Refrigeration, ISP — all feed monitoring via 0.14× elasticity each.',
     driver: {
-      name: 'Active monitored sites',
-      unitLabel: 'sites',
-      min: 5, max: 150, step: 5, defaultValue: 20,
+      name: baseline('monitoring').driver_name,
+      unitLabel: baseline('monitoring').driver_unit,
+      min: 5, max: 150, step: 5, defaultValue: baseline('monitoring').plan_driver_m1,
     },
     assumptions: {
-      unitRevenue: 100, // per site per month — Modeled placeholder
+      unitRevenue: baseline('monitoring').unit_revenue,
       churnRate: 0.03,
       scenarioNote: 'Conservative = slower site acquisition; Stretch = referral flywheel via retrofit clients.',
     },
     proof: [],
-    computeRevenue: makeCompute({ unitRevenue: 100 }),
+    computeRevenue: makeCompute('monitoring'),
   },
 
   // ── 6. Tech Infrastructure Rentals ───────────────────────────
@@ -197,46 +222,49 @@ export const STREAMS = [
     title: 'Tech Infrastructure Rentals',
     subtitle: 'UniFi kits for film, production & events',
     tags: ['Project', 'Location-free'],
-    color: '#a78bfa',
+    color: STREAM_COLORS.rentals,
     emoji: '🎬',
-    what: 'Rent complete UniFi infrastructure kits to film crews, event producers, and pop-up operators who need enterprise-grade connectivity without a permanent install.',
+    what: 'Rent complete UniFi infrastructure kits to film crews, event producers, and pop-up operators.',
     whoServes: 'Film production companies, event coordinators, real estate stagers, pop-up retailers.',
-    howWeEarn: '$800 avg per production rental (gear + remote setup support) (Modeled placeholder).',
+    howWeEarn: '$800 avg per production rental (gear + remote setup support).',
+    fedBy: 'Training graduates expand partner/referral network (0.3× elasticity).',
+    feedsInto: 'Professional Monitoring (0.14× elasticity).',
     driver: {
-      name: 'Productions served per month',
-      unitLabel: 'productions/mo',
-      min: 1, max: 30, step: 1, defaultValue: 5,
+      name: baseline('rentals').driver_name,
+      unitLabel: baseline('rentals').driver_unit,
+      min: 1, max: 30, step: 1, defaultValue: baseline('rentals').plan_driver_m1,
     },
     assumptions: {
-      unitRevenue: 800, // per production — Modeled placeholder
+      unitRevenue: baseline('rentals').unit_revenue,
       scenarioNote: 'Stretch assumes established film industry relationships and repeat clients.',
     },
     proof: [],
-    computeRevenue: makeCompute({ unitRevenue: 800 }),
+    computeRevenue: makeCompute('rentals'),
   },
 
   // ── 7. Refrigeration & Temperature Monitoring ─────────────────
   {
     id: 'refrigeration',
-    fedBy: 'Professional Monitoring (warm referrals from existing camera/access clients), Experience Center visits from food-service operators, and word of mouth from satisfied clients in the restaurant or retail space.',
     title: 'Refrigeration & Temp Monitoring',
     subtitle: 'FDA-compliant cold chain IoT sensing — recurring',
     tags: ['Recurring', 'Location-free', 'Niche'],
-    color: '#38bdf8',
+    color: STREAM_COLORS.refrigeration,
     emoji: '🌡️',
     what: 'IoT sensor monitoring for food-service and pharmaceutical refrigeration with automated FDA-compliant compliance reports.',
-    howWeEarn: '$83/location/month — sensor hardware + cloud reporting service. Chains that discover us through monitoring or the Experience Center can add cold-chain sensing to every location at once (Modeled placeholder).',
+    howWeEarn: '$83/location/month — sensor hardware + cloud reporting service.',
+    fedBy: 'Training graduates (0.3× elasticity), Experience Center visits from food-service operators.',
+    feedsInto: 'Professional Monitoring (0.14× elasticity).',
     driver: {
-      name: 'Locations monitored',
-      unitLabel: 'locations',
-      min: 5, max: 100, step: 5, defaultValue: 15,
+      name: baseline('refrigeration').driver_name,
+      unitLabel: baseline('refrigeration').driver_unit,
+      min: 5, max: 100, step: 5, defaultValue: baseline('refrigeration').plan_driver_m1,
     },
     assumptions: {
-      unitRevenue: 83, // per location per month — Modeled placeholder
+      unitRevenue: baseline('refrigeration').unit_revenue,
       scenarioNote: 'Stretch assumes chain-level contracts (50+ locations per client).',
     },
     proof: [],
-    computeRevenue: makeCompute({ unitRevenue: 83 }),
+    computeRevenue: makeCompute('refrigeration'),
   },
 
   // ── 8. Micro ISP ──────────────────────────────────────────────
@@ -245,22 +273,23 @@ export const STREAMS = [
     title: 'Micro ISP',
     subtitle: 'Community mesh broadband — owned infrastructure',
     tags: ['Recurring', 'Anchor', 'High-loyalty'],
-    color: '#facc15',
+    color: STREAM_COLORS.isp,
     emoji: '📡',
-    what: 'Deploy and operate community-owned mesh WiFi networks for residential buildings and communities — internet as an owned amenity, not a rented dependency.',
+    what: 'Deploy and operate community-owned mesh WiFi networks for residential buildings and communities.',
     whoServes: 'Apartment buildings, mobile home communities, HOAs seeking internet as an amenity.',
-    howWeEarn: '$100/building/month net margin after upstream wholesale cost (Modeled placeholder).',
+    howWeEarn: '$100/building/month net margin after upstream wholesale cost.',
+    fedBy: 'Training graduates (0.4× elasticity — highest among downstream streams).',
+    feedsInto: 'Professional Monitoring (0.14× elasticity).',
     driver: {
-      name: 'Buildings served',
-      unitLabel: 'buildings',
-      min: 1, max: 50, step: 1, defaultValue: 3,
+      name: baseline('isp').driver_name,
+      unitLabel: baseline('isp').driver_unit,
+      min: 1, max: 50, step: 1, defaultValue: baseline('isp').plan_driver_m1,
     },
     assumptions: {
-      unitRevenue: 100, // per building per month net — Modeled placeholder
-      wholesaleCostPerBuilding: 30,
+      unitRevenue: baseline('isp').unit_revenue,
       scenarioNote: 'Conservative = single building pilot; Stretch = 5+ buildings with anchor subscriber density.',
     },
     proof: [],
-    computeRevenue: makeCompute({ unitRevenue: 100 }),
+    computeRevenue: makeCompute('isp'),
   },
 ];
