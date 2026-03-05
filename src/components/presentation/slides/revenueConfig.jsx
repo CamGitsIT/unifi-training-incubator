@@ -111,6 +111,8 @@ export const STREAMS = [
   // ── 3. UniFi Certification Training ──────────────────────────
   {
     id: 'training',
+    feedsInto: 'All other revenue streams via graduates. An MSP who trains here and manages 30 retail locations triggers monitoring contracts, retail rollouts, and potentially refrigeration sensing at every one of those sites. Training is the force multiplier for demand at scale.',
+    fedBy: 'Experience Center visits by IT professionals and MSPs who saw the demo and want to get certified.',
     title: 'UniFi Certification Training',
     subtitle: 'Multi-day bootcamps — URSCA, Full-Stack, and more',
     tags: ['Recurring', 'Location-free', 'High-margin'],
