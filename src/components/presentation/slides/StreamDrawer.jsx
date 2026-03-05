@@ -77,6 +77,14 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                         </div>
                     )}
 
+                    {/* Live Proof callout */}
+                    {stream.liveProof && (
+                        <div className="bg-cyan-950/30 border border-cyan-800/30 rounded-xl px-4 py-3">
+                            <p className="text-xs text-cyan-400 font-semibold uppercase tracking-wide mb-1">Live Proof</p>
+                            <p className="text-slate-300 text-sm leading-relaxed italic">"{stream.liveProof}"</p>
+                        </div>
+                    )}
+
                     {/* Tags */}
                     <div className="flex flex-wrap gap-2">
                         {stream.tags.map(t => (
