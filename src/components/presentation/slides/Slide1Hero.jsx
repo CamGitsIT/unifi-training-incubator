@@ -103,8 +103,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                                     }
                                 `}
                             >
-                                Start Here
-                                <ArrowDown className="w-5 h-5" />
+                                See the Vision →
                             </motion.button>
 
                             {!canClick && (
