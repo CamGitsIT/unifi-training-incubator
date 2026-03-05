@@ -85,6 +85,8 @@ export const STREAMS = [
     whoServes: 'HOAs, multi-family property managers, commercial landlords, and developers. Leads come from: a.) Experience Center visits by decision-makers who see the live retrofit b.) References from existing clients whose boards or networks know other property managers.',
     howWeEarn: 'Fee on project value. Avg project: $9,000 · Our fee: ~12.5% = ~$1,125/project. Each completed property is a compounding referral asset — every property manager has a network of other managers.',
     liveProof: 'Proven in practice: the building we\'re acquiring is already running the retrofit. The Experience Center is our live case study. A developer who walked this building signed a letter of intent the same week.',
+    feedsInto: 'Professional Monitoring (every retrofitted property is a monitoring candidate), Micro ISP (properties with new access infrastructure often want managed internet too), and compounding referrals to more retrofit projects.',
+    fedBy: 'Experience Center visits by HOA boards and property managers, plus word-of-mouth from executed projects. Each completed retrofit becomes a live reference that generates the next lead organically.',
     proven: true,
     proofBadge: 'Live in Production',
     driver: {
