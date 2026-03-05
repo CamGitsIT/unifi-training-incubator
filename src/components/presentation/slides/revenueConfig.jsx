@@ -167,7 +167,7 @@ export const STREAMS = [
   {
     id: 'retail',
     title: 'Multi-Location Retail',
-    subtitle: 'Franchise & chain UniFi rollouts — remote consulting',
+    subtitle: 'Franchise & chain UniFi rollouts — Rollout Design',
     tags: ['Project', 'Location-free', 'Recurring'],
     color: STREAM_COLORS.retail,
     emoji: '🏪',
