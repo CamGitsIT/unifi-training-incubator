@@ -4,6 +4,7 @@ import { Shield } from 'lucide-react';
 import SlideNav from '../components/presentation/SlideNav';
 import SideNav from '../components/presentation/SideNav';
 import Slide1Hero from '../components/presentation/slides/Slide1Hero';
+import Slide2Mission from '../components/presentation/slides/Slide2Mission';
 import Slide5BusinessModel from '../components/presentation/slides/Slide5BusinessModel';
 import Slide6Property from '../components/presentation/slides/Slide6Property';
 import Slide7Financials from '../components/presentation/slides/Slide7Financials';
