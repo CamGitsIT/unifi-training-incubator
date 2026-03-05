@@ -167,9 +167,9 @@ export const STREAMS = [
     tags: ['Recurring', 'Location-free', 'High-margin'],
     color: '#34d399',
     emoji: '👁️',
-    what: 'Remote monitoring of security cameras and access control systems with alerting, reporting, and escalation procedures.',
-    whoServes: 'Property managers, HOAs, retail chains already on UniFi infrastructure.',
-    howWeEarn: '$100/site/month recurring. High-margin after onboarding (Modeled placeholder).',
+    what: 'Remote monitoring of security cameras and access control systems with alerting, reporting, and escalation. Every other stream that installs or expands UniFi infrastructure is a direct feeder — more deployed sites = more monitoring contracts.',
+    whoServes: 'Property managers, HOAs, retail chains, and any client whose infrastructure we touched through retrofit, retail rollout, training, or ISP. An MSP trained by us who converts their retail clients also converts those clients into monitoring subscribers.',
+    howWeEarn: '$100/site/month recurring — the more we deploy through other streams, the larger this base grows without additional sales effort. A single retail chain rollout of 40 locations = $4,000/mo in monitoring recurring revenue.',
     driver: {
       name: 'Active monitored sites',
       unitLabel: 'sites',
