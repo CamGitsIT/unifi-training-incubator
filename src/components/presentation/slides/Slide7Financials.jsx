@@ -38,7 +38,7 @@ const DEFAULT_LINES = [
         emoji: '🎓',
         color: '#f472b6',
         locationIndependent: true,
-        tagline: '🌐 No geography. Anyone, anywhere, any time.',
+        tagline: 'Location-free National Training Center cohorts delivered online and on-site.',
         unit: 'students/mo',
         unitLabel: 'Monthly Students',
         min: 1, max: 60, step: 1, default: 8,
