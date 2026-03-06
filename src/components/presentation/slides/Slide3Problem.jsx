@@ -15,7 +15,7 @@ export default function Slide3Problem({ onInteracted }) {
                     </div>
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Subscription Prison</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                        Properties and businesses are trapped in a cycle of never-ending fees for basic infrastructure.
+                        Properties locked into never-ending OpEx for basic infrastructure—legacy analog lines or modern SaaS—creating perpetual budget liability with no equity.
                     </p>
                 </motion.div>
 
