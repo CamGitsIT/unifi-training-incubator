@@ -45,7 +45,7 @@ const businessLines = [
         subtitle: 'Replacing ADT, Brinks & Legacy Systems',
         color: 'red',
         revenue: '$96K',
-        description: 'Provide monitoring replacement via pilot partner "Legacy Security" — replacing ADT, Brinks, etc. with UniFi-compatible technology that cuts subscription costs while delivering superior, smarter protection.',
+        description: 'UniFi-compatible monitoring replacing legacy alarm vendors, creating sticky recurring revenue with lower OpEx for clients.',
         metrics: ['Lower monthly cost than ADT/Brinks', 'Fully compatible with UniFi cameras and access', 'Recurring revenue stream with strong retention']
     },
     {
