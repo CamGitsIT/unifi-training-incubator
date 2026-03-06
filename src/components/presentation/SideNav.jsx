@@ -4,18 +4,18 @@ import { Lock, ChevronRight } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from 'lucide-react';
 
-// SIDENAV – components/presentation/SideNav.jsx (one directory up from slides)
-// Maps slide indices to nav section indices
-// SLIDES order: 0=Hero, 1=BusinessModel, 2=SocialImpact, 3=Property, 4=Financials, 5=Revenue, 6=Investment, 7=Team, 8=CTA
+// SIDENAV – components/presentation/SideNav.jsx
+// Navigation sections mapped by content purpose, not position
+// Each section contains slideIndices (internal array references only)
 const NAV_SECTIONS = [
-    { label: 'Overview', slideIndices: [0] },
-    { label: 'Business Model', slideIndices: [1] },
-    { label: 'Revenue Streams', slideIndices: [2] },
-    { label: 'Community Impact', slideIndices: [3] },
-    { label: 'The Property', slideIndices: [4] },
-    { label: 'Investment Insights', slideIndices: [5] },
-    { label: 'The Team', slideIndices: [6] },
-    { label: 'Join the Mission', slideIndices: [7] },
+    { id: 'overview', label: 'Overview', slideIndices: [0] },
+    { id: 'business-model', label: 'Business Model', slideIndices: [1] },
+    { id: 'revenue-streams', label: 'Revenue Streams', slideIndices: [2] },
+    { id: 'community-impact', label: 'Community Impact', slideIndices: [3] },
+    { id: 'the-property', label: 'The Property', slideIndices: [4] },
+    { id: 'financials', label: 'Investment Insights', slideIndices: [5] },
+    { id: 'team', label: 'The Team', slideIndices: [6] },
+    { id: 'call-to-action', label: 'Join the Mission', slideIndices: [7] },
 ];
 
 function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
@@ -67,10 +67,10 @@ function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
         <div className="space-y-1">
             {NAV_SECTIONS.map((section, idx) => {
                         const { isActive, isSeen, isAccessible } = getSectionState(idx);
-                        
+
                         if (section.parent) {
                             return (
-                                <div key={idx}>
+                                <div key={section.id}>
                                     <div className={`
                                         w-full text-left flex items-center gap-2 px-3 py-2.5 rounded-xl transition-all duration-200
                                         ${isActive ? 'bg-cyan-500/20 border border-cyan-500/40' : isAccessible ? 'border border-transparent' : 'bg-slate-800/40 border border-slate-700/50 opacity-70'}
@@ -120,7 +120,7 @@ function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
 
                         return (
                             <motion.button
-                                key={idx}
+                                key={section.id}
                                 onClick={() => handleClick(idx)}
                                 disabled={!isAccessible}
                                 className={`
