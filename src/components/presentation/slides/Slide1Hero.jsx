@@ -36,7 +36,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-8">
                         <Zap className="w-4 h-4 text-cyan-400" />
-                        <span className="text-cyan-400 text-sm font-medium">Turn subscription fees into futures.</span>
+                        <span className="text-cyan-400 text-sm font-medium">The first-of-its-kind UniFi Experience Center — built to last.</span>
                     </div>
 
                     <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
