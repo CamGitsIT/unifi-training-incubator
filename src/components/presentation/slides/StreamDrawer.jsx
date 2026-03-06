@@ -282,7 +282,7 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                         onClick={onClose}
                         className="w-full py-3 rounded-xl border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 transition-all text-sm font-medium"
                     >
-                        Close Panel
+                        Close stream details
                     </button>
                 </div>
             </motion.div>
