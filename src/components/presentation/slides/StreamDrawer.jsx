@@ -13,16 +13,21 @@ const fmt = (v) => {
 
 const YEAR_LABELS = { y1: 'Y1', y2: 'Y2', y3: 'Y3', runRate: 'Run-rate' };
 
-export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
-    const [driverValue, setDriverValue] = useState(stream?.driver.defaultValue ?? 0);
+export default function StreamDrawer({ stream, scenario, yearView, driverValue: externalDriverValue, onDriverChange, onClose }) {
+    const [driverValue, setDriverValue] = useState(externalDriverValue ?? stream?.driver.defaultValue ?? 0);
     const [assumptionsOpen, setAssumptionsOpen] = useState(false);
 
     useEffect(() => {
         if (stream) {
-            setDriverValue(stream.driver.defaultValue);
+            setDriverValue(externalDriverValue ?? stream.driver.defaultValue);
             setAssumptionsOpen(false);
         }
     }, [stream?.id]);
+
+    const handleDriverChange = (val) => {
+        setDriverValue(val);
+        if (onDriverChange) onDriverChange(val);
+    };
 
     if (!stream) return null;
 
