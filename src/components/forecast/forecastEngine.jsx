@@ -4,7 +4,7 @@
 // ============================================================
 
 export const BASELINE_STREAMS = [
-  // Values sourced from STREAMS_MODEL tab — OverIT Revenue Forecast 20260305 MASTER
+  // Values sourced from STREAMS_MODEL tab — OverIT Revenue Forecast 20260305 MASTER (updated 2026-03-06)
   { stream_id: 'experience',    stream_title: 'Experience Center',                        driver_name: 'Qualified visits per month',   driver_unit: 'visits/mo',      plan_driver_m1: 40,  units_per_driver: 1,  unit_revenue: 12,     monthly_growth: 0.07,  enabled: true },
   { stream_id: 'training',      stream_title: 'UniFi Certification Training (Multi-day)', driver_name: 'Seats per month',              driver_unit: 'seats/mo',       plan_driver_m1: 8,   units_per_driver: 1,  unit_revenue: 2000,   monthly_growth: 0.10,  enabled: true },
   { stream_id: 'retrofit',      stream_title: 'Keyless Property Access (Retrofit)',        driver_name: 'Projects sold per month',      driver_unit: 'projects/mo',    plan_driver_m1: 4,   units_per_driver: 6,  unit_revenue: 937.5,  monthly_growth: 0.075, enabled: true },
@@ -14,6 +14,21 @@ export const BASELINE_STREAMS = [
   { stream_id: 'refrigeration', stream_title: 'Refrigeration & Temp Monitoring',           driver_name: 'Locations monitored',          driver_unit: 'locations/mo',   plan_driver_m1: 15,  units_per_driver: 1,  unit_revenue: 83,     monthly_growth: 0.07,  enabled: true },
   { stream_id: 'isp',           stream_title: 'Micro ISP',                                 driver_name: 'Buildings served',             driver_unit: 'buildings/mo',   plan_driver_m1: 3,   units_per_driver: 1,  unit_revenue: 100,    monthly_growth: 0.10,  enabled: true },
 ];
+
+// Allows ForecastEngine page to override baseline at runtime via CSV/Excel import
+export function applyImportedStreams(importedRows, baseStreams = BASELINE_STREAMS) {
+  return baseStreams.map(s => {
+    const match = importedRows.find(r => r.stream_id === s.stream_id);
+    if (!match) return s;
+    return {
+      ...s,
+      plan_driver_m1:  match.plan_driver_m1  ?? s.plan_driver_m1,
+      units_per_driver: match.units_per_driver ?? s.units_per_driver,
+      unit_revenue:    match.unit_revenue     ?? s.unit_revenue,
+      monthly_growth:  match.monthly_growth   ?? s.monthly_growth,
+    };
+  });
+}
 
 export const DEPENDENCIES = [
   // Values sourced from DEPENDENCIES tab — OverIT Revenue Forecast 20260305 MASTER
