@@ -265,7 +265,7 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                     {/* ── Proof Points ── */}
                     {stream.proof?.length > 0 && (
                         <div>
-                            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Proof & Traction</p>
+                            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Proof and traction</p>
                             <div className="space-y-2">
                                 {stream.proof.map((p, i) => (
                                     <div key={i} className="flex items-start gap-3 text-sm text-slate-300">
