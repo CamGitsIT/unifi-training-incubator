@@ -17,7 +17,7 @@ import Slide11CTA from '../components/presentation/slides/Slide11CTA';
 
 const SLIDES = [
     { component: Slide1Hero, label: 'Welcome' },
-    // { component: Slide5BusinessModel, label: 'Business Model' }, // hidden for now
+    { component: Slide5BusinessModel, label: 'Business Model' },
     { component: Slide2Mission, label: 'Revenue Streams' },
     { component: Slide10SocialImpact, label: 'Impact' },
     { component: Slide6Property, label: 'Property' },
