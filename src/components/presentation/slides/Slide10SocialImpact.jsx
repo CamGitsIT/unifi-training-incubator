@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Briefcase, DollarSign, TrendingUp, Award, Users, Lightbulb, Sparkles, Wifi, Lock, Globe, Server } from 'lucide-react';
+import { Briefcase, DollarSign, TrendingUp, Award, Users, Lightbulb, Sparkles, Wifi, Lock, Globe, Server, GraduationCap, Cpu, Building2, Play, Pause, RotateCcw, ChevronRight } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
