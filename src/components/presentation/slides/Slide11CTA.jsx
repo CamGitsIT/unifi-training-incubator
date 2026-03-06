@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { Slider } from "@/components/ui/slider";
 
 const tiers = [
     { value: 'participant', label: '$5,000 — Participant', amount: 5000 },
@@ -23,6 +24,15 @@ export default function Slide11CTA({ onInteracted }) {
     const [formData, setFormData] = useState({ full_name: '', email: '', amount: '50000', tier: 'growth_accelerator' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [investmentAmount, setInvestmentAmount] = useState(25000);
+    
+    const targetReturn = investmentAmount * 1.10;
+    const monthlyPayment = 50530 * 0.05;
+    const estimatedMonths = Math.ceil(targetReturn / monthlyPayment);
+
+    const handleSlide = (val) => {
+        setInvestmentAmount(val[0]);
+    };
 
     const handleTierChange = (tier) => {
         const selected = tiers.find(t => t.value === tier);
@@ -76,6 +86,27 @@ export default function Slide11CTA({ onInteracted }) {
                         <Link to={createPageUrl('ScheduleMeeting')}>
                             <Button className="bg-green-700 hover:bg-green-600 text-white text-sm px-4 py-2 rounded-lg">Schedule a Visit</Button>
                         </Link>
+                    </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-cyan-500/30 rounded-2xl p-6 mb-10">
+                    <h3 className="text-xl font-bold text-white mb-4 text-center">Your Investment Potential</h3>
+                    <div className="max-w-xl mx-auto">
+                        <div className="flex justify-between mb-4">
+                            <span className="text-slate-300 text-sm">Your Contribution</span>
+                            <span className="text-xl font-bold text-cyan-400">${investmentAmount.toLocaleString()}</span>
+                        </div>
+                        <Slider value={[investmentAmount]} onValueChange={handleSlide} min={5000} max={100000} step={5000} className="[&>span]:bg-cyan-400 mb-6" />
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-slate-950/50 rounded-xl p-4 text-center">
+                                <div className="text-sm text-slate-400 mb-1">Your Total Return</div>
+                                <div className="text-2xl font-bold text-green-400">${targetReturn.toLocaleString()}</div>
+                            </div>
+                            <div className="bg-slate-950/50 rounded-xl p-4 text-center">
+                                <div className="text-sm text-slate-400 mb-1">Est. Payback</div>
+                                <div className="text-2xl font-bold text-purple-400">{estimatedMonths} months</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
