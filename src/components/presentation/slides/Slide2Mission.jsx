@@ -336,6 +336,8 @@ export default function Slide2Mission({ onInteracted }) {
                         stream={activeStream}
                         scenario={scenario}
                         yearView={yearView}
+                        driverValue={drivers[activeStream.id]}
+                        onDriverChange={(val) => setDrivers(prev => ({ ...prev, [activeStream.id]: val }))}
                         onClose={() => setActive(null)}
                     />
                 )}
