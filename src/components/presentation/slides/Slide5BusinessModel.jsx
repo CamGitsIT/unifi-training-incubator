@@ -63,7 +63,7 @@ const businessLines = [
         subtitle: 'FDA Compliance Automation',
         color: 'orange',
         revenue: '$60K',
-        description: 'Replace manual temperature log checks with automated UniFi sensors that continuously log readings and alert staff of any critical changes — ensuring FDA compliance effortlessly.',
+        description: 'Automated UniFi sensor monitoring for refrigeration, eliminating manual logs and avoiding spoilage across food and pharma locations.',
         metrics: ['Eliminates manual logging labor', 'Real-time alerts prevent costly spoilage', 'Scalable across restaurant and pharmacy chains']
     },
     {
