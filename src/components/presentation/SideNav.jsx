@@ -18,7 +18,7 @@ const NAV_SECTIONS = [
         parent: true,
         subItems: [
             { label: 'Revenue Model', slideIndices: [5] },
-            { label: 'Investment Terms', slideIndices: [6] }
+            { label: 'Investment Terms', slideIndices: [8] }
         ]
     },
     { 
