@@ -151,14 +151,17 @@ export default function Slide7Financials({ onInteracted }) {
     const y2 = currentForecast.totalY2;
     const y3 = currentForecast.totalY3;
 
-    // Compute revenues using the forecast engine with current slider values
+    // Compute revenues using the forecast engine results for each line
+    // The forecast engine includes dependency compounding effects
     const lineRevenues = LINE_CONFIGS.map(l => {
-        const monthlyRev = values[l.id] * l.revenuePerDriver;
-        const annualRev = monthlyRev * 12;
+        const engineResult = currentForecast.streams[l.id];
+        const annualRev = engineResult ? engineResult.y1 : 0;
+        const monthlyRev = annualRev / 12;
         return { ...l, monthly: monthlyRev, annual: annualRev };
     });
 
-    const totalAnnual = lineRevenues.reduce((s, l) => s + l.annual, 0);
+    // Use the forecast engine's total (includes all compounding effects)
+    const totalAnnual = currentForecast.totalY1;
     const totalProfit = Math.round(totalAnnual * MARGIN);
     const dscr = (totalProfit / ANNUAL_DEBT_SERVICE).toFixed(1);
     const dscrColor = parseFloat(dscr) >= 10 ? '#4ade80' : parseFloat(dscr) >= 3 ? '#22d3ee' : '#facc15';
