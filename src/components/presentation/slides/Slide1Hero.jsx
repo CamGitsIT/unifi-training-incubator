@@ -51,7 +51,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </p>
 
                     <p className="text-base md:text-lg text-slate-400 mb-10 max-w-xl mx-auto leading-relaxed">
-                        We're raising <strong className="text-cyan-400">$300K</strong> to launch Atlanta's first <strong className="text-white">UniFi Experience Center</strong>—where businesses and MSPs test integrated systems that cut OpEx 40–60%.
+                        We're raising <strong className="text-cyan-400">$300K</strong> to launch Atlanta's <strong className="text-white">first-ever UniFi Experience Center and Training Hub</strong>—where businesses and MSPs test integrated systems that <strong className="text-white">move OpEx to CapEx one-time only</strong>.
                     </p>
 
                     <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
