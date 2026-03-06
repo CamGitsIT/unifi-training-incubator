@@ -45,9 +45,9 @@ export default function Slide8Investment({ onInteracted }) {
                     </div>
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Revenue-based Lending and Repayment</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-4">
-                        Get paid back as we grow — quickly if things go well, flexibly if the world gets harder.
+                        You earn a fixed 10% return, repaid from 5% of revenue—faster if growth outperforms, slower but steady if it doesn't.
                     </p>
-                    <p className="text-lg text-cyan-400 font-semibold">Conservative projections. Revenue-based repayment model with guaranteed interest.</p>
+                    <p className="text-lg text-cyan-400 font-semibold">Conservative projections. Revenue-based repayments with aligned downside protection and upside speed.</p>
                 </motion.div>
 
                 <div className="grid md:grid-cols-2 gap-8 mb-10">
