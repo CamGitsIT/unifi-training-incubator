@@ -107,7 +107,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                             animate={{ opacity: 1, scale: 1 }}
                             className="inline-flex items-center gap-3 bg-green-500/10 border border-green-500/30 text-green-400 font-semibold px-8 py-4 rounded-2xl"
                         >
-                            ✓ Ready — click Next below to continue
+                            ✓ Acknowledged — continue
                         </motion.div>
                     )}
                 </motion.div>
