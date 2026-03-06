@@ -13,9 +13,8 @@ export default function Slide8Investment({ onInteracted }) {
     const [timerDone, setTimerDone] = useState(false);
     const [secondsLeft, setSecondsLeft] = useState(10);
 
-    // Y1 total from forecast engine / 12 months = avg monthly Y1 revenue
-    const avgMonthlyRevenue = Math.round(5502840 / 12); // $5.5M Y1 base scenario
     const targetReturn = investmentAmount * 1.10;
+    const avgMonthlyRevenue = AVG_MONTHLY_REVENUE_Y1;
     const monthlyPayment = avgMonthlyRevenue * 0.05;
     const estimatedMonths = Math.ceil(targetReturn / monthlyPayment);
 
