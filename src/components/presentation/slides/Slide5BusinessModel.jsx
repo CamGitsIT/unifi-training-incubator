@@ -154,27 +154,22 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
         </div>
 
         {/* 3-Part Framework */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           {FRAMEWORK.map((item, i) => {
             const Icon = item.icon;
             return (
-              <div key={i} className={`rounded-2xl border ${item.border} bg-slate-800/30 px-5 py-5 flex flex-col gap-3`}>
-                <div className={`w-9 h-9 ${item.bg} rounded-xl flex items-center justify-center`}>
+              <div key={i} className={`rounded-2xl border ${item.border} bg-slate-800/30 px-6 py-5 flex items-start gap-4`}>
+                <div className={`w-9 h-9 ${item.bg} rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5`}>
                   <Icon className={`w-5 h-5 ${item.color}`} />
                 </div>
                 <div>
                   <p className={`text-sm font-bold ${item.color} mb-1`}>{item.heading}</p>
-                  <p className="text-slate-400 text-xs leading-relaxed">{item.body}</p>
+                  <p className="text-slate-400 text-sm leading-relaxed">{item.body}</p>
                 </div>
               </div>
             );
           })}
         </motion.div>
-
-        {/* Divider note */}
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-center text-slate-600 text-xs">
-          Built entirely on the UniFi ecosystem — one core expertise, eight monetization paths.
-        </motion.p>
 
         {allExpanded && (
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
