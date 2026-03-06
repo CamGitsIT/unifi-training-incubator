@@ -72,7 +72,7 @@ const businessLines = [
         subtitle: 'Breaking the Monopoly on Internet',
         color: 'teal',
         revenue: '$144K',
-        description: 'Save HOAs and residents money with a more manageable internet offering, overcoming monopoly pricing and quality issues with a community-owned broadband alternative.',
+        description: 'Micro ISP built on UniFi infrastructure, offering HOAs community-owned broadband that undercuts monopoly pricing.',
         metrics: ['Predictable recurring revenue', 'Serves HOAs underserved by Comcast/AT&T', 'UniFi infrastructure enables rapid deployment']
     }
 ];
