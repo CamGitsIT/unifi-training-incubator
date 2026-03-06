@@ -27,7 +27,7 @@ const businessLines = [
         subtitle: 'Authorized Ubiquiti Education',
         color: 'green',
         revenue: '$304K',
-        description: 'Offer in-house and virtual training to educate, promote, and expand the reach of our message to technicians and IT professionals nationwide.',
+        description: 'National Training Center delivering Ubiquiti / UniFi certifications that create the workforce powering all eight revenue streams.',
         metrics: ['In-person: $1,995/seat, $1,575 net', 'Virtual training: Up to $5,000/seat', 'Training revenue alone covers debt 10x over']
     },
     {
