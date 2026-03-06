@@ -223,6 +223,32 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     <p className="text-sm text-cyan-400 animate-pulse">👇 Click all 5 certification badges to continue</p>
                 </motion.div>
 
+                <div className="mt-0 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 p-10 text-center mb-8">
+                    <p className="text-emerald-400 text-sm font-semibold uppercase tracking-widest mb-4">SBA Community Win</p>
+                    <h3 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
+                        We don't hire installers.<br />We create them.
+                    </h3>
+                    <p className="text-slate-300 max-w-2xl mx-auto mb-10">
+                        Graduates leave with credentials, portfolio projects, and a pipeline of paid work—launching independent contractors and small businesses that keep SBA-backed impact circulating in the local economy.
+                    </p>
+                    <div className="grid md:grid-cols-3 gap-5">
+                        {[
+                            { label: 'Hands-On Training', img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80' },
+                            { label: 'Real-World Projects', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80' },
+                            { label: 'Independent Businesses', img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80' },
+                        ].map((item, i) => (
+                            <div key={i} className="bg-slate-800/60 rounded-2xl overflow-hidden border border-slate-700">
+                                <div className="h-44 overflow-hidden">
+                                    <img src={item.img} alt={item.label} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                                </div>
+                                <div className="p-4">
+                                    <p className="text-white font-bold text-lg">{item.label}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
                 {/* Certifications That Change Lives — summary panel */}
                 <div className="grid md:grid-cols-2 gap-6 mb-8 bg-slate-800/30 border border-slate-700 rounded-2xl p-6">
                     <div>
@@ -239,18 +265,18 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     </div>
                     <div className="bg-slate-900/60 border border-slate-600 rounded-xl p-5 flex flex-col gap-4">
                        <img
-                           src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/6c072e701_certification-program2.png"
-                           alt="Ubiquiti Certifications"
-                           className="w-full rounded-lg object-contain"
-                       />
-                       <ul className="space-y-2">
-                           {certifications.map((cert) => (
-                               <li key={cert.id} className="flex items-center gap-3 text-slate-200 text-sm">
-                                   <img src={cert.badge} alt={cert.name} className="w-7 h-7 flex-shrink-0 rounded-md" />
-                                   <span>{cert.name}</span>
-                               </li>
-                           ))}
-                       </ul>
+                            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/6c072e701_certification-program2.png"
+                            alt="Ubiquiti Certifications"
+                            className="w-full rounded-lg object-contain"
+                        />
+                        <ul className="space-y-2">
+                            {certifications.map((cert) => (
+                                <li key={cert.id} className="flex items-center gap-3 text-slate-200 text-sm">
+                                    <img src={cert.badge} alt={cert.name} className="w-7 h-7 flex-shrink-0 rounded-md" />
+                                    <span>{cert.name}</span>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
 
@@ -341,32 +367,6 @@ export default function Slide10SocialImpact({ onInteracted }) {
                         ))}
                     </AnimatePresence>
                 </Tabs>
-
-                <div className="mt-8 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 p-10 text-center">
-                    <p className="text-emerald-400 text-sm font-semibold uppercase tracking-widest mb-4">SBA Community Win</p>
-                    <h3 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
-                        We don't hire installers.<br />We create them.
-                    </h3>
-                    <p className="text-slate-300 max-w-2xl mx-auto mb-10">
-                        Graduates leave with credentials, portfolio projects, and a pipeline of paid work—launching independent contractors and small businesses that keep SBA-backed impact circulating in the local economy.
-                    </p>
-                    <div className="grid md:grid-cols-3 gap-5">
-                        {[
-                            { label: 'Hands-On Training', img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80' },
-                            { label: 'Real-World Projects', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80' },
-                            { label: 'Independent Businesses', img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80' },
-                        ].map((item, i) => (
-                            <div key={i} className="bg-slate-800/60 rounded-2xl overflow-hidden border border-slate-700">
-                                <div className="h-44 overflow-hidden">
-                                    <img src={item.img} alt={item.label} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-                                </div>
-                                <div className="p-4">
-                                    <p className="text-white font-bold text-lg">{item.label}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
 
                 {(visited.size === certifications.length || timerDone) && (
                     <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
