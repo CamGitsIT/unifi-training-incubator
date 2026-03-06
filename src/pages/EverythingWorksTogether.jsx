@@ -1,9 +1,9 @@
 import React from 'react';
-import Hero from '@/components/everything/Hero';
-import ThreeCoreEngine from '@/components/everything/ThreeCoreEngine';
-import ExperienceCenter from '@/components/everything/ExperienceCenter';
-import Flywheel from '@/components/everything/Flywheel';
-import LowRiskCloser from '@/components/everything/LowRiskCloser';
+import Hero from '@/components/everything/Hero.js';
+import ThreeCoreEngine from '@/components/everything/ThreeCoreEngine.js';
+import ExperienceCenter from '@/components/everything/ExperienceCenter.js';
+import Flywheel from '@/components/everything/Flywheel.js';
+import LowRiskCloser from '@/components/everything/LowRiskCloser.js';
 
 export default function EverythingWorksTogether() {
     return (
