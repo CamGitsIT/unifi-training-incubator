@@ -189,6 +189,13 @@ export default function ForecastEngine() {
         {/* Dependency Graph */}
         <DependencyGraph streams={streams} dependencies={DEPENDENCIES} />
 
+        {/* Import Panel */}
+        <ForecastImporter
+          onImport={(importedRows) => {
+            setStreams(applyImportedStreams(importedRows, streams));
+          }}
+        />
+
       </div>
     </div>
   );
