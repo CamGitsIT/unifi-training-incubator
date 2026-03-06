@@ -305,8 +305,8 @@ export default function Slide7Financials({ onInteracted }) {
                                         content={({ active, payload }) => {
                                             if (!active || !payload || !payload[0]) return null;
                                             const entry = payload[0].payload;
-                                            const engineData = currentForecast.streams[entry.name.toLowerCase().split(' ')[0]] || currentForecast.streams[Object.keys(currentForecast.streams).find(k => currentForecast.streams[k].y1 === entry.revenue)];
-                                            const config = LINE_CONFIGS.find(l => l.name === entry.name);
+                                            const engineData = currentForecast.streams[entry.id];
+                                            const config = LINE_CONFIGS.find(l => l.id === entry.id);
                                             return (
                                                 <div className="p-2 space-y-1 text-slate-200">
                                                     <div className="font-semibold">{entry.name}</div>
@@ -315,8 +315,9 @@ export default function Slide7Financials({ onInteracted }) {
                                                         {config && engineData && (
                                                             <>
                                                                 <div className="text-slate-400 mt-1">Effective Driver: {engineData.effectiveDriver?.toFixed(2) || 'N/A'}</div>
-                                                                <div className="text-slate-400">Monthly/Unit: {formatCurrency(engineData.monthlyUnitRev, true)}</div>
-                                                                <div className="text-slate-400">Growth: {(config.monthly_growth * 100).toFixed(1)}%</div>
+                                                                <div className="text-slate-400">Monthly/Unit Rev: {formatCurrency(engineData.monthlyUnitRev, true)}</div>
+                                                                <div className="text-slate-400">Slider Value: {values[entry.id]} {config.unit}</div>
+                                                                <div className="text-slate-400">Growth: {(config.monthly_growth * 100).toFixed(1)}%/mo</div>
                                             </>
                                         )}
                                     </div>
