@@ -153,8 +153,8 @@ export default function Home() {
                 onNext={goNext}
                 onPrev={goPrev}
                 canAdvance={canAdvance}
-                slideLabel={SLIDES[current].label}
-                hideNext={current === 0}
+                slideLabel={SLIDES[safeCurrent].label}
+                hideNext={safeCurrent === 0}
                 unlockMessage={unlockMessage}
             />
         </div>
