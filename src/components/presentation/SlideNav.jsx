@@ -15,9 +15,9 @@ export default function SlideNav({ current, total, onNext, onPrev, canAdvance, s
             )}
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-end">
 
-                {/* Right side: Back + Next grouped together */}
+                {/* Navigation controls: Previous and Next buttons */}
                 <div className="flex items-center gap-4">
-                    {/* Back */}
+                    {/* Previous section button */}
                     <button
                         onClick={onPrev}
                         disabled={current === 0}
@@ -27,7 +27,7 @@ export default function SlideNav({ current, total, onNext, onPrev, canAdvance, s
                         Back
                     </button>
 
-                    {/* Next */}
+                    {/* Next section button */}
                     <AnimatePresence mode="wait">
                         {!hideNext && current < total - 1 ? (
                             canAdvance ? (
