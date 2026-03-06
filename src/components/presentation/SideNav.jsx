@@ -103,8 +103,9 @@ function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
                                     </div>
                                     <div className="ml-3 space-y-0.5 mt-1">
                                         {section.subItems.map((sub, subIdx) => {
-                                            const subActive = sub.slideIndices.includes(current);
-                                            return (
+                                                 const subSlideIndices = sub.parent ? sub.subItems.flatMap(s => s.slideIndices) : sub.slideIndices;
+                                                 const subActive = subSlideIndices.includes(current);
+                                                 return (
                                                 <motion.button
                                                     key={`${idx}-${subIdx}`}
                                                     onClick={() => handleClick(idx, subIdx)}
