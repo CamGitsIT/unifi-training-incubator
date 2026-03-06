@@ -78,7 +78,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
                             <div className="text-4xl font-bold text-purple-400 mb-2">$850K</div>
                             <div className="text-white text-sm font-semibold mb-1">Facility</div>
-                            <div className="text-slate-400 text-xs">Experience Center + Training Hub</div>
+                            <div className="text-slate-400 text-xs">UniFi Experience Center + National Training Center</div>
                         </div>
                         <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
                             <div className="text-4xl font-bold text-green-400 mb-2">8</div>
