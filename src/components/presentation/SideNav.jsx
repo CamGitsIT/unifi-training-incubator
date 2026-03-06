@@ -15,15 +15,7 @@ const NAV_SECTIONS = [
     { label: 'The Property', slideIndices: [4] },
     { label: 'Investment Insights', slideIndices: [5] },
     { label: 'The Team', slideIndices: [7] },
-    { 
-        label: 'Join the Mission', 
-        parent: true,
-        subItems: [
-            { label: 'Invest as a Friend', slideIndices: [8] },
-            { label: 'Feeling Generous?', slideIndices: [8] },
-            { label: 'Schedule a Visit', slideIndices: [8] }
-        ]
-    },
+    { label: 'Join the Mission', slideIndices: [8] },
 ];
 
 function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
