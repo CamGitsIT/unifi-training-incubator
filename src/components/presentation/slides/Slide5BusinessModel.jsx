@@ -28,7 +28,6 @@ const colorMap = {
 
 const businessLines = BASELINE_STREAMS.map(s => {
     const display = STREAM_DISPLAY[s.stream_id];
-    const fr = FORECAST.streams[s.stream_id];
     return {
         id: s.stream_id,
         icon: display.icon,
@@ -36,9 +35,6 @@ const businessLines = BASELINE_STREAMS.map(s => {
         subtitle: display.subtitle,
         color: display.color,
         hex: colorMap[display.color].hex,
-        y1: fr.y1,
-        y2: fr.y2,
-        y3: fr.y3,
         description: display.description,
         metrics: display.metrics,
     };
