@@ -153,18 +153,25 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
           })}
         </div>
 
-        {/* 3-Part Framework */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        {/* Section break */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="mt-14 mb-8 flex items-center gap-4">
+          <div className="flex-1 border-t border-slate-800" />
+          <p className="text-xs font-semibold tracking-widest text-slate-500 uppercase whitespace-nowrap">Why This Model Works</p>
+          <div className="flex-1 border-t border-slate-800" />
+        </motion.div>
+
+        {/* 3-Part Framework — shared container */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="rounded-2xl border border-slate-800 bg-slate-800/20 p-4 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-800 mb-4">
           {FRAMEWORK.map((item, i) => {
             const Icon = item.icon;
             return (
-              <div key={i} className={`rounded-2xl border ${item.border} bg-slate-800/30 px-6 py-5 flex items-start gap-4`}>
-                <div className={`w-9 h-9 ${item.bg} rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                  <Icon className={`w-5 h-5 ${item.color}`} />
+              <div key={i} className="px-5 py-4 flex items-start gap-3">
+                <div className="w-8 h-8 bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Icon className={`w-4 h-4 ${item.color}`} />
                 </div>
                 <div>
-                  <p className={`text-sm font-bold ${item.color} mb-1`}>{item.heading}</p>
-                  <p className="text-slate-400 text-sm leading-relaxed">{item.body}</p>
+                  <p className="text-sm font-semibold text-slate-200 mb-1">{item.heading}</p>
+                  <p className="text-slate-500 text-xs leading-relaxed">{item.body}</p>
                 </div>
               </div>
             );
