@@ -86,28 +86,9 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                     </p>
                 </motion.div>
 
-                {/* Flywheel animation + three pillars side by side */}
-                <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-col md:flex-row items-center gap-6 mb-5">
-                    <div className="flex-shrink-0">
-                        <RevenueFlywheelAnimation />
-                    </div>
-                    <div className="flex flex-col gap-3 flex-1 w-full">
-                        {[
-            { icon: GraduationCap, color: '#34d399', bg: 'from-green-950/40', border: 'border-green-800/40', label: 'Our Training', sub: 'creates the installers.' },
-            { icon: Camera, color: '#22d3ee', bg: 'from-cyan-950/40', border: 'border-cyan-800/40', label: 'Our Experience Center', sub: 'creates the customers.' },
-            { icon: Bot, color: '#a78bfa', bg: 'from-violet-950/40', border: 'border-violet-800/40', label: 'Our AI', sub: 'connects the two.' }].
-            map(({ icon: Icon, color, bg, border, label, sub }) => null
-
-
-
-
-
-
-
-
-
-            )}
-                    </div>
+                {/* Flywheel animation — centered, full width */}
+                <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex justify-center mb-5">
+                    <RevenueFlywheelAnimation />
                 </motion.div>
 
                 {/* Interdependence statement */}
