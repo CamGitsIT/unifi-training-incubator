@@ -124,7 +124,15 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
           })}
                 </div>
 
-
+                {/* Interdependence statement */}
+                <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="mt-8 rounded-2xl border border-slate-700 bg-gradient-to-r from-slate-800/50 to-slate-800/20 px-6 py-5 text-center">
+                    <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-3">
+                        Because these lines are <span className="text-cyan-400 font-semibold">interdependent</span>, the success of one guarantees the growth of the others — making this a <span className="text-green-400 font-semibold">low-risk, high-impact</span> investment.
+                    </p>
+                    <p className="text-slate-400 text-xs md:text-sm leading-relaxed">
+                        Our business lines are designed to be <span className="text-violet-400 font-semibold">synergistic</span>, where everything works together to create greater impact: <span className="text-green-400 font-medium">Certified training programs</span> produce skilled installers who accelerate UniFi deployments for clients, and our <span className="text-violet-400 font-medium">AI-powered matching</span> connects projects nationwide, fostering local jobs. Yet, they're not dependent — our in-person <span className="text-cyan-400 font-medium">Experience Center</span> generates <span className="text-amber-400 font-semibold">standalone revenue</span> through events and demos, our video studio supports independent online courses, and consulting services offer flexible, on-demand expertise. This structure <span className="text-green-400 font-semibold">minimizes risk</span>, ensuring that even if one area faces challenges (e.g., a dip in physical attendance), the others continue driving growth and ROI.
+                    </p>
+                </motion.div>
 
                 {allExpanded &&
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
