@@ -121,7 +121,7 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                     {stream.liveProof && (
                         <div className="rounded-xl px-4 py-3 border" style={{ background: `${stream.color}0d`, borderColor: `${stream.color}30` }}>
                             <p className="text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: stream.color }}>
-                                ⚡ Live Proof
+                                Live deployments and proof points
                             </p>
                             <p className="text-slate-300 text-sm leading-relaxed">
                                 {stream.liveProof}
