@@ -127,7 +127,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                         const isOpen = expanded.has(i);
                         return (
                             <motion.div key={line.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }} onClick={() => handleExpand(i)}
-                                className={`bg-gradient-to-br ${colors.bg} to-slate-900/30 border ${colors.border} rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.02] flex flex-col gap-2 ${isOpen ? 'ring-1 ring-offset-1 ring-offset-slate-900' : ''}`}>
+                                className={`bg-gradient-to-br ${colors.bg} to-slate-900/30 border ${colors.border} rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.02] flex flex-col items-center text-center gap-2 ${isOpen ? 'ring-1 ring-offset-1 ring-offset-slate-900' : ''}`}>
                                 <div className={`w-9 h-9 ${colors.icon} rounded-xl flex items-center justify-center flex-shrink-0`}>
                                     {isOpen ? <CheckCircle className="w-4 h-4 text-green-400" /> : <Icon className={`w-4 h-4 ${colors.iconColor}`} />}
                                 </div>
@@ -136,7 +136,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                                     <p className={`text-xs ${colors.accent} mt-0.5`}>{line.subtitle}</p>
                                 </div>
                                 {isOpen && (
-                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pt-2 border-t border-slate-700/50">
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pt-2 border-t border-slate-700/50 w-full text-left">
                                         <p className="text-slate-300 text-xs mb-2">{line.description}</p>
                                         <div className="space-y-1">
                                             {line.metrics.map((m, j) => (
