@@ -52,7 +52,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
             {/* === BACKGROUND PHOTO === */}
             <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: `url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/5956c075a_unifi-experiance-center.png')` }}
+                style={{ backgroundImage: `url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/1234a93d7_experience-center_backdrop.png')` }}
             />
             {/* Dark left-side gradient so text is legible */}
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/70 to-slate-950/10" />
