@@ -64,7 +64,7 @@ export default function Slide11CTA({ onInteracted }) {
                     <div className="bg-slate-800/30 border border-slate-700 rounded-xl p-6 text-center hover:border-purple-500/50 transition-all flex flex-col items-center">
                         <Sparkles className="w-8 h-8 text-purple-400 mx-auto mb-3" />
                         <h3 className="font-bold text-white mb-2">Feeling Generous?</h3>
-                        <p className="text-slate-400 text-sm mb-4">Help launch the flagship experience center and create jobs across Georgia.</p>
+                        <p className="text-slate-400 text-sm mb-4">Help fund the flagship UniFi Experience Center and create training-led jobs across Georgia.</p>
                         <Button onClick={() => window.open('https://donate.stripe.com/aEU8xB9kM7IL8mo5kl', '_blank')} className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm px-4 py-2 rounded-lg">
                             Make a Donation
                         </Button>
