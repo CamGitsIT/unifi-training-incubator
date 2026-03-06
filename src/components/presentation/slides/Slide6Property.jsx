@@ -131,6 +131,18 @@ export default function Slide6Property({ onInteracted, onUnlockMessage }) {
                     </div>
                 </div>
 
+                <div className="grid md:grid-cols-3 gap-4 mt-4">
+                    <div className="rounded-xl overflow-hidden border border-slate-700 h-48">
+                        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/59d9dc027_IMG_2146.jpg" alt="Interior Living Area" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                    </div>
+                    <div className="rounded-xl overflow-hidden border border-slate-700 h-48">
+                        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/649f775be_IMG_2169.jpg" alt="Bedroom with Balcony" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                    </div>
+                    <div className="rounded-xl overflow-hidden border border-slate-700 h-48">
+                        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/5ac0d64c3_IMG_2167.jpg" alt="Staircase & Glass Walls" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                    </div>
+                </div>
+
                 {checkedFeatures.size === features.length && (
                     <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
                         ✓ Click Next to explore the financials
