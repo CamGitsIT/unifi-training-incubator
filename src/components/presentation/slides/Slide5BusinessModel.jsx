@@ -3,6 +3,7 @@ import { Building2, GraduationCap, Store, Shield, Camera, Thermometer, Wifi, Arr
 import { motion } from 'framer-motion';
 
 import { BASELINE_STREAMS, runForecast, STREAM_COLORS } from '@/components/forecast/forecastEngine';
+import RevenueFlywheelAnimation from './RevenueFlywheelAnimation';
 
 const STREAM_DISPLAY = {
     experience:    { icon: Camera,        color: 'cyan',   subtitle: 'Zero-Inventory Retail Showroom',       description: 'Live UniFi Experience Center showroom driving zero-inventory hardware sales and demand for every other service line.', metrics: ['Live demo environment drives high-confidence purchases', 'Zero inventory risk — orders fulfilled direct to customer', 'Doubles as marketing engine for all other business lines'] },
