@@ -89,9 +89,13 @@ export function runForecast(streams, scenario = 'base') {
   const mult = SCENARIO_MULTIPLIERS[scenario].multiplier;
   const MONTHS = 12;
 
-  // Baseline = plan_driver_m1 for each stream (the user's current slider value)
-  const baseline = {};
-  streams.forEach(s => { baseline[s.stream_id] = s.plan_driver_m1; });
+  // Current slider values (what the user set)
+  const current = {};
+  streams.forEach(s => { current[s.stream_id] = s.plan_driver_m1; });
+
+  // Original baseline from BASELINE_STREAMS (defaults)
+  const originalBaseline = {};
+  BASELINE_STREAMS.forEach(s => { originalBaseline[s.stream_id] = s.plan_driver_m1; });
 
   // Compute effective M1 drivers with dependency lifts (Apps Script style)
   const effective = {};
@@ -100,10 +104,11 @@ export function runForecast(streams, scenario = 'base') {
     let depEffect = 0;
     DEPENDENCIES.forEach(dep => {
       if (dep.downstream !== s.stream_id) return;
-      const upBase = baseline[dep.upstream] || 0;
-      const upEff  = effective[dep.upstream] || upBase;  // Use effective if already computed, else use baseline
-      // Only apply elasticity if upstream driver increased from its own baseline
-      const upDelta = upBase === 0 ? 0 : (upEff - upBase) / upBase;
+      const upOriginal = originalBaseline[dep.upstream] || 0;
+      const upCurrent = current[dep.upstream] || 0;
+      const upEff = effective[dep.upstream] || upCurrent;
+      // Dependency effect: how much did this upstream increase from its original?
+      const upDelta = upOriginal === 0 ? 0 : (upEff - upOriginal) / upOriginal;
       depEffect += dep.elasticity * upDelta;
     });
     effective[s.stream_id] = s.plan_driver_m1 * (1 + depEffect);
