@@ -84,17 +84,20 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </motion.div>
 
                     {/* Headline */}
-                    <motion.h1
+                    <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.8 }}
-                        className="text-5xl md:text-7xl font-extrabold text-white mb-5 leading-[1.05] tracking-tight"
+                        className="mb-5"
                     >
-                        Everything Works Together.
-                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 mt-1">
-                            Finally.
-                        </span>
-                    </motion.h1>
+                        <p className="text-cyan-400 text-lg md:text-xl font-semibold tracking-wide mb-2">Finally.</p>
+                        <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-[1.05] tracking-tight">
+                            Everything works
+                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+                                better together.
+                            </span>
+                        </h1>
+                    </motion.div>
 
                     {/* Subheadline */}
                     <motion.p
@@ -103,8 +106,8 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         transition={{ delay: 0.5 }}
                         className="text-lg md:text-xl font-semibold text-slate-300 mb-4 leading-snug"
                     >
-                        Own your IT infrastructure. Ditch endless subscriptions.{' '}
-                        <strong className="text-white">Simplify everything.</strong>
+                        Teach. Simplify. Save. Enjoy.{' '}
+                        <strong className="text-white">Repeat.</strong>
                     </motion.p>
 
                     {/* Short paragraph */}
@@ -114,8 +117,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         transition={{ delay: 0.65 }}
                         className="text-slate-400 text-base mb-10 leading-relaxed"
                     >
-                        We're raising <strong className="text-cyan-400">$300K</strong> to open a{' '}
-                        <strong className="text-white">UniFi Experience Center and Training Hub</strong>—where businesses, MSPs, and teams can see, test, and adopt fully integrated, owned systems that eliminate subscriptions while building a network of trained experts.
+                        We aren't just a gadget shop; we are the engine behind a technological shift. By combining the Ubiquiti UniFi stack with national Certified Training and AI-driven lead generation, we have created a business model where every division accelerates the others.
                     </motion.p>
 
                     {/* CTA */}
@@ -137,7 +139,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                                     }
                                 `}
                             >
-                                Join the Movement →
+                                Learn How →
                             </motion.button>
 
                             {!canClick ? (
