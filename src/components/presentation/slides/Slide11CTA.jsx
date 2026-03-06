@@ -72,7 +72,7 @@ export default function Slide11CTA({ onInteracted }) {
                     <div className="bg-slate-800/30 border border-slate-700 rounded-xl p-6 text-center hover:border-green-500/50 transition-all flex flex-col items-center">
                         <Calendar className="w-8 h-8 text-green-400 mx-auto mb-3" />
                         <h3 className="font-bold text-white mb-2">Schedule a Visit</h3>
-                        <p className="text-slate-400 text-sm mb-4">See the Sager Lofts property and understand the vision in person.</p>
+                        <p className="text-slate-400 text-sm mb-4">Tour the Sager Lofts property, review the plan in person, and see how the space works.</p>
                         <Link to={createPageUrl('ScheduleMeeting')}>
                             <Button className="bg-green-700 hover:bg-green-600 text-white text-sm px-4 py-2 rounded-lg">Schedule a Visit</Button>
                         </Link>
