@@ -83,12 +83,12 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                                 className={`
                                     font-bold text-lg px-10 py-5 rounded-2xl shadow-2xl transition-all flex items-center gap-3 mx-auto
                                     ${canClick
-                                        ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-cyan-500/30 hover:-translate-y-1 cursor-pointer'
+                                        ? 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-cyan-500/30 hover:-translate-y-1 cursor-pointer'
                                         : 'bg-slate-700 text-slate-400 cursor-not-allowed shadow-none'
                                     }
                                 `}
                             >
-                                Join the Movement →
+                                Join the Raise →
                             </motion.button>
 
                             {!canClick && (
