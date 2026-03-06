@@ -69,10 +69,25 @@ export default function Slide9Team({ onInteracted }) {
                     </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div className="grid md:grid-cols-3 gap-6 mb-8">
                     <div className="bg-slate-800/30 border border-slate-700 rounded-2xl p-6">
                         <Users className="w-8 h-8 text-cyan-400 mb-3" />
-                        <h3 className="text-xl font-bold text-white mb-4">Core Team (4 FTEs)</h3>
+                        <h3 className="text-lg font-bold text-white mb-4">Leadership</h3>
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-center pb-2 border-b border-slate-700">
+                                <span className="text-slate-300 text-sm">Cameron Champion</span>
+                                <span className="text-cyan-400 font-mono text-xs">Founder</span>
+                            </div>
+                            <div className="flex justify-between items-center pb-2 border-b border-slate-700">
+                                <span className="text-slate-300 text-sm">John Shea</span>
+                                <span className="text-cyan-400 font-mono text-xs">Ops Lead</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-slate-800/30 border border-slate-700 rounded-2xl p-6">
+                        <Users className="w-8 h-8 text-cyan-400 mb-3" />
+                        <h3 className="text-lg font-bold text-white mb-4">Core Team (4 FTEs)</h3>
                         <div className="space-y-3">
                             {[
                                 { role: 'Principal/Trainer', salary: '$98,591' },
