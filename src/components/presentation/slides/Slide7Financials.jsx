@@ -83,21 +83,15 @@ function LineCard({ line, value, onChange }) {
                      <div><strong className="text-slate-300">{value}</strong> <span className="text-slate-500">{line.unit}</span></div>
                      <div className="text-slate-600 text-xs mt-0.5">{line.unitLabel}</div>
                  </div>
-                 <div className="flex-1 relative">
-                     <Slider
-                         value={[value]}
-                         onValueChange={(v) => onChange(v[0])}
-                         min={line.min}
-                         max={line.max}
-                         step={line.step}
-                         className="flex-1"
-                         style={{
-                             '--slider-track-background': '#0f172a',
-                             '--slider-thumb-background': '#22d3ee',
-                             '--slider-filled': '#06b6d4',
-                         }}
-                     />
-                 </div>
+                 <Slider
+                     value={[value]}
+                     onValueChange={(v) => onChange(v[0])}
+                     min={line.min}
+                     max={line.max}
+                     step={line.step}
+                     className="flex-1"
+                     style={{ '--slider-filled': '#21d3ee' }}
+                 />
             </div>
             <div className="flex justify-between text-xs text-slate-600 mt-1">
                 <span>{line.min} {line.unit}</span>
