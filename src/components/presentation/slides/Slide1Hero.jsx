@@ -80,7 +80,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-xl border border-cyan-500/20 mb-8"
                     >
                         <Zap className="w-3.5 h-3.5 text-cyan-400" />
-                        <span className="text-cyan-400 text-xs font-medium tracking-wide">UniFi Experience Center — Atlanta</span>
+                        <span className="text-cyan-400 text-xs font-medium tracking-wide">UniFi Experience Center and Training Hub</span>
                     </motion.div>
 
                     {/* Headline */}
