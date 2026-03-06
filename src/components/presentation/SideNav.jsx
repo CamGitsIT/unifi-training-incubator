@@ -18,17 +18,11 @@ const NAV_SECTIONS = [
         parent: true,
         subItems: [
             { label: 'Revenue Model', slideIndices: [5] },
-            { 
-                label: 'Investment Terms', 
-                parent: true,
-                subItems: [
-                    { label: 'Investment Terms', slideIndices: [6] }
-                ]
-            }
+            { label: 'Investment Terms', slideIndices: [6] }
         ]
     },
     { label: 'The Team', slideIndices: [7] },
-    { label: 'Invest Now', slideIndices: [8] },
+    { label: 'Join the Mission', slideIndices: [8] },
 ];
 
 function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
