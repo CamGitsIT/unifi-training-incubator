@@ -8,20 +8,20 @@ import { Menu } from 'lucide-react';
 // Maps slide indices to nav section indices
 // SLIDES order: 0=Hero, 1=BusinessModel, 2=SocialImpact, 3=Property, 4=Financials, 5=Investment, 6=Team, 7=CTA
 const NAV_SECTIONS = [
-    { label: 'UniFi Experience Center', slideIndices: [0] },
-    { label: '8 Revenue Streams', slideIndices: [1] },
-    { label: 'Social Impact', slideIndices: [2] },
+    { label: 'Overview', slideIndices: [0] },
+    { label: 'Revenue Streams', slideIndices: [1] },
+    { label: 'Community Impact', slideIndices: [2] },
     { label: 'Flagship Property', slideIndices: [3] },
     { 
         label: 'Financials', 
         parent: true,
         subItems: [
-            { label: 'Interactive Model', slideIndices: [4] },
+            { label: 'Revenue Model', slideIndices: [4] },
             { label: 'Investment Terms', slideIndices: [5] }
         ]
     },
-    { label: 'Lean Team', slideIndices: [6] },
-    { label: 'Join the Mission', slideIndices: [7] },
+    { label: 'Leadership', slideIndices: [6] },
+    { label: 'Invest Now', slideIndices: [7] },
 ];
 
 function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
