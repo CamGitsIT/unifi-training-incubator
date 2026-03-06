@@ -99,14 +99,14 @@ export default function StreamForecastCard({
               </span>
             </div>
             <input
-              type="range"
-              min={1}
-              max={Math.max(stream.plan_driver_m1 * 5, 20)}
-              step={stream.plan_driver_m1 >= 10 ? 1 : 0.5}
-              value={stream.plan_driver_m1}
-              onChange={e => onUpdateDriver(parseFloat(e.target.value))}
-              className="w-full accent-cyan-400"
-              style={{ accentColor: color }}
+               type="range"
+               min={1}
+               max={Math.max(stream.plan_driver_m1 * 5, 20)}
+               step={stream.plan_driver_m1 >= 10 ? 1 : 0.5}
+               value={stream.plan_driver_m1}
+               onChange={e => onUpdateDriver(parseFloat(e.target.value))}
+               className="w-full"
+               style={{ accentColor: '#21d3ee' }}
             />
           </div>
 
