@@ -91,7 +91,7 @@ export default function Slide2Mission({ onInteracted }) {
                             One Mission. Coalescing Possibilities.
                         </h2>
                         <p className="text-slate-400 text-base leading-relaxed">
-                            Just eight revenue lines built on one UniFi expertise engine powered by training, the Experience Center, and an expanding partner network that scales demand worldwide.
+                            Eight revenue streams share one UniFi expertise engine—training at the National Training Center, the UniFi Experience Center, and OverIT partners turning demand into scalable, recurring revenue.
                         </p>
                     </div>
 
