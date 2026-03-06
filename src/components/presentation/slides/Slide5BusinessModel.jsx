@@ -133,7 +133,6 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                 </div>
                 */}
 
-                {/* ── TO RESTORE bar chart + cards: uncomment below ──
                 <RevenueBarChart />
 
                 <div className="flex items-center gap-2 mb-4">
