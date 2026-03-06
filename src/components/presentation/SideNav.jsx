@@ -19,9 +19,9 @@ const NAV_SECTIONS = [
         label: 'Join the Mission', 
         parent: true,
         subItems: [
-            { label: 'Investment Terms', slideIndices: [6] },
-            { label: 'Investment Calculator', slideIndices: [8] },
-            { label: 'Capital Intent & Giving', slideIndices: [9] }
+            { label: 'Invest as a Friend', slideIndices: [8] },
+            { label: 'Feeling Generous?', slideIndices: [8] },
+            { label: 'Schedule a Visit', slideIndices: [8] }
         ]
     },
 ];
