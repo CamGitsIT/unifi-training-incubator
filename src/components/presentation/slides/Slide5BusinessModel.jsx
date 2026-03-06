@@ -129,7 +129,7 @@ function EcosystemFlywheel() {
         <div className="bg-slate-50 rounded-3xl border border-slate-200 overflow-hidden">
             <div className="p-8 text-center border-b border-slate-100 bg-white">
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">UniFi Ecosystem Flywheel</h3>
-                <p className="text-slate-500 max-w-lg mx-auto">A self-sustaining cycle where AI and specialized centers drive continuous growth and revenue.</p>
+                <p className="text-slate-500 max-w-lg mx-auto">A self-sustaining cycle where AI and specialized centers drive continuous, compounding growth and revenue.</p>
             </div>
 
             <div className="flex flex-col lg:flex-row p-8 gap-12 items-center bg-white">

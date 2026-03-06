@@ -9,8 +9,9 @@ import { Menu } from 'lucide-react';
 // SLIDES order: 0=Hero, 1=BusinessModel, 2=SocialImpact, 3=Property, 4=Financials, 5=Investment, 6=Team, 7=CTA
 const NAV_SECTIONS = [
     { label: 'Overview', slideIndices: [0] },
-    { label: 'Revenue Streams', slideIndices: [1] },
-    { label: 'Community Impact', slideIndices: [2] },
+    { label: 'Business Model', slideIndices: [1] },
+    { label: 'Revenue Streams', slideIndices: [2] },
+    { label: 'Community Impact', slideIndices: [3] },
     { label: 'Flagship Property', slideIndices: [3] },
     { 
         label: 'Financials', 
