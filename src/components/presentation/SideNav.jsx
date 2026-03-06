@@ -6,7 +6,7 @@ import { Menu } from 'lucide-react';
 
 // SIDENAV – components/presentation/SideNav.jsx (one directory up from slides)
 // Maps slide indices to nav section indices
-// SLIDES order: 0=Hero, 1=BusinessModel, 2=SocialImpact, 3=Property, 4=Financials, 5=Investment, 6=Team, 7=CTA
+// SLIDES order: 0=Hero, 1=BusinessModel, 2=SocialImpact, 3=Property, 4=Financials, 5=Revenue, 6=Investment, 7=Team, 8=CTA
 const NAV_SECTIONS = [
     { label: 'Overview', slideIndices: [0] },
     { label: 'Business Model', slideIndices: [1] },
@@ -17,20 +17,19 @@ const NAV_SECTIONS = [
         label: 'Financials', 
         parent: true,
         subItems: [
-            { label: 'Revenue Model', slideIndices: [5] },
-            { label: 'Investment Terms', slideIndices: [8] }
+            { label: 'Revenue Model', slideIndices: [5] }
         ]
     },
+    { label: 'The Team', slideIndices: [7] },
     { 
-        label: 'The Team', 
+        label: 'Join the Mission', 
         parent: true,
         subItems: [
-            { label: 'Founders & Leadership', slideIndices: [7] },
-            { label: 'Core Team', slideIndices: [7] },
-            { label: 'AI-Integrated Stack', slideIndices: [7] }
+            { label: 'Investment Terms', slideIndices: [6] },
+            { label: 'Investment Calculator', slideIndices: [8] },
+            { label: 'Capital Intent & Giving', slideIndices: [9] }
         ]
     },
-    { label: 'Join the Mission', slideIndices: [8] },
 ];
 
 function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
