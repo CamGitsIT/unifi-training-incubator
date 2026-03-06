@@ -309,6 +309,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                     <EcosystemFlywheel />
                 </div>
 
+                {/* Everything below the flywheel is hidden — remove this comment block to re-enable
                 <RevenueBarChart />
 
                 {/* Year toggle for cards */}
