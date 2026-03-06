@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Users, Cpu, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Slider } from "@/components/ui/slider";
+import FoundersCard from './FoundersCard';
 
 export default function Slide9Team({ onInteracted }) {
     const [investmentAmount, setInvestmentAmount] = useState(25000);
@@ -13,7 +14,7 @@ export default function Slide9Team({ onInteracted }) {
     const monthlyPayment = 50530 * 0.05;
     const estimatedMonths = Math.ceil(targetReturn / monthlyPayment);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (timerDone || hasInteracted) return;
         const interval = setInterval(() => {
             setSecondsLeft(s => {
