@@ -88,7 +88,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                                     }
                                 `}
                             >
-                                Join the Raise →
+                                Join the Movement →
                             </motion.button>
 
                             {!canClick && (
