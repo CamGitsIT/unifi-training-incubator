@@ -47,18 +47,18 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </h1>
 
                     <p className="text-xl md:text-2xl font-semibold text-slate-300 mb-6 max-w-3xl mx-auto">
-                        Your hardware. Your data. Your rules. Freedom from recurring fees.
+                        Own your infrastructure. Train your workforce. Scale your impact.
                     </p>
 
                     <p className="text-lg md:text-lg text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed">
-                        <strong className="text-cyan-400">What drives us: </strong>Creating a live-work <strong className="text-white">UniFi Experience Center and Training Hub</strong> to demonstrate <strong className="text-white">safer, simpler business infrastructure you can own</strong> while training and supporting the next generation of local leaders.
+                        <strong className="text-cyan-400">OverIT</strong> is acquiring a live-work facility to launch the <strong className="text-white">UniFi Experience Center</strong> and <strong className="text-white">National Training Center</strong> — certifying MSPs, businesses, and individuals while demonstrating fully integrated UniFi infrastructure.
                     </p>
 
                     <div className="text-left max-w-3xl mx-auto mb-10 space-y-4">
                         {[
-                            { label: 'The Global Disruption', text: 'Organizations replace fragmented IT vendors with owned UniFi infrastructure, escaping recurring fees.' },
-                            { label: 'Proof & ROI', text: 'Early clients reduce OpEx 40-60%, simplify operations, strengthen security—validated by live deployments.' },
-                            { label: 'Why Us', text: 'Ubiquiti-certified experts with 8 scalable revenue streams backed by robust financial projections.' },
+                            { label: 'The Opportunity', text: 'Organizations are abandoning fragmented SaaS vendors for owned UniFi infrastructure — eliminating recurring fees permanently.' },
+                            { label: 'Proven Impact', text: 'OverIT clients reduce OpEx 40–60%, simplify operations, and strengthen security — validated by live deployments.' },
+                            { label: 'Why OverIT', text: 'Ubiquiti-certified experts. 8 diversified revenue streams. SBA-backed acquisition with clear investor returns.' },
                         ].map((b, i) => (
                             <div key={i} className="flex items-start gap-4 bg-slate-800/40 border border-slate-700 rounded-xl px-5 py-4">
                                 <div className="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0 mt-2" />
