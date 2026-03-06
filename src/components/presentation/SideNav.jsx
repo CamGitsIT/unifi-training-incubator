@@ -21,7 +21,14 @@ const NAV_SECTIONS = [
             { label: 'Investment Terms', slideIndices: [6] }
         ]
     },
-    { label: 'Leadership', slideIndices: [7] },
+    { 
+        label: 'Leadership', 
+        parent: true,
+        subItems: [
+            { label: 'Founders', slideIndices: [7, 'founders'] },
+            { label: 'Team', slideIndices: [7] }
+        ]
+    },
     { label: 'Invest Now', slideIndices: [8] },
 ];
 
