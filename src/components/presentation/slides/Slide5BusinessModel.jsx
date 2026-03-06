@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Building2, GraduationCap, Store, Shield, Camera, Thermometer, Wifi, ArrowRight, CheckCircle, Layers, GitMerge, TrendingUp } from 'lucide-react';
+import { Building2, GraduationCap, Store, Shield, Camera, Thermometer, Wifi, ArrowRight, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 import { BASELINE_STREAMS, STREAM_COLORS } from '@/components/forecast/forecastEngine';
 
