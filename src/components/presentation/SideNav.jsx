@@ -12,8 +12,8 @@ const NAV_SECTIONS = [
     { label: 'Business Model', slideIndices: [1] },
     { label: 'Revenue Streams', slideIndices: [2] },
     { label: 'Community Impact', slideIndices: [3] },
-    { label: 'Flagship Property', slideIndices: [4] },
-    { label: 'Revenue Model', slideIndices: [5] },
+    { label: 'The Property', slideIndices: [4] },
+    { label: 'Investment Insights', slideIndices: [5] },
     { label: 'The Team', slideIndices: [7] },
     { 
         label: 'Join the Mission', 
