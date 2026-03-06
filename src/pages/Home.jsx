@@ -34,7 +34,7 @@ const SLIDES = [
 
 export default function Home() {
     const [current, setCurrent] = useState(0);
-    const [interacted, setInteracted] = useState(new Array(SLIDES.length).fill(false));
+    const [interacted, setInteracted] = useState(new Array(SLIDES.length).fill(!GATING_ENABLED));
     const [seen, setSeen] = useState(() => { const s = new Array(SLIDES.length).fill(false); s[0] = true; return s; });
     const [unlockMessage, setUnlockMessage] = useState(null);
     const [easterEggClicks, setEasterEggClicks] = useState(0);
