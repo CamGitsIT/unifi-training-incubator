@@ -349,8 +349,8 @@ function OutputsPanelPipeline({ pipelineMetrics, eventRev, yearView, color }) {
     return (
         <div className="rounded-2xl border border-slate-700 overflow-hidden" style={{ background: '#1e293b' }}>
             <div className="px-5 py-3 border-b border-slate-700/60">
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Pipeline Outputs</p>
-                <p className="text-xs text-slate-500 italic mt-0.5">Downstream leads generated (Modeled placeholder)</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Pipeline outputs</p>
+                <p className="text-xs text-slate-500 italic mt-0.5">Downstream leads generated (modeled placeholder)</p>
             </div>
             <div className="px-5 py-5 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
