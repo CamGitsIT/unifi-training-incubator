@@ -3,7 +3,7 @@ import { TrendingUp, Globe, Zap, Shield, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Slider } from "@/components/ui/slider";
-import { BASELINE_STREAMS, runForecast, formatCurrency, STREAM_COLORS } from '@/components/forecast/forecastEngine';
+import { BASELINE_STREAMS, runForecast, formatCurrency, STREAM_COLORS, NET_MARGIN } from '@/components/forecast/forecastEngine';
 
 // Location-free flag per stream
 const LOCATION_FREE = {
@@ -18,7 +18,6 @@ const LOCATION_FREE = {
 };
 
 const ANNUAL_DEBT_SERVICE = 55200;
-const MARGIN = 0.63;
 
 // Build slider config from baseline streams
 const LINE_CONFIGS = BASELINE_STREAMS.map(s => ({
@@ -167,7 +166,7 @@ export default function Slide7Financials({ onInteracted }) {
 
     // Use the forecast engine's total (includes all compounding effects)
     const totalAnnual = currentForecast.totalY1;
-    const totalProfit = Math.round(totalAnnual * MARGIN);
+    const totalProfit = currentForecast.totalNetProfitY1;
     const dscr = (totalProfit / ANNUAL_DEBT_SERVICE).toFixed(1);
     const dscrColor = parseFloat(dscr) >= 10 ? '#4ade80' : parseFloat(dscr) >= 3 ? '#22d3ee' : '#facc15';
 
@@ -223,7 +222,7 @@ export default function Slide7Financials({ onInteracted }) {
                 <motion.div layout className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
                     {[
                         { label: 'Slider Annual Revenue', value: formatCurrency(totalAnnual, true), color: 'text-white', sub: `${formatCurrency(Math.round(totalAnnual/12), true)}/mo` },
-                        { label: 'Net Profit (~63%)', value: formatCurrency(totalProfit, true), color: 'text-green-400', sub: 'After ops & overhead' },
+                        { label: `Net Profit (~${Math.round(NET_MARGIN * 100)}%)`, value: formatCurrency(totalProfit, true), color: 'text-green-400', sub: 'After ops & overhead' },
                         { label: 'Debt Coverage Ratio', value: `${dscr}x`, color: dscrColor, sub: `vs $${(ANNUAL_DEBT_SERVICE/1000).toFixed(0)}K/yr debt service` },
                         { label: '% Location-Free Revenue', value: `${locationFreePct}%`, color: 'text-cyan-400', sub: 'Earnable from anywhere' },
                     ].map((s, i) => (
