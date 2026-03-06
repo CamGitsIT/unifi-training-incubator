@@ -368,7 +368,7 @@ function OutputsPanelPipeline({ pipelineMetrics, eventRev, yearView, color }) {
                 <div className="border-t border-slate-700 pt-4">
                     <p className="text-xs text-slate-500 mb-1">Modeled event/sponsorship revenue ({YEAR_LABELS[yearView]})</p>
                     <div className="text-2xl font-bold tabular-nums" style={{ color }}>{fmt(eventRev)}</div>
-                    <p className="text-xs text-slate-600 italic mt-0.5">Secondary — pipeline generation is primary value</p>
+                    <p className="text-xs text-slate-600 italic mt-0.5">Secondary — main value is downstream retrofit and training pipeline</p>
                 </div>
             </div>
         </div>
