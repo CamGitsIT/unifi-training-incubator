@@ -92,7 +92,7 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                     {/* Feed / feeder callout for connected streams */}
                     {stream.feedsInto && (
                         <div className="rounded-xl px-4 py-3 border border-cyan-900/40 bg-cyan-950/20">
-                            <p className="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-1.5">🔗 Feeds Into</p>
+                            <p className="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-1.5">Feeds other revenue lines</p>
                             <p className="text-slate-300 text-sm leading-relaxed">{stream.feedsInto}</p>
                         </div>
                     )}
