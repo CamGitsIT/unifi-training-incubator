@@ -1,95 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Building2, GraduationCap, Store, Shield, Camera, Thermometer, Wifi, ArrowRight, CheckCircle, Users, Cpu, DollarSign, Play, Pause, RotateCcw, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BASELINE_STREAMS, runForecast, formatCurrency, STREAM_COLORS } from '@/components/forecast/forecastEngine';
 
-const businessLines = [
-    {
-        icon: Camera,
-        title: 'Experience Center',
-        subtitle: 'Zero-Inventory Retail Showroom',
-        color: 'cyan',
-        revenue: '$120K',
-        description: 'Live UniFi Experience Center showroom driving zero-inventory hardware sales and demand for every other service line.',
-        metrics: ['Live demo environment drives high-confidence purchases', 'Zero inventory risk — orders fulfilled direct to customer', 'Doubles as marketing engine for all other business lines']
-    },
-    {
-        icon: Building2,
-        title: 'Keyless Property Access (Retrofit)',
-        subtitle: 'The DoorKing Killer',
-        color: 'purple',
-        revenue: '$216K',
-        description: 'Retrofit DoorKing-style systems with subscription-free UniFi access control, delivering faster ROI and lower lifetime cost.',
-        metrics: ['Average deal size: $15,000', '40% gross margin per project', '16-month ROI tipping point for clients']
-    },
-    {
-        icon: GraduationCap,
-        title: 'Ubiquiti / UniFi Training',
-        subtitle: 'Authorized Ubiquiti Education',
-        color: 'green',
-        revenue: '$304K',
-        description: 'National Training Center delivering Ubiquiti / UniFi certifications that create the workforce powering all eight revenue streams.',
-        metrics: ['In-person: $1,995/seat, $1,575 net', 'Virtual training: Up to $5,000/seat', 'Training revenue alone covers debt 10x over']
-    },
-    {
-        icon: Store,
-        title: 'Multi-Location Retail Businesses',
-        subtitle: 'Site Magic for Multi-Location Brands',
-        color: 'amber',
-        revenue: '$72K',
-        description: 'UniFi networks for multi-location retail brands, reducing operational cost while standardizing secure, scalable infrastructure.',
-        metrics: ['Eliminate $45K+/year in legacy VPN costs per client', 'Scalable to 270+ locations in Year 1', '15% uplift on MSP implementation']
-    },
-    {
-        icon: Shield,
-        title: 'Professional Monitoring',
-        subtitle: 'Replacing ADT, Brinks & Legacy Systems',
-        color: 'red',
-        revenue: '$96K',
-        description: 'UniFi-compatible monitoring replacing legacy alarm vendors, creating sticky recurring revenue with lower OpEx for clients.',
-        metrics: ['Lower monthly cost than ADT/Brinks', 'Fully compatible with UniFi cameras and access', 'Recurring revenue stream with strong retention']
-    },
-    {
-        icon: Camera,
-        title: 'Tech Infrastructure Rentals',
-        subtitle: 'Film & Production Deployments',
-        color: 'indigo',
-        revenue: '$48K',
-        description: 'Reusable UniFi infrastructure packages rented to film productions, generating high-margin income without new CapEx each project.',
-        metrics: ['High-margin rental income per production', 'Reusable gear — no per-project capital outlay', 'Builds relationships in ATL film industry']
-    },
-    {
-        icon: Thermometer,
-        title: 'Refrigeration & Temperature Monitoring',
-        subtitle: 'FDA Compliance Automation',
-        color: 'orange',
-        revenue: '$60K',
-        description: 'Automated UniFi sensor monitoring for refrigeration, eliminating manual logs and avoiding spoilage across food and pharma locations.',
-        metrics: ['Eliminates manual logging labor', 'Real-time alerts prevent costly spoilage', 'Scalable across restaurant and pharmacy chains']
-    },
-    {
-        icon: Wifi,
-        title: 'Micro ISP',
-        subtitle: 'Breaking the Monopoly on Internet',
-        color: 'teal',
-        revenue: '$144K',
-        description: 'Micro ISP built on UniFi infrastructure, offering HOAs community-owned broadband that undercuts monopoly pricing.',
-        metrics: ['Predictable recurring revenue', 'Serves HOAs underserved by Comcast/AT&T', 'UniFi infrastructure enables rapid deployment']
-    }
-];
+// Run forecast once with base scenario
+const FORECAST = runForecast(BASELINE_STREAMS, 'base');
 
-const colorMap = {
-    cyan:   { bg: 'from-cyan-950/30',   border: 'border-cyan-900/50',   icon: 'bg-cyan-500/10',   iconColor: 'text-cyan-400',   accent: 'text-cyan-400' },
-    purple: { bg: 'from-purple-950/30', border: 'border-purple-900/50', icon: 'bg-purple-500/10', iconColor: 'text-purple-400', accent: 'text-purple-400' },
-    green:  { bg: 'from-green-950/30',  border: 'border-green-900/50',  icon: 'bg-green-500/10',  iconColor: 'text-green-400',  accent: 'text-green-400' },
-    amber:  { bg: 'from-amber-950/30',  border: 'border-amber-900/50',  icon: 'bg-amber-500/10',  iconColor: 'text-amber-400',  accent: 'text-amber-400' },
-    red:    { bg: 'from-red-950/30',    border: 'border-red-900/50',    icon: 'bg-red-500/10',    iconColor: 'text-red-400',    accent: 'text-red-400' },
-    indigo: { bg: 'from-indigo-950/30', border: 'border-indigo-900/50', icon: 'bg-indigo-500/10', iconColor: 'text-indigo-400', accent: 'text-indigo-400' },
-    orange: { bg: 'from-orange-950/30', border: 'border-orange-900/50', icon: 'bg-orange-500/10', iconColor: 'text-orange-400', accent: 'text-orange-400' },
-    teal:   { bg: 'from-teal-950/30',   border: 'border-teal-900/50',   icon: 'bg-teal-500/10',   iconColor: 'text-teal-400',   accent: 'text-teal-400' },
+// Map stream IDs to the business line display config
+const STREAM_DISPLAY = {
+    experience:    { icon: Camera,       color: 'cyan',   subtitle: 'Zero-Inventory Retail Showroom',       description: 'Live UniFi Experience Center showroom driving zero-inventory hardware sales and demand for every other service line.', metrics: ['Live demo environment drives high-confidence purchases', 'Zero inventory risk — orders fulfilled direct to customer', 'Doubles as marketing engine for all other business lines'] },
+    retrofit:      { icon: Building2,    color: 'purple', subtitle: 'The DoorKing Killer',                   description: 'Retrofit DoorKing-style systems with subscription-free UniFi access control, delivering faster ROI and lower lifetime cost.', metrics: ['Average deal size: $9,000 · Our fee: ~12.5%', 'Partner-executed installs — no install labor bottleneck', 'Every retrofit is a monitoring candidate'] },
+    training:      { icon: GraduationCap,color: 'green',  subtitle: 'Authorized Ubiquiti Education',         description: 'National Training Center delivering Ubiquiti / UniFi certifications that create the workforce powering all eight revenue streams.', metrics: ['$2,000/seat — cohorts of 4–12 students', 'In-person or remote delivery', 'Training graduates feed 5 downstream streams'] },
+    retail:        { icon: Store,        color: 'amber',  subtitle: 'Site Magic for Multi-Location Brands',  description: 'UniFi networks for multi-location retail brands, reducing operational cost while standardizing secure, scalable infrastructure.', metrics: ['Retainer per brand × 20 sites × $3,500/site/mo', 'Stretch: 2 national accounts add significant volume', 'Each rollout feeds Professional Monitoring'] },
+    monitoring:    { icon: Shield,       color: 'red',    subtitle: 'Replacing ADT, Brinks & Legacy Systems', description: 'UniFi-compatible monitoring replacing legacy alarm vendors, creating sticky recurring revenue with lower OpEx for clients.', metrics: ['$100/site/month recurring MRR', 'Fed by every infrastructure stream (0.14× elasticity each)', 'Compounding as retrofit, retail, and ISP grow'] },
+    rentals:       { icon: Camera,       color: 'indigo', subtitle: 'Film & Production Deployments',         description: 'Reusable UniFi infrastructure packages rented to film productions, generating high-margin income without new CapEx each project.', metrics: ['$800 avg per production rental', 'Reusable gear — no per-project capital outlay', 'Builds relationships in ATL film industry'] },
+    refrigeration: { icon: Thermometer,  color: 'orange', subtitle: 'FDA Compliance Automation',             description: 'Automated UniFi sensor monitoring for refrigeration, eliminating manual logs and avoiding spoilage across food and pharma locations.', metrics: ['$83/location/month recurring', 'Eliminates manual logging labor', 'Scalable across restaurant and pharmacy chains'] },
+    isp:           { icon: Wifi,         color: 'teal',   subtitle: 'Breaking the Monopoly on Internet',     description: 'Micro ISP built on UniFi infrastructure, offering HOAs community-owned broadband that undercuts monopoly pricing.', metrics: ['$100/building/month net margin', 'Serves HOAs underserved by Comcast/AT&T', 'Training graduates drive deployment (0.4× elasticity)'] },
 };
 
-const TOTAL_REVENUE = '$1,060,000';
-const NET_MARGIN = '~$740,000';
+const colorMap = {
+    cyan:   { bg: 'from-cyan-950/30',   border: 'border-cyan-900/50',   icon: 'bg-cyan-500/10',   iconColor: 'text-cyan-400',   accent: 'text-cyan-400',   hex: STREAM_COLORS.experience },
+    purple: { bg: 'from-purple-950/30', border: 'border-purple-900/50', icon: 'bg-purple-500/10', iconColor: 'text-purple-400', accent: 'text-purple-400', hex: STREAM_COLORS.retrofit },
+    green:  { bg: 'from-green-950/30',  border: 'border-green-900/50',  icon: 'bg-green-500/10',  iconColor: 'text-green-400',  accent: 'text-green-400',  hex: STREAM_COLORS.training },
+    amber:  { bg: 'from-amber-950/30',  border: 'border-amber-900/50',  icon: 'bg-amber-500/10',  iconColor: 'text-amber-400',  accent: 'text-amber-400',  hex: STREAM_COLORS.retail },
+    red:    { bg: 'from-red-950/30',    border: 'border-red-900/50',    icon: 'bg-red-500/10',    iconColor: 'text-red-400',    accent: 'text-red-400',    hex: STREAM_COLORS.monitoring },
+    indigo: { bg: 'from-indigo-950/30', border: 'border-indigo-900/50', icon: 'bg-indigo-500/10', iconColor: 'text-indigo-400', accent: 'text-indigo-400', hex: STREAM_COLORS.rentals },
+    orange: { bg: 'from-orange-950/30', border: 'border-orange-900/50', icon: 'bg-orange-500/10', iconColor: 'text-orange-400', accent: 'text-orange-400', hex: STREAM_COLORS.refrigeration },
+    teal:   { bg: 'from-teal-950/30',   border: 'border-teal-900/50',   icon: 'bg-teal-500/10',   iconColor: 'text-teal-400',   accent: 'text-teal-400',   hex: STREAM_COLORS.isp },
+};
+
+// Build the business lines array from the forecast + display config
+const businessLines = BASELINE_STREAMS.map(s => {
+    const display = STREAM_DISPLAY[s.stream_id];
+    const fr = FORECAST.streams[s.stream_id];
+    return {
+        id: s.stream_id,
+        icon: display.icon,
+        title: s.stream_title,
+        subtitle: display.subtitle,
+        color: display.color,
+        hex: colorMap[display.color].hex,
+        y1: fr.y1,
+        y2: fr.y2,
+        y3: fr.y3,
+        description: display.description,
+        metrics: display.metrics,
+    };
+});
+
+// Bar chart data — annual totals by stream for Y1/Y2/Y3
+const barData = [
+    { year: 'Year 1', total: FORECAST.totalY1 },
+    { year: 'Year 2', total: FORECAST.totalY2 },
+    { year: 'Year 3', total: FORECAST.totalY3 },
+];
 
 function EcosystemFlywheel() {
     const [activeStep, setActiveStep] = useState(0);
@@ -246,8 +211,45 @@ function EcosystemFlywheel() {
     );
 }
 
+function RevenueBarChart() {
+    return (
+        <div className="bg-slate-800/40 border border-slate-700 rounded-2xl p-6 mb-8">
+            <div className="text-sm text-cyan-400 font-semibold mb-1 uppercase tracking-wide">Annual Revenue Forecast · Base Scenario</div>
+            <div className="flex gap-8 mb-4">
+                {barData.map(d => (
+                    <div key={d.year}>
+                        <div className="text-xs text-slate-500">{d.year}</div>
+                        <div className="text-lg font-bold text-white">{formatCurrency(d.total, true)}</div>
+                    </div>
+                ))}
+            </div>
+            <ResponsiveContainer width="100%" height={180}>
+                <BarChart data={barData} barSize={56}>
+                    <XAxis dataKey="year" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
+                    <YAxis
+                        tick={{ fill: '#64748b', fontSize: 11 }}
+                        axisLine={false}
+                        tickLine={false}
+                        tickFormatter={v => formatCurrency(v, true)}
+                    />
+                    <Tooltip
+                        formatter={(v) => [formatCurrency(v, true), 'Total Revenue']}
+                        contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, color: '#f1f5f9' }}
+                    />
+                    <Bar dataKey="total" radius={[6, 6, 0, 0]}>
+                        {barData.map((_, i) => (
+                            <Cell key={i} fill={['#22d3ee', '#818cf8', '#a78bfa'][i]} />
+                        ))}
+                    </Bar>
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
+    );
+}
+
 export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
     const [expanded, setExpanded] = useState(new Set());
+    const [yearView, setYearView] = useState('y3');
     const [timerDone, setTimerDone] = useState(false);
     const [secondsLeft, setSecondsLeft] = useState(60);
 
@@ -277,11 +279,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
 
     const handleExpand = (i) => {
         const next = new Set(expanded);
-        if (next.has(i)) {
-            next.delete(i);
-        } else {
-            next.add(i);
-        }
+        next.has(i) ? next.delete(i) : next.add(i);
         setExpanded(next);
     };
 
@@ -295,13 +293,15 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
         }
     }, [allExpanded]);
 
+    const yearLabel = { y1: 'Yr 1', y2: 'Yr 2', y3: 'Yr 3' };
+
     return (
         <div className="min-h-screen bg-slate-900 py-24 px-6">
             <div className="max-w-5xl mx-auto w-full">
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">One Ecosystem. Endless Possibilities.</h2>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Eight Lines. One Ecosystem.</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                        Synergistic business lines aligned under one roof, all propelled by the Experience Center and Training Hub.
+                        Separate revenue lines sharing one engine compound each other's reach and revenue.
                     </p>
                 </motion.div>
 
@@ -309,14 +309,33 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                     <EcosystemFlywheel />
                 </div>
 
+                <RevenueBarChart />
+
+                {/* Year toggle for cards */}
+                <div className="flex items-center gap-2 mb-4">
+                    <span className="text-xs text-slate-500 font-semibold uppercase tracking-wide">Show revenue:</span>
+                    <div className="flex bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+                        {['y1', 'y2', 'y3'].map(y => (
+                            <button
+                                key={y}
+                                onClick={() => setYearView(y)}
+                                className={`px-3.5 py-1.5 text-xs font-semibold transition-all ${yearView === y ? 'bg-cyan-500 text-slate-950' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}
+                            >
+                                {yearLabel[y]}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
                 <div className="space-y-3">
                     {businessLines.map((line, i) => {
                         const colors = colorMap[line.color];
                         const Icon = line.icon;
                         const isOpen = expanded.has(i);
+                        const revenueVal = line[yearView];
                         return (
                             <motion.div
-                                key={line.title}
+                                key={line.id}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.07 }}
@@ -335,8 +354,8 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                                         <p className={`text-xs ${colors.accent}`}>{line.subtitle}</p>
                                     </div>
                                     <div className="text-right flex-shrink-0">
-                                        <div className={`text-xl font-bold ${colors.accent}`}>{line.revenue}</div>
-                                        <div className="text-xs text-slate-400">Yr 3 Revenue</div>
+                                        <div className={`text-xl font-bold ${colors.accent}`}>{formatCurrency(revenueVal, true)}</div>
+                                        <div className="text-xs text-slate-400">{yearLabel[yearView]} Revenue</div>
                                     </div>
                                 </div>
                                 {isOpen && (
@@ -346,6 +365,14 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                                         className="mt-4 pt-4 border-t border-slate-700/50"
                                     >
                                         <p className="text-slate-300 mb-3 text-sm">{line.description}</p>
+                                        <div className="flex gap-4 mb-3 text-xs">
+                                            {['y1', 'y2', 'y3'].map(y => (
+                                                <div key={y} className="text-center">
+                                                    <div className="text-slate-500">{yearLabel[y]}</div>
+                                                    <div className="font-bold" style={{ color: line.hex }}>{formatCurrency(line[y], true)}</div>
+                                                </div>
+                                            ))}
+                                        </div>
                                         <div className="space-y-1.5">
                                             {line.metrics.map((m, j) => (
                                                 <div key={j} className="flex items-center gap-2 text-sm text-slate-400">
@@ -362,9 +389,15 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                 </div>
 
                 <div className="mt-8 text-center bg-gradient-to-r from-slate-800/30 to-slate-800/10 border border-slate-700 rounded-2xl p-6">
-                    <div className="text-sm text-cyan-400 font-semibold mb-1">COMBINED YEAR 3 REVENUE</div>
-                    <div className="text-5xl font-bold text-white mb-1">{TOTAL_REVENUE}</div>
-                    <div className="text-slate-400 text-sm">Estimated net income: {NET_MARGIN} across all 8 business lines</div>
+                    <div className="grid grid-cols-3 gap-4 mb-2">
+                        {[{ label: 'Year 1', val: FORECAST.totalY1 }, { label: 'Year 2', val: FORECAST.totalY2 }, { label: 'Year 3', val: FORECAST.totalY3 }].map(({ label, val }) => (
+                            <div key={label}>
+                                <div className="text-xs text-slate-500 mb-1">{label}</div>
+                                <div className="text-2xl font-bold text-white">{formatCurrency(val, true)}</div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="text-slate-500 text-xs mt-2">Combined · Base Scenario · 36-month compound growth model</div>
                 </div>
 
                 {allExpanded && (
