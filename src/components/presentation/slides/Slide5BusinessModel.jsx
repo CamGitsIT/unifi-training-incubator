@@ -4,9 +4,6 @@ import { motion } from 'framer-motion';
 
 import { BASELINE_STREAMS, runForecast, STREAM_COLORS } from '@/components/forecast/forecastEngine';
 
-// Run forecast once with base scenario
-const FORECAST = runForecast(BASELINE_STREAMS, 'base');
-
 const STREAM_DISPLAY = {
     experience:    { icon: Camera,        color: 'cyan',   subtitle: 'Zero-Inventory Retail Showroom',       description: 'Live UniFi Experience Center showroom driving zero-inventory hardware sales and demand for every other service line.', metrics: ['Live demo environment drives high-confidence purchases', 'Zero inventory risk — orders fulfilled direct to customer', 'Doubles as marketing engine for all other business lines'] },
     retrofit:      { icon: Building2,     color: 'purple', subtitle: 'The DoorKing Killer',                   description: 'Retrofit DoorKing-style systems with subscription-free UniFi access control, delivering faster ROI and lower lifetime cost.', metrics: ['Average deal size: $9,000 · Our fee: ~12.5%', 'Partner-executed installs — no install labor bottleneck', 'Every retrofit is a monitoring candidate'] },
