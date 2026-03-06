@@ -103,7 +103,7 @@ const DEFAULT_LINES = [
         emoji: '📡',
         color: '#facc15',
         locationIndependent: false,
-        tagline: 'Local infrastructure — but the model exports anywhere.',
+        tagline: 'Local Micro ISP infrastructure that can be replicated city by city.',
         unit: 'subscribers',
         unitLabel: 'Active Subscribers',
         min: 10, max: 200, step: 10, default: 30,
