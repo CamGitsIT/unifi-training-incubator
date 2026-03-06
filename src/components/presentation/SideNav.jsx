@@ -65,14 +65,21 @@ function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
          return { isActive, isSeen, isAccessible };
      };
 
+     const getFirstSlideIndex = (item) => {
+         if (item.slideIndices) return item.slideIndices[0];
+         if (item.subItems && item.subItems.length > 0) {
+             return getFirstSlideIndex(item.subItems[0]);
+         }
+         return null;
+     };
+
      const handleClick = (sectionIdx, subIdx = null) => {
          const { isAccessible } = getSectionState(sectionIdx);
          if (!isAccessible) return;
          const section = NAV_SECTIONS[sectionIdx];
-         const slideIdx = subIdx !== null 
-             ? section.subItems[subIdx].slideIndices[0]
-             : (section.parent ? section.subItems[0].slideIndices[0] : section.slideIndices[0]);
-         onNavigate(slideIdx);
+         const item = subIdx !== null ? section.subItems[subIdx] : section;
+         const slideIdx = getFirstSlideIndex(item);
+         if (slideIdx !== null) onNavigate(slideIdx);
          if (onClose) onClose();
      };
 
