@@ -36,13 +36,16 @@ export const DEPENDENCIES = [
   { upstream: 'experience', downstream: 'retrofit',      elasticity: 0.05 },
   { upstream: 'training',   downstream: 'retrofit',      elasticity: 0.09 },
   { upstream: 'training',   downstream: 'retail',        elasticity: 0.08 },
-  { upstream: 'training',   downstream: 'isp',           elasticity: 0.40 },
+  { upstream: 'training',   downstream: 'rentals',       elasticity: 0.06 },
+  { upstream: 'training',   downstream: 'refrigeration', elasticity: 0.06 },
+  { upstream: 'training',   downstream: 'isp',           elasticity: 0.12 },
   { upstream: 'retrofit',   downstream: 'monitoring',    elasticity: 0.14 },
   { upstream: 'retail',     downstream: 'monitoring',    elasticity: 0.14 },
+  { upstream: 'rentals',    downstream: 'monitoring',    elasticity: 0.15 },
+  { upstream: 'refrigeration', downstream: 'monitoring', elasticity: 0.34 },
   { upstream: 'isp',        downstream: 'monitoring',    elasticity: 0.14 },
   { upstream: 'retrofit',   downstream: 'refrigeration', elasticity: 0.10 },
   { upstream: 'retail',     downstream: 'refrigeration', elasticity: 0.10 },
-  { upstream: 'training',   downstream: 'rentals',       elasticity: 0.15 },
 ];
 
 export const SCENARIO_MULTIPLIERS = {
