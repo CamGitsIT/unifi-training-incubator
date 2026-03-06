@@ -58,87 +58,71 @@ export const STREAM_COLORS = {
  *    where upstream_driver_delta = upstream_driver_m - upstream_driver_m1_effective
  * 4. Monthly revenue = effective_driver_m × units_per_driver × unit_revenue × scenario_multiplier
  */
+/**
+ * Matches the Apps Script recalculateModel() logic exactly:
+ * - Dependency effect = sum of elasticity × (upEff/upBase - 1) for each upstream
+ * - effective_driver_m1 = plan_driver_m1 × (1 + depEffect)
+ * - Y1 = eff × monthlyUnitRev × factor12  where factor12 = (growth==0) ? 12 : ((1+g)^12-1)/g
+ * - Y2 = eff × monthlyUnitRev × (1+g)^12 × factor12
+ * - Y3 = eff × monthlyUnitRev × (1+g)^24 × factor12
+ * - RunRate M12 = eff × (1+g)^11 × monthlyUnitRev
+ */
 export function runForecast(streams, scenario = 'base') {
   const mult = SCENARIO_MULTIPLIERS[scenario].multiplier;
-  const streamOrder = streams.map(s => s.stream_id);
+  const MONTHS = 12;
 
-  // Pre-compute effective M1 drivers (base plan drivers, no dependency in M1)
-  const effectiveM1 = {};
-  streams.forEach(s => { effectiveM1[s.stream_id] = s.plan_driver_m1; });
+  // Baseline = plan_driver_m1 for each stream (matches BASELINE sheet)
+  const baseline = {};
+  streams.forEach(s => { baseline[s.stream_id] = s.plan_driver_m1; });
 
-  // Apply dependency lifts to M1 effective drivers (same as Apps Script does for initial state)
-  // We skip M1 dep lift to match the sheet (effective_driver_m1 = plan_driver_m1 for all)
-
-  // Build monthly revenue arrays per stream
-  const monthlyRevenue = {}; // stream_id -> [m1..m36]
-  const monthlyDriver  = {}; // stream_id -> [m1..m36]
+  // Compute effective M1 drivers with dependency lifts (Apps Script style)
+  const effective = {};
   streams.forEach(s => {
-    monthlyRevenue[s.stream_id] = [];
-    monthlyDriver[s.stream_id]  = [];
+    if (!s.enabled) { effective[s.stream_id] = 0; return; }
+    let depEffect = 0;
+    DEPENDENCIES.forEach(dep => {
+      if (dep.downstream !== s.stream_id) return;
+      const upBase = baseline[dep.upstream] || 0;
+      const upEff  = effective[dep.upstream] ?? (baseline[dep.upstream] || 0);
+      const upDelta = upBase === 0 ? 0 : (upEff / upBase - 1);
+      depEffect += dep.elasticity * upDelta;
+    });
+    effective[s.stream_id] = s.plan_driver_m1 * (1 + depEffect);
   });
 
-  for (let m = 1; m <= 36; m++) {
-    // Step 1: compute organic (no-dep) driver for each stream at month m
-    const organicDriver = {};
-    streams.forEach(s => {
-      organicDriver[s.stream_id] = s.plan_driver_m1 * Math.pow(1 + s.monthly_growth, m - 1);
-    });
-
-    // Step 2: compute dependency lifts — accumulate upstream deltas
-    const depLift = {};
-    streams.forEach(s => { depLift[s.stream_id] = 0; });
-
-    DEPENDENCIES.forEach(dep => {
-      const upStream = streams.find(s => s.stream_id === dep.upstream);
-      if (!upStream || !upStream.enabled) return;
-      const downStream = streams.find(s => s.stream_id === dep.downstream);
-      if (!downStream || !downStream.enabled) return;
-
-      // Delta = how much upstream driver grew vs M1
-      const upOrganicM1 = upStream.plan_driver_m1; // baseline M1
-      const upDriverM   = organicDriver[dep.upstream];
-      const upDelta     = upDriverM - upOrganicM1;
-
-      depLift[dep.downstream] += upDelta * dep.elasticity;
-    });
-
-    // Step 3: effective driver = organic + dep lift (floor at 0)
-    streams.forEach(s => {
-      const effective = Math.max(0, organicDriver[s.stream_id] + depLift[s.stream_id]);
-      monthlyDriver[s.stream_id].push(effective);
-
-      const rev = s.enabled
-        ? effective * s.units_per_driver * s.unit_revenue * mult
-        : 0;
-      monthlyRevenue[s.stream_id].push(rev);
-    });
-  }
-
-  // Aggregate results per stream
   const results = {};
   streams.forEach(s => {
-    const rev = monthlyRevenue[s.stream_id];
+    const eff = s.enabled ? (effective[s.stream_id] || 0) : 0;
+    const monthlyUnitRev = s.enabled ? s.units_per_driver * s.unit_revenue * mult : 0;
+    const g = s.monthly_growth;
+    const factor12 = g === 0 ? MONTHS : (Math.pow(1 + g, MONTHS) - 1) / g;
+
+    const y1 = eff * monthlyUnitRev * factor12;
+    const y2 = eff * monthlyUnitRev * Math.pow(1 + g, MONTHS) * factor12;
+    const y3 = eff * monthlyUnitRev * Math.pow(1 + g, 2 * MONTHS) * factor12;
+    const runRateM12 = eff * Math.pow(1 + g, MONTHS - 1) * monthlyUnitRev;
+    const runRateM24 = eff * Math.pow(1 + g, 2 * MONTHS - 1) * monthlyUnitRev;
+    const runRateM36 = eff * Math.pow(1 + g, 3 * MONTHS - 1) * monthlyUnitRev;
+
+    // Build monthly array for charts (month 1..36)
+    const monthly = Array.from({ length: 36 }, (_, i) =>
+      eff * Math.pow(1 + g, i) * monthlyUnitRev
+    );
+
     results[s.stream_id] = {
-      monthly:       rev,
-      monthlyDriver: monthlyDriver[s.stream_id],
-      y1:            rev.slice(0, 12).reduce((a, b) => a + b, 0),
-      y2:            rev.slice(12, 24).reduce((a, b) => a + b, 0),
-      y3:            rev.slice(24, 36).reduce((a, b) => a + b, 0),
-      runRateM12:    rev[11],
-      runRateM24:    rev[23],
-      runRateM36:    rev[35],
+      monthly, y1, y2, y3,
+      runRateM12, runRateM24, runRateM36,
+      effectiveDriver: eff,
+      monthlyUnitRev,
     };
   });
 
-  // Totals
   const enabled = streams.filter(s => s.enabled);
   const totalY1 = enabled.reduce((a, s) => a + results[s.stream_id].y1, 0);
   const totalY2 = enabled.reduce((a, s) => a + results[s.stream_id].y2, 0);
   const totalY3 = enabled.reduce((a, s) => a + results[s.stream_id].y3, 0);
-
-  // Monthly totals for chart
   const totalMonthly = Array.from({ length: 36 }, (_, i) =>
-    enabled.reduce((a, s) => a + monthlyRevenue[s.stream_id][i], 0)
+    enabled.reduce((a, s) => a + results[s.stream_id].monthly[i], 0)
   );
 
   return { streams: results, totalY1, totalY2, totalY3, totalMonthly };
