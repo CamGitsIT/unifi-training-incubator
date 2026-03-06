@@ -47,39 +47,7 @@ const businessLines = BASELINE_STREAMS.map(s => {
     };
 });
 
-const barData = [
-    { year: 'Year 1', total: FORECAST.totalY1 },
-    { year: 'Year 2', total: FORECAST.totalY2 },
-    { year: 'Year 3', total: FORECAST.totalY3 },
-];
 
-// ── TO RESTORE: uncomment <RevenueBarChart /> and the section below it ────────
-function RevenueBarChart() {
-    return (
-        <div className="bg-slate-800/40 border border-slate-700 rounded-2xl p-6 mb-8">
-            <div className="text-sm text-cyan-400 font-semibold mb-1 uppercase tracking-wide">Annual Revenue Forecast · Base Scenario</div>
-            <div className="flex gap-8 mb-4">
-                {barData.map(d => (
-                    <div key={d.year}>
-                        <div className="text-xs text-slate-500">{d.year}</div>
-                        <div className="text-lg font-bold text-white">{formatCurrency(d.total, true)}</div>
-                    </div>
-                ))}
-            </div>
-            <ResponsiveContainer width="100%" height={180}>
-                <BarChart data={barData} barSize={56}>
-                    <XAxis dataKey="year" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => formatCurrency(v, true)} />
-                    <Tooltip formatter={(v) => [formatCurrency(v, true), 'Total Revenue']} contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, color: '#f1f5f9' }} />
-                    <Bar dataKey="total" radius={[6, 6, 0, 0]}>
-                        {barData.map((_, i) => <Cell key={i} fill={['#22d3ee', '#818cf8', '#a78bfa'][i]} />)}
-                    </Bar>
-                </BarChart>
-            </ResponsiveContainer>
-        </div>
-    );
-}
-// ─────────────────────────────────────────────────────────────────────────────
 
 export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
     const [expanded, setExpanded] = useState(new Set());
