@@ -248,8 +248,7 @@ export default function Slide7Financials({ onInteracted }) {
                         </span>
                     </h2>
                     <p className="text-slate-300 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
-                        We're not chasing all of these at once — it's a <strong className="text-white">menu</strong>, not a mandate.
-                        Each line supports the others. Drag sliders to see how they harmonize.
+                        Eight UniFi-powered revenue lines share one engine. Adjust volumes to see how training, services, and rentals together comfortably cover debt and compound profit.
                     </p>
                 </motion.div>
 
