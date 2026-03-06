@@ -73,10 +73,10 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     <div>
                         <h3 className="text-xl font-bold text-white mb-3">Certifications That Change Lives</h3>
                         <p className="text-slate-300 text-sm mb-3">
-                            Since 2012, Ubiquiti Academy's certification program has rapidly expanded, overseeing the training of more than <strong className="text-white">50,000 students worldwide</strong>. OverIT is bringing this engine to the local community.
+                            Ubiquiti Academy's global certification program has trained more than <strong className="text-white">50,000 students worldwide</strong>. OverIT channels that momentum into a local UniFi Experience Center and National Training Center.
                         </p>
                         <p className="text-slate-300 text-sm mb-3">
-                            <strong className="text-white">The OverIT Multiplier Effect:</strong> We explicitly <em>do not</em> employ a massive army of W-2 installers. Instead, we train and certify professionals, and then feed our sold retrofit and retail projects directly to our Alumni network.
+                            <strong className="text-white">The OverIT Multiplier Effect:</strong> we don't staff a huge installer workforce. We certify professionals, then route retrofit, retail, and ISP projects directly to our alumni and partner businesses.
                         </p>
                         <p className="text-cyan-400 text-sm font-medium">
                             By approving this loan, the SBA is not just funding a building; it is funding an incubator that creates independent contractors and tax-contributing small businesses across the region.
