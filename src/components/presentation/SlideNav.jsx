@@ -50,7 +50,7 @@ export default function SlideNav({ current, total, onNext, onPrev, canAdvance, s
                                     exit={{ opacity: 0 }}
                                     className="flex items-center gap-1 text-sm font-medium select-none"
                                 >
-                                    <span className="text-slate-600">Interact to continue</span>
+                                    <span className="text-slate-600">Complete slide interaction to advance</span>
                                     <ChevronRight className="w-5 h-5 text-slate-600" />
                                 </motion.div>
                             )
