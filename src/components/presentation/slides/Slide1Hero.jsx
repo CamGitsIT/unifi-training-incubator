@@ -21,7 +21,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
         if (!canClick) return;
         setAcknowledged(true);
         onInteracted();
-        if (onNext) onNext();
+        if (onNext) onNext(); j
     };
 
     return (
@@ -47,7 +47,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </h1>
 
                     <p className="text-xl md:text-2xl font-semibold text-slate-300 mb-5 max-w-2xl mx-auto leading-snug">
-                        Own your IT infrastructure. End endless SaaS fees. Simplify everything.
+                        Own your IT infrastructure. End monthly fees. Simplify everything.
                     </p>
 
                     <p className="text-base md:text-lg text-slate-400 mb-10 max-w-xl mx-auto leading-relaxed">
