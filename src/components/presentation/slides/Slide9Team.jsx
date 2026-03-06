@@ -39,7 +39,7 @@ export default function Slide9Team({ onInteracted }) {
             <div className="max-w-6xl mx-auto w-full">
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Lean Team, AI-Powered Scale</h2>
-                    <p className="text-xl text-slate-300 max-w-3xl mx-auto">Four people. AI-driven operations. National reach without massive overhead.</p>
+                    <p className="text-xl text-slate-300 max-w-3xl mx-auto">Four full-time leaders, amplified by an AI-first stack—delivering national reach without building a bloated payroll.</p>
                 </motion.div>
 
                 <div className="grid md:grid-cols-2 gap-6 mb-8 max-w-2xl mx-auto">
