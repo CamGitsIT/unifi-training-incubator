@@ -406,6 +406,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                         ✓ All 8 lines explored — click Next to continue
                     </motion.p>
                 )}
+                */ }
             </div>
         </div>
     );
