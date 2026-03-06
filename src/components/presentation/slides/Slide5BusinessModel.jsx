@@ -86,10 +86,10 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                     </p>
                 </motion.div>
 
-                {/* Flywheel animation — centered, full width */}
-                <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex justify-center mb-5">
+                {/* Flywheel animation — hidden */}
+                {/* <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex justify-center mb-5">
                     <RevenueFlywheelAnimation />
-                </motion.div>
+                </motion.div> */}
 
                 {/* Interdependence statement */}
                 <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="mb-8 rounded-2xl border border-slate-700 bg-gradient-to-r from-slate-800/50 to-slate-800/20 px-6 py-5 text-center">
