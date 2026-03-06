@@ -40,18 +40,18 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </div>
 
                     <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                        Everything works together.
+                        Everything Works Together.
                         <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
                             Finally.
                         </span>
                     </h1>
 
                     <p className="text-xl md:text-2xl font-semibold text-slate-300 mb-5 max-w-2xl mx-auto leading-snug">
-                        Own your IT infrastructure. End monthly fees. Simplify everything.
+                        Discover the UniFi ecosystem—where hardware, software, and security unite seamlessly. The more you adopt, the more you save and simplify.
                     </p>
 
                     <p className="text-base md:text-lg text-slate-400 mb-10 max-w-xl mx-auto leading-relaxed">
-                        We're raising <strong className="text-cyan-400">$300K</strong> to launch the <strong className="text-white">first-ever UniFi Experience Center and Training Hub</strong> to showcase more effective, integrated systems while shifting <strong className="text-white">OpEx recurring fees</strong> to <strong className="text-white">CapEx one-time installs</strong>.
+                        We're raising <strong className="text-cyan-400">$300K</strong> to build a real-world <strong className="text-white">UniFi Experience Center in Atlanta</strong>. See, touch, and experience how it transforms businesses—escaping <strong className="text-white">endless subscriptions</strong> for <strong className="text-white">owned, efficient systems</strong>.
                     </p>
 
                     <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
