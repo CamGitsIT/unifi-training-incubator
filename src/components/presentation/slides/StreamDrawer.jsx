@@ -39,8 +39,8 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
         trainingLeads: Math.round(driverValue * stream.pipelineOutputs.trainingConversion),
     } : null;
 
-    const stepDown = () => setDriverValue(v => Math.max(stream.driver.min, v - stream.driver.step));
-    const stepUp = () => setDriverValue(v => Math.min(stream.driver.max, v + stream.driver.step));
+    const stepDown = () => handleDriverChange(Math.max(stream.driver.min, driverValue - stream.driver.step));
+    const stepUp = () => handleDriverChange(Math.min(stream.driver.max, driverValue + stream.driver.step));
 
     return (
         <>
