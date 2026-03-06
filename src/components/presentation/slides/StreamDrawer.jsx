@@ -311,7 +311,7 @@ function OutputsPanel({ rev, yearView, color }) {
             <div className="px-5 py-5">
                 {/* Big selected year number */}
                 <p className="text-xs text-slate-500 mb-1">
-                    {YEAR_LABELS[yearView]} Revenue <span className="italic">(Modeled placeholder)</span>
+                    {YEAR_LABELS[yearView]} revenue <span className="italic">(modeled placeholder)</span>
                 </p>
                 <motion.div
                     key={rev.selectedYear}
