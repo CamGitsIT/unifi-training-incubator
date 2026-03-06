@@ -77,7 +77,7 @@ const DEFAULT_LINES = [
         emoji: '📦',
         color: '#a78bfa',
         locationIndependent: true,
-        tagline: '🌐 Ship gear anywhere. Events, pop-ups, temporary sites.',
+        tagline: 'UniFi infrastructure rentals for events and pop-ups, shippable anywhere.',
         unit: 'rentals/mo',
         unitLabel: 'Monthly Rentals',
         min: 1, max: 30, step: 1, default: 5,
