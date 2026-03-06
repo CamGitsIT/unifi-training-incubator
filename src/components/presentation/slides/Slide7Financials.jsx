@@ -300,8 +300,27 @@ export default function Slide7Financials({ onInteracted }) {
                                     />
                                     <YAxis stroke="#475569" tick={{ fontSize: 10, fill: '#94a3b8' }} tickFormatter={v => formatCurrency(v, true)} />
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px', fontSize: '12px' }}
-                                        formatter={(v) => [formatCurrency(v, true), 'Annual Revenue']}
+                                        contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px', fontSize: '11px' }}
+                                        content={({ active, payload }) => {
+                                            if (!active || !payload || !payload[0]) return null;
+                                            const entry = payload[0].payload;
+                                            const engineData = currentForecast.streams[entry.name.toLowerCase().split(' ')[0]] || currentForecast.streams[Object.keys(currentForecast.streams).find(k => currentForecast.streams[k].y1 === entry.revenue)];
+                                            const config = LINE_CONFIGS.find(l => l.name === entry.name);
+                                            return (
+                                                <div className="p-2 space-y-1 text-slate-200">
+                                                    <div className="font-semibold">{entry.name}</div>
+                                                    <div className="text-xs border-t border-slate-600 pt-1 mt-1">
+                                                        <div>Annual Y1: <strong>{formatCurrency(entry.revenue)}</strong></div>
+                                                        {config && engineData && (
+                                                            <>
+                                                                <div className="text-slate-400 mt-1">Effective Driver: {engineData.effectiveDriver?.toFixed(2) || 'N/A'}</div>
+                                                                <div className="text-slate-400">Monthly/Unit: {formatCurrency(engineData.monthlyUnitRev, true)}</div>
+                                                                <div className="text-slate-400">Growth: {(config.monthly_growth * 100).toFixed(1)}%</div>
+                                            </>
+                                        )}
+                                    </div>
+                                );
+                                        }}
                                     />
                                     <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
                                         {chartData.map((entry, i) => (
