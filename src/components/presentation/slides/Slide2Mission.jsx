@@ -88,10 +88,10 @@ export default function Slide2Mission({ onInteracted }) {
                             <span className="text-cyan-400 text-xs font-semibold tracking-wide">Revenue Streams Console</span>
                         </div>
                         <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 leading-tight">
-                            One Mission. Coalescing Possibilities.
+                            Eight Lines. One Ecosystem.
                         </h2>
                         <p className="text-slate-400 text-base leading-relaxed">
-                            Eight revenue streams share one UniFi expertise engine—training at the National Training Center, the UniFi Experience Center, and OverIT partners turning demand into scalable, recurring revenue.
+                            Separate revenue lines sharing one engine compound each other's reach and revenue — all powered by the UniFi Experience Center and National Training Hub.
                         </p>
                     </div>
 
