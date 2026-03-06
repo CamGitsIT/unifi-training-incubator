@@ -51,7 +51,7 @@ export default function Slide11CTA({ onInteracted }) {
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Join the Mission</h2>
                     <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-                        Whether you're evaluating this application or a friend who wants to invest, here's how to take the next step.
+                        Whether you're reviewing this SBA package or a friend who believes in OverIT, here's how to participate in the UniFi Experience Center and National Training Center launch.
                     </p>
                 </motion.div>
 
