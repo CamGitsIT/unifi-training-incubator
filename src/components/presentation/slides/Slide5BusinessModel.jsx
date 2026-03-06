@@ -36,7 +36,7 @@ const businessLines = [
         subtitle: 'Site Magic for Multi-Location Brands',
         color: 'amber',
         revenue: '$72K',
-        description: 'Provide more manageable, reliable, modern, and secure offerings for new or existing retail chains to reduce operational costs and promote expansion.',
+        description: 'UniFi networks for multi-location retail brands, reducing operational cost while standardizing secure, scalable infrastructure.',
         metrics: ['Eliminate $45K+/year in legacy VPN costs per client', 'Scalable to 270+ locations in Year 1', '15% uplift on MSP implementation']
     },
     {
