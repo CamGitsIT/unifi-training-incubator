@@ -120,20 +120,38 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
     return (
         <div className="min-h-screen bg-slate-900 py-24 px-6">
             <div className="max-w-5xl mx-auto w-full">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Eight Lines. One Ecosystem.</h2>
-                    <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                        Separate revenue lines sharing one engine compound each other's reach and revenue.
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-10">
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Multiple Revenue Lines Reduces Risk</h2>
+                    <p className="text-xl text-slate-400 max-w-3xl mx-auto">
+                        Diversification usually means distraction. For us, it means resilience.
                     </p>
                 </motion.div>
 
-                {/* ── TO RESTORE flywheel: uncomment the EcosystemFlywheel import and the block below ──
-                <div className="mb-12">
-                    <EcosystemFlywheel />
-                </div>
-                */}
+                {/* Three-pillar cards */}
+                <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                    {[
+                        { icon: GraduationCap, color: '#34d399', bg: 'from-green-950/40', border: 'border-green-800/40', label: 'Our Training', sub: 'creates the installers.' },
+                        { icon: Camera,        color: '#22d3ee', bg: 'from-cyan-950/40',  border: 'border-cyan-800/40',  label: 'Our Experience Center', sub: 'creates the customers.' },
+                        { icon: Bot,           color: '#a78bfa', bg: 'from-violet-950/40',border: 'border-violet-800/40',label: 'Our AI', sub: 'connects the two.' },
+                    ].map(({ icon: Icon, color, bg, border, label, sub }) => (
+                        <div key={label} className={`bg-gradient-to-br ${bg} to-slate-900/20 border ${border} rounded-2xl p-6 flex flex-col items-center text-center gap-3`}>
+                            <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: `${color}18`, border: `1px solid ${color}35` }}>
+                                <Icon className="w-6 h-6" style={{ color }} />
+                            </div>
+                            <div>
+                                <div className="text-white font-bold text-base">{label}</div>
+                                <div className="text-slate-400 text-sm mt-0.5">{sub}</div>
+                            </div>
+                        </div>
+                    ))}
+                </motion.div>
 
-                <RevenueBarChart />
+                {/* Interdependence statement */}
+                <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="mb-8 rounded-2xl border border-slate-700 bg-gradient-to-r from-slate-800/50 to-slate-800/20 px-6 py-4 text-center">
+                    <p className="text-slate-300 text-sm md:text-base leading-relaxed">
+                        Because these lines are <span className="text-cyan-400 font-semibold">interdependent</span>, the success of one guarantees the growth of the others — making this a <span className="text-green-400 font-semibold">low-risk, high-impact</span> investment.
+                    </p>
+                </motion.div>
 
                 <div className="flex items-center gap-2 mb-4">
                     <span className="text-xs text-slate-500 font-semibold uppercase tracking-wide">Show revenue:</span>
