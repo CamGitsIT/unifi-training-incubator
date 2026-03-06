@@ -94,7 +94,9 @@ export default function Home() {
         setSeen(prev => { const next = [...prev]; next[current] = true; return next; });
     }, [current]);
 
-    const SlideComponent = SLIDES[current].component;
+    const safeCurrent = Math.min(current, SLIDES.length - 1);
+    if (current !== safeCurrent) setCurrent(safeCurrent);
+    const SlideComponent = SLIDES[safeCurrent].component;
     const canAdvance = !GATING_ENABLED || interacted[current];
 
     return (
