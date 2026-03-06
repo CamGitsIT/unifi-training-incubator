@@ -75,8 +75,6 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
         if (allExpanded && !timerDone) { setTimerDone(true); onInteracted(); if (onUnlockMessage) onUnlockMessage(null); }
     }, [allExpanded]);
 
-    const yearLabel = { y1: 'Yr 1', y2: 'Yr 2', y3: 'Yr 3' };
-
     return (
         <div className="min-h-screen bg-slate-900 py-24 px-6">
             <div className="max-w-5xl mx-auto w-full">
