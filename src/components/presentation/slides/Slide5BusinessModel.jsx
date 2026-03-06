@@ -140,22 +140,57 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
           <div className="flex-1 border-t border-slate-800" />
         </motion.div>
 
-        {/* 3-Part Framework — shared container */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="rounded-2xl border border-slate-800 bg-slate-800/20 p-4 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-800 mb-4">
-          {FRAMEWORK.map((item, i) => {
-            const Icon = item.icon;
-            return (
-              <div key={i} className="px-5 py-4 flex items-start gap-3">
-                <div className="w-8 h-8 bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Icon className={`w-4 h-4 ${item.color}`} />
+        {/* Stacked visual framework */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="rounded-2xl border border-slate-800 bg-slate-800/20 px-6 py-6 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+
+            {/* Left: stacked bars */}
+            <div className="space-y-3">
+              {STACK_DATA.map((row, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="text-xs text-slate-500 w-28 flex-shrink-0 text-right">{row.label}</span>
+                  <div className="flex-1 h-7 rounded-lg overflow-hidden bg-slate-800/60 flex">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${row.standalone}%` }}
+                      transition={{ delay: 0.4 + i * 0.15, duration: 0.6, ease: 'easeOut' }}
+                      className="h-full bg-cyan-500/70"
+                    />
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${row.expansion}%` }}
+                      transition={{ delay: 0.55 + i * 0.15, duration: 0.5, ease: 'easeOut' }}
+                      className="h-full bg-violet-500/70"
+                    />
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${row.compounding}%` }}
+                      transition={{ delay: 0.7 + i * 0.15, duration: 0.5, ease: 'easeOut' }}
+                      className="h-full bg-green-500/70"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-slate-200 mb-1">{item.heading}</p>
-                  <p className="text-slate-500 text-xs leading-relaxed">{item.body}</p>
+              ))}
+            </div>
+
+            {/* Right: legend */}
+            <div className="space-y-4">
+              {[
+                { color: 'bg-cyan-500/70', label: 'Standalone Revenue', desc: 'Each line can close on its own.' },
+                { color: 'bg-violet-500/70', label: 'Expansion Opportunities', desc: 'One deployment often opens the next service.' },
+                { color: 'bg-green-500/70', label: 'Lower Risk, Higher Value', desc: 'Diversified revenue reduces dependency and increases client value.' },
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div className={`w-3 h-3 rounded-sm ${item.color} flex-shrink-0 mt-1`} />
+                  <div>
+                    <p className="text-sm font-semibold text-slate-200 leading-tight">{item.label}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              ))}
+            </div>
+
+          </div>
         </motion.div>
 
         {allExpanded && (
