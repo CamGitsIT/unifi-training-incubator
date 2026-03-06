@@ -79,8 +79,9 @@ function LineCard({ line, value, onChange }) {
             <p className="text-xs text-slate-400 mb-3 italic leading-relaxed">"{line.tagline}"</p>
 
             <div className="flex items-center gap-3">
-                 <div className="text-xs text-slate-400 w-28 flex-shrink-0">
-                     <strong>{value}</strong> {line.unit}
+                 <div className="text-xs flex-shrink-0 w-28">
+                     <div><strong className="text-slate-300">{value}</strong> <span className="text-slate-500">{line.unit}</span></div>
+                     <div className="text-slate-600 text-xs mt-0.5">{line.unitLabel}</div>
                  </div>
                  <div className="flex-1 relative">
                      <Slider
