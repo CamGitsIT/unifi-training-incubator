@@ -67,7 +67,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         </div>
                         <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
                             <div className="text-4xl font-bold text-green-400 mb-2">8</div>
-                            <div className="text-white text-sm font-semibold mb-1">Initial Revenue Streams</div>
+                            <div className="text-white text-sm font-semibold mb-1">Revenue Streams</div>
                             <div className="text-slate-400 text-xs">Diversified, repeatable model and clear ROI</div>
                         </div>
                     </div>
