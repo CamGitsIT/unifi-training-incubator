@@ -49,6 +49,7 @@
  */
 import ChatConversations from './pages/ChatConversations';
 import Ecosystem from './pages/Ecosystem';
+import EverythingWorksTogether from './pages/EverythingWorksTogether';
 import ForecastEngine from './pages/ForecastEngine';
 import Home from './pages/Home';
 import InvestorPayments from './pages/InvestorPayments';
@@ -56,13 +57,13 @@ import MarketIntelligence from './pages/MarketIntelligence';
 import ROICalculator from './pages/ROICalculator';
 import ScheduleMeeting from './pages/ScheduleMeeting';
 import Training from './pages/Training';
-import EverythingWorksTogether from './pages/EverythingWorksTogether';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "ChatConversations": ChatConversations,
     "Ecosystem": Ecosystem,
+    "EverythingWorksTogether": EverythingWorksTogether,
     "ForecastEngine": ForecastEngine,
     "Home": Home,
     "InvestorPayments": InvestorPayments,
@@ -70,7 +71,6 @@ export const PAGES = {
     "ROICalculator": ROICalculator,
     "ScheduleMeeting": ScheduleMeeting,
     "Training": Training,
-    "EverythingWorksTogether": EverythingWorksTogether,
 }
 
 export const pagesConfig = {
