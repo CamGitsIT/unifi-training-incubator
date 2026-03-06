@@ -101,8 +101,8 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
             One Platform. Eight Revenue Paths.
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            Each line generates revenue independently. Together, they form a cross-sell engine that distributes risk and compounds customer lifetime value.
+          <p className="text-lg text-slate-400 max-w-xl mx-auto">
+            Independent revenue today. Expansion revenue tomorrow.
           </p>
         </motion.div>
 
