@@ -12,7 +12,7 @@ const DEFAULT_LINES = [
         emoji: '🏢',
         color: '#22d3ee',
         locationIndependent: false,
-        tagline: 'The physical hub. Local, but it powers everything else.',
+        tagline: 'Local UniFi Experience Center that fuels every other revenue line.',
         unit: 'visitors/mo',
         unitLabel: 'Monthly Visitors',
         min: 10, max: 200, step: 10, default: 40,
