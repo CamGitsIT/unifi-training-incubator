@@ -54,7 +54,7 @@ const businessLines = [
         subtitle: 'Film & Production Deployments',
         color: 'indigo',
         revenue: '$48K',
-        description: 'Create a reusable inventory and configuration template for film productions who need enterprise-grade networking and security on set without long-term ownership.',
+        description: 'Reusable UniFi infrastructure packages rented to film productions, generating high-margin income without new CapEx each project.',
         metrics: ['High-margin rental income per production', 'Reusable gear — no per-project capital outlay', 'Builds relationships in ATL film industry']
     },
     {
