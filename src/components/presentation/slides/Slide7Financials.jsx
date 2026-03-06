@@ -146,6 +146,11 @@ export default function Slide7Financials({ onInteracted }) {
     // Run forecast engine with modified drivers — includes compounding effects
     const currentForecast = runForecast(modifiedStreams, 'base');
 
+    // Debug: log when forecast changes
+    React.useEffect(() => {
+        console.log('Forecast updated:', { y1: currentForecast.totalY1, values });
+    }, [currentForecast.totalY1]);
+
     // Extract year totals from engine
     const y1 = currentForecast.totalY1;
     const y2 = currentForecast.totalY2;
