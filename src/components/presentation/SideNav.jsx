@@ -4,23 +4,24 @@ import { Lock, ChevronRight } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from 'lucide-react';
 
+// SIDENAV – components/presentation/SideNav.jsx (one directory up from slides)
 // Maps slide indices to nav section indices
 // SLIDES order: 0=Hero, 1=BusinessModel, 2=SocialImpact, 3=Property, 4=Financials, 5=Investment, 6=Team, 7=CTA
 const NAV_SECTIONS = [
-    { label: 'Intro: Our Mission', slideIndices: [0] },
-    { label: 'One Vision, Endless Possibilities', slideIndices: [1] },
-    { label: 'Job Creation', slideIndices: [2] },
-    { label: 'The Foundation: Live-work Property', slideIndices: [3] },
+    { label: 'UniFi Experience Center', slideIndices: [0] },
+    { label: '8 Revenue Streams', slideIndices: [1] },
+    { label: 'Social Impact', slideIndices: [2] },
+    { label: 'Flagship Property', slideIndices: [3] },
     { 
-        label: 'Projections and Lending', 
+        label: 'Financials', 
         parent: true,
         subItems: [
-            { label: 'Projections/Margins', slideIndices: [4] },
-            { label: 'Lender Repayment', slideIndices: [5] }
+            { label: 'Interactive Model', slideIndices: [4] },
+            { label: 'Investment Terms', slideIndices: [5] }
         ]
     },
-    { label: 'Contributors', slideIndices: [6] },
-    { label: 'Support Us!', slideIndices: [7] },
+    { label: 'Lean Team', slideIndices: [6] },
+    { label: 'Join the Mission', slideIndices: [7] },
 ];
 
 function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
