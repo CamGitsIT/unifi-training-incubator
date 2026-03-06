@@ -225,7 +225,7 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                                     className="overflow-hidden"
                                 >
                                     <div className="px-5 py-4 space-y-2 bg-slate-900/60 border-t border-slate-700">
-                                        <p className="text-xs font-semibold text-slate-400 mb-3">Unit Economics</p>
+                                        <p className="text-xs font-semibold text-slate-400 mb-3">Unit economics (per stream)</p>
                                         <ARow label="Unit revenue (modeled)" value={`$${stream.assumptions.unitRevenue}/unit`} />
                                         {stream.assumptions.feePercent != null &&
                                             <ARow label="Fee %" value={`${stream.assumptions.feePercent}%`} />}
