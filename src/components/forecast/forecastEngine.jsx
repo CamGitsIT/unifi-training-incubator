@@ -113,6 +113,11 @@ export function runForecast(streams, scenario = 'base') {
     });
     effective[s.stream_id] = s.plan_driver_m1 * (1 + depEffect);
   });
+  
+  // Debug log (remove later)
+  if (typeof window !== 'undefined' && window._debugForecast) {
+    console.log('Forecast Debug:', { current, originalBaseline, effective });
+  }
 
   const results = {};
   streams.forEach(s => {
