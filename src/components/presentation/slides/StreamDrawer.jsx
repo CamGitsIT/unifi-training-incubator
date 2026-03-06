@@ -183,7 +183,7 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                             {/* Slider */}
                             <Slider
                                 value={[driverValue]}
-                                onValueChange={v => setDriverValue(v[0])}
+                                onValueChange={v => handleDriverChange(v[0])}
                                 min={stream.driver.min}
                                 max={stream.driver.max}
                                 step={stream.driver.step}
