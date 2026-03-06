@@ -278,9 +278,12 @@ export default function Slide2Mission({ onInteracted }) {
                             </div>
                         </div>
 
-                        <p className="text-xs text-amber-500/60 italic px-1">
-                            ⚠ Modeled — numbers link to Master Forecast.
-                        </p>
+                        <div className="rounded-xl border border-slate-700/50 bg-slate-800/20 px-3 py-2.5 text-xs text-slate-500 space-y-1">
+                        <p className="font-semibold text-slate-400">How Y1 revenue is calculated:</p>
+                        <p><span className="text-slate-300">driver × units/driver × $/unit/mo × growth_factor</span></p>
+                        <p className="text-slate-600">growth_factor = ((1+g)¹²−1)/g  (geometric sum over 12 months)</p>
+                        <p className="italic text-amber-500/60 mt-1">⚠ Modeled — numbers link to Master Forecast.</p>
+                        </div>
 
                         {hasInteracted && (
                             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
