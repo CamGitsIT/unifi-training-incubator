@@ -98,7 +98,7 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                     )}
                     {stream.fedBy && (
                         <div className="rounded-xl px-4 py-3 border border-purple-900/40 bg-purple-950/20">
-                            <p className="text-xs font-bold uppercase tracking-wider text-purple-400 mb-1.5">⬆ Fed By</p>
+                            <p className="text-xs font-bold uppercase tracking-wider text-purple-400 mb-1.5">Driven by other lines</p>
                             <p className="text-slate-300 text-sm leading-relaxed">{stream.fedBy}</p>
                         </div>
                     )}
