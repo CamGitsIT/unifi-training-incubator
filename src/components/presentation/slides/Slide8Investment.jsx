@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { BASELINE_STREAMS, runForecast } from '@/components/forecast/forecastEngine';
-
-const _forecast = runForecast(BASELINE_STREAMS, 'base');
-const AVG_MONTHLY_REVENUE_Y1 = Math.round(_forecast.totalY1 / 12);
 import { Coins, TrendingUp, Shield, Clock, CheckCircle, AlertCircle, DollarSign } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Slider } from "@/components/ui/slider";
+import { BASELINE_STREAMS, runForecast, formatCurrency } from '@/components/forecast/forecastEngine';
+
+const _forecast = runForecast(BASELINE_STREAMS, 'base');
+// Use Y1 average monthly revenue from the shared forecast engine (base scenario)
+const AVG_MONTHLY_REVENUE_Y1 = Math.round(_forecast.totalY1 / 12);
 
 export default function Slide8Investment({ onInteracted }) {
     const [investmentAmount, setInvestmentAmount] = useState(25000);
@@ -15,7 +16,7 @@ export default function Slide8Investment({ onInteracted }) {
 
     const targetReturn = investmentAmount * 1.10;
     const avgMonthlyRevenue = AVG_MONTHLY_REVENUE_Y1;
-    const monthlyPayment = avgMonthlyRevenue * 0.05;
+    const monthlyPayment = Math.round(avgMonthlyRevenue * 0.05);
     const estimatedMonths = Math.ceil(targetReturn / monthlyPayment);
 
     React.useEffect(() => {
@@ -75,6 +76,21 @@ export default function Slide8Investment({ onInteracted }) {
                                 );
                             })}
                         </div>
+                        <div className="mt-6 pt-6 border-t border-slate-700">
+                            <div className="text-xs text-slate-500 mb-2 uppercase tracking-wide">Forecast Engine · Base Scenario</div>
+                            <div className="grid grid-cols-3 gap-3">
+                                {[
+                                    { label: 'Y1 Total', val: _forecast.totalY1 },
+                                    { label: 'Y2 Total', val: _forecast.totalY2 },
+                                    { label: 'Y3 Total', val: _forecast.totalY3 },
+                                ].map(({ label, val }) => (
+                                    <div key={label} className="text-center">
+                                        <div className="text-xs text-slate-500">{label}</div>
+                                        <div className="text-sm font-bold text-cyan-400">{formatCurrency(val, true)}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
 
                     <div className="bg-gradient-to-br from-cyan-950/30 to-purple-950/30 border border-cyan-700/50 rounded-2xl p-8">
@@ -94,14 +110,15 @@ export default function Slide8Investment({ onInteracted }) {
                         </div>
                         <div className="space-y-3 bg-slate-950/50 rounded-xl p-5">
                             <div className="flex justify-between"><span className="text-slate-400">Total Repayment (10%)</span><span className="text-white font-bold">${targetReturn.toLocaleString()}</span></div>
-                            <div className="flex justify-between"><span className="text-slate-400">Est. Monthly Payment</span><span className="text-green-400 font-bold">${monthlyPayment.toLocaleString()}</span></div>
+                            <div className="flex justify-between"><span className="text-slate-400">Avg Monthly Revenue (Y1)</span><span className="text-slate-300 font-bold">{formatCurrency(avgMonthlyRevenue, true)}</span></div>
+                            <div className="flex justify-between"><span className="text-slate-400">Est. Monthly Payment (5%)</span><span className="text-green-400 font-bold">{formatCurrency(monthlyPayment, true)}</span></div>
                             <div className="flex justify-between"><span className="text-slate-400">Est. Payback</span><span className="text-cyan-400 font-bold">{estimatedMonths} months</span></div>
-                            <div className="pt-2 border-t border-slate-700 text-xs text-slate-500">Based on 5% of projected monthly revenue. Payments adjust with actual performance.</div>
+                            <div className="pt-2 border-t border-slate-700 text-xs text-slate-500">Based on 5% of projected Y1 monthly revenue from the 36-month compound growth model. Payments adjust with actual performance.</div>
                         </div>
                         <div className="bg-purple-950/30 border border-purple-700/50 rounded-xl p-4 mt-4">
                             <div className="flex items-start gap-2">
                                 <AlertCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                                <p className="text-sm text-slate-300">If we hit our base projections, we'll pay you back so fast you'll want to invest more to help us open Experience Center #2.</p>
+                                <p className="text-sm text-slate-300">If we hit our base projections ({formatCurrency(_forecast.totalY1, true)} Y1), we'll pay you back so fast you'll want to invest more to help us open Experience Center #2.</p>
                             </div>
                         </div>
                     </div>
