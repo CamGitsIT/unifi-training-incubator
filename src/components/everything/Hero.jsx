@@ -31,25 +31,28 @@ export default function Hero() {
                         <span className="text-cyan-400 text-xs font-medium tracking-wide">System Architecture</span>
                     </motion.div>
 
-                    <motion.h1
+                    <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.8 }}
-                        className="text-5xl md:text-7xl font-extrabold text-white mb-5 leading-[1.05] tracking-tight"
+                        className="mb-5"
                     >
-                        We aren't just a service provider;
-                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 mt-1">
-                            we are the engine.
-                        </span>
-                    </motion.h1>
+                        <p className="text-cyan-400 text-lg md:text-xl font-semibold tracking-wide mb-2">Finally.</p>
+                        <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-[1.05] tracking-tight">
+                            Everything works
+                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+                                better together.
+                            </span>
+                        </h1>
+                    </motion.div>
 
                     <motion.p
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        className="text-lg md:text-xl text-slate-300 leading-snug"
+                        className="text-base md:text-lg text-slate-300 leading-relaxed max-w-2xl"
                     >
-                        A technological shift powered by three synergistic accelerators working in perfect harmony.
+                        We aren't just a gadget shop; we are the engine behind a technological shift. By combining the Ubiquiti UniFi stack with national Certified Training and AI-driven lead generation, we have created a business model where every division accelerates the others.
                     </motion.p>
                 </motion.div>
             </div>
