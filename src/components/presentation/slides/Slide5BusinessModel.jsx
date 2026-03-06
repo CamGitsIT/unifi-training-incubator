@@ -9,7 +9,7 @@ const businessLines = [
         subtitle: 'Zero-Inventory Retail Showroom',
         color: 'cyan',
         revenue: '$120K',
-        description: 'Showcase the full UniFi ecosystem in a live, working environment while operating a zero-inventory retail store — customers see it, they buy it.',
+        description: 'Live UniFi Experience Center showroom driving zero-inventory hardware sales and demand for every other service line.',
         metrics: ['Live demo environment drives high-confidence purchases', 'Zero inventory risk — orders fulfilled direct to customer', 'Doubles as marketing engine for all other business lines']
     },
     {
