@@ -114,8 +114,8 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         transition={{ delay: 0.65 }}
                         className="text-slate-400 text-base mb-10 leading-relaxed"
                     >
-                        We're raising <strong className="text-cyan-400">$300K</strong> to open a real{' '}
-                        <strong className="text-white">UniFi Experience Center in Atlanta</strong>—where businesses, MSPs, and teams can see, test, and adopt fully integrated, owned systems that cut costs and boost control.
+                        We're raising <strong className="text-cyan-400">$300K</strong> to open a{' '}
+                        <strong className="text-white">UniFi Experience Center and Training Hub</strong>—where businesses, MSPs, and teams can see, test, and adopt fully integrated, owned systems that cut costs, and a network of trained experts.
                     </motion.p>
 
                     {/* CTA */}
