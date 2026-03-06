@@ -56,8 +56,8 @@ export default function Slide1Hero({ onInteracted, onNext }) {
 
                     <div className="text-left max-w-3xl mx-auto mb-10 space-y-4">
                         {[
-                            { label: 'The Opportunity', text: 'Organizations are abandoning fragmented SaaS vendors for owned UniFi infrastructure — eliminating recurring fees permanently.' },
-                            { label: 'Proven Impact', text: 'OverIT clients reduce OpEx 40–60%, simplify operations, and strengthen security — validated by live deployments.' },
+                            { label: 'The Opportunity', text: 'Organizations are abandoning fragmented SaaS vendors for owned UniFi infrastructure—eliminating recurring fees permanently.' },
+                            { label: 'Proven Impact', text: 'OverIT clients reduce OpEx 40–60%, simplify operations, and strengthen security—validated by live deployments.' },
                             { label: 'Why OverIT', text: 'Ubiquiti-certified experts. 8 diversified revenue streams. SBA-backed acquisition with clear investor returns.' },
                         ].map((b, i) => (
                             <div key={i} className="flex items-start gap-4 bg-slate-800/40 border border-slate-700 rounded-xl px-5 py-4">
