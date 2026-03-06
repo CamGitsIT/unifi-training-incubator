@@ -153,54 +153,28 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                     </p>
                 </motion.div>
 
-                <div className="flex items-center gap-2 mb-4">
-                    <span className="text-xs text-slate-500 font-semibold uppercase tracking-wide">Show revenue:</span>
-                    <div className="flex bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
-                        {['y1', 'y2', 'y3'].map(y => (
-                            <button key={y} onClick={() => setYearView(y)} className={`px-3.5 py-1.5 text-xs font-semibold transition-all ${yearView === y ? 'bg-cyan-500 text-slate-950' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}>
-                                {yearLabel[y]}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="space-y-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {businessLines.map((line, i) => {
                         const colors = colorMap[line.color];
                         const Icon = line.icon;
                         const isOpen = expanded.has(i);
-                        const revenueVal = line[yearView];
                         return (
                             <motion.div key={line.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }} onClick={() => handleExpand(i)}
-                                className={`bg-gradient-to-br ${colors.bg} to-slate-900/30 border ${colors.border} rounded-2xl p-5 cursor-pointer transition-all hover:scale-[1.005] ${isOpen ? 'ring-1 ring-offset-1 ring-offset-slate-900' : ''}`}>
-                                <div className="flex items-center gap-4">
-                                    <div className={`w-10 h-10 ${colors.icon} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                                        {isOpen ? <CheckCircle className="w-5 h-5 text-green-400" /> : <Icon className={`w-5 h-5 ${colors.iconColor}`} />}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="text-lg font-bold text-white leading-tight">{line.title}</h3>
-                                        <p className={`text-xs ${colors.accent}`}>{line.subtitle}</p>
-                                    </div>
-                                    <div className="text-right flex-shrink-0">
-                                        <div className={`text-xl font-bold ${colors.accent}`}>{formatCurrency(revenueVal, true)}</div>
-                                        <div className="text-xs text-slate-400">{yearLabel[yearView]} Revenue</div>
-                                    </div>
+                                className={`bg-gradient-to-br ${colors.bg} to-slate-900/30 border ${colors.border} rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.02] flex flex-col gap-2 ${isOpen ? 'ring-1 ring-offset-1 ring-offset-slate-900' : ''}`}>
+                                <div className={`w-9 h-9 ${colors.icon} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                                    {isOpen ? <CheckCircle className="w-4 h-4 text-green-400" /> : <Icon className={`w-4 h-4 ${colors.iconColor}`} />}
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-bold text-white leading-tight">{line.title}</h3>
+                                    <p className={`text-xs ${colors.accent} mt-0.5`}>{line.subtitle}</p>
                                 </div>
                                 {isOpen && (
-                                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-4 pt-4 border-t border-slate-700/50">
-                                        <p className="text-slate-300 mb-3 text-sm">{line.description}</p>
-                                        <div className="flex gap-4 mb-3 text-xs">
-                                            {['y1', 'y2', 'y3'].map(y => (
-                                                <div key={y} className="text-center">
-                                                    <div className="text-slate-500">{yearLabel[y]}</div>
-                                                    <div className="font-bold" style={{ color: line.hex }}>{formatCurrency(line[y], true)}</div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <div className="space-y-1.5">
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pt-2 border-t border-slate-700/50">
+                                        <p className="text-slate-300 text-xs mb-2">{line.description}</p>
+                                        <div className="space-y-1">
                                             {line.metrics.map((m, j) => (
-                                                <div key={j} className="flex items-center gap-2 text-sm text-slate-400">
-                                                    <ArrowRight className={`w-4 h-4 flex-shrink-0 ${colors.iconColor}`} />
+                                                <div key={j} className="flex items-start gap-1.5 text-xs text-slate-400">
+                                                    <ArrowRight className={`w-3 h-3 flex-shrink-0 mt-0.5 ${colors.iconColor}`} />
                                                     <span>{m}</span>
                                                 </div>
                                             ))}
