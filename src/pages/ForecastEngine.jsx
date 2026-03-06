@@ -4,9 +4,10 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar
 } from 'recharts';
-import { BASELINE_STREAMS, DEPENDENCIES, SCENARIO_MULTIPLIERS, STREAM_COLORS, runForecast, formatCurrency } from '@/components/forecast/forecastEngine';
+import { BASELINE_STREAMS, DEPENDENCIES, SCENARIO_MULTIPLIERS, STREAM_COLORS, runForecast, formatCurrency, applyImportedStreams } from '@/components/forecast/forecastEngine';
 import StreamForecastCard from '@/components/forecast/StreamForecastCard';
 import DependencyGraph from '@/components/forecast/DependencyGraph';
+import ForecastImporter from '@/components/forecast/ForecastImporter';
 
 const MONTH_LABELS = Array.from({ length: 36 }, (_, i) => `M${i + 1}`);
 
