@@ -91,6 +91,161 @@ const colorMap = {
 const TOTAL_REVENUE = '$1,060,000';
 const NET_MARGIN = '~$740,000';
 
+function EcosystemFlywheel() {
+    const [activeStep, setActiveStep] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(true);
+    const [speed, setSpeed] = useState(3000);
+
+    const coreColor = "#3B82F6";
+
+    const steps = [
+        { id: 'training', title: 'Training', description: 'Creates qualified Installers', icon: <GraduationCap className="w-8 h-8" /> },
+        { id: 'installers', title: 'Installers', description: 'Need a steady stream of work', icon: <Users className="w-8 h-8" /> },
+        { id: 'ai', title: 'AI Lead Gen', description: 'Finds and identifies Projects', icon: <Cpu className="w-8 h-8" /> },
+        { id: 'experience', title: 'Experience Center', description: 'Closes Projects with customers', icon: <Building2 className="w-8 h-8" /> },
+        { id: 'revenue', title: 'Revenue', description: 'Flows back into more Training', icon: <DollarSign className="w-8 h-8" /> },
+    ];
+
+    useEffect(() => {
+        let interval;
+        if (isPlaying) {
+            interval = setInterval(() => {
+                setActiveStep((prev) => (prev + 1) % steps.length);
+            }, speed);
+        }
+        return () => clearInterval(interval);
+    }, [isPlaying, speed, steps.length]);
+
+    const radius = 160;
+    const centerX = 250;
+    const centerY = 250;
+
+    const getCoordinates = (index, total) => {
+        const angle = (index * 2 * Math.PI) / total - Math.PI / 2;
+        return { x: centerX + radius * Math.cos(angle), y: centerY + radius * Math.sin(angle) };
+    };
+
+    return (
+        <div className="bg-slate-50 rounded-3xl border border-slate-200 overflow-hidden">
+            <div className="p-8 text-center border-b border-slate-100 bg-white">
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">UniFi Ecosystem Flywheel</h3>
+                <p className="text-slate-500 max-w-lg mx-auto">A self-sustaining cycle where AI and specialized centers drive continuous growth and revenue.</p>
+            </div>
+
+            <div className="flex flex-col lg:flex-row p-8 gap-12 items-center bg-white">
+                <div className="relative w-full max-w-[500px] aspect-square flex-shrink-0">
+                    <svg viewBox="0 0 500 500" className="w-full h-full">
+                        <circle cx="250" cy="250" r="210" fill="none" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="4 4" />
+                        {steps.map((_, i) => {
+                            const start = getCoordinates(i, steps.length);
+                            const end = getCoordinates((i + 1) % steps.length, steps.length);
+                            const isTransitioning = activeStep === i;
+                            return (
+                                <g key={`path-${i}`}>
+                                    <path
+                                        d={`M ${start.x} ${start.y} Q ${250 + (start.x + end.x - 500) * 0.3} ${250 + (start.y + end.y - 500) * 0.3} ${end.x} ${end.y}`}
+                                        fill="none"
+                                        stroke={isTransitioning ? coreColor : '#e2e8f0'}
+                                        strokeWidth={isTransitioning ? "4" : "2"}
+                                        className="transition-all duration-700"
+                                        strokeDasharray={isTransitioning ? "none" : "5 5"}
+                                    />
+                                    {isTransitioning && isPlaying && (
+                                        <circle r="6" fill={coreColor}>
+                                            <animateMotion
+                                                dur={`${speed / 1000}s`}
+                                                repeatCount="indefinite"
+                                                path={`M ${start.x} ${start.y} Q ${250 + (start.x + end.x - 500) * 0.3} ${250 + (start.y + end.y - 500) * 0.3} ${end.x} ${end.y}`}
+                                            />
+                                            <animate attributeName="r" values="4;8;4" dur="1.5s" repeatCount="indefinite" />
+                                        </circle>
+                                    )}
+                                </g>
+                            );
+                        })}
+                        {steps.map((step, i) => {
+                            const { x, y } = getCoordinates(i, steps.length);
+                            const isSource = activeStep === i;
+                            const isDestination = activeStep === (i === 0 ? steps.length - 1 : i - 1);
+                            const isActive = isSource || isDestination;
+                            return (
+                                <g key={step.id} className="cursor-pointer" onClick={() => setActiveStep(i)}>
+                                    {isActive && (
+                                        <circle cx={x} cy={y} r="50" fill={coreColor} fillOpacity="0.1">
+                                            <animate attributeName="r" values="45;55;45" dur="3s" repeatCount="indefinite" />
+                                        </circle>
+                                    )}
+                                    <circle cx={x} cy={y} r={isSource ? 42 : 36} fill="white" stroke={isActive ? coreColor : '#cbd5e1'} strokeWidth={isSource ? 4 : 2} className="transition-all duration-500" />
+                                    <foreignObject x={x - 20} y={y - 20} width="40" height="40">
+                                        <div className={`flex items-center justify-center w-full h-full transition-all duration-500 ${isActive ? 'text-blue-600' : 'text-slate-400'}`}>{step.icon}</div>
+                                    </foreignObject>
+                                    <text x={x} y={y + 55} textAnchor="middle" fontSize="10" fontWeight="bold" fill={isActive ? '#0f172a' : '#94a3b8'}>{step.title}</text>
+                                </g>
+                            );
+                        })}
+                        <circle cx="250" cy="250" r="65" fill="white" stroke={coreColor} strokeWidth="2" />
+                        <circle cx="250" cy="250" r="58" fill={coreColor} />
+                        <foreignObject x="200" y="215" width="100" height="70">
+                            <div className="flex flex-col items-center justify-center h-full text-center p-2">
+                                <span className="text-white font-bold text-[10px] leading-tight tracking-tight uppercase">UniFi</span>
+                                <span className="text-white font-black text-[11px] leading-tight uppercase">Ecosystem</span>
+                            </div>
+                        </foreignObject>
+                    </svg>
+                </div>
+
+                <div className="w-full flex-1 space-y-4">
+                    <div className="bg-slate-50 p-4 rounded-2xl mb-6">
+                        <h4 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                            Active Phase
+                        </h4>
+                        <div className="bg-white p-6 rounded-xl border border-blue-100 shadow-sm transition-all duration-500">
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="p-3 rounded-xl bg-blue-50 text-blue-600">{steps[activeStep].icon}</div>
+                                <div className="flex items-center text-xs font-bold text-blue-500 bg-blue-50 px-3 py-1 rounded-full">STEP {activeStep + 1} OF 5</div>
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-2">{steps[activeStep].title}</h3>
+                            <p className="text-slate-600 mb-6">{steps[activeStep].description}</p>
+                            <div className="flex items-center gap-2 text-sm font-semibold text-blue-600 cursor-pointer" onClick={() => setActiveStep((activeStep + 1) % steps.length)}>
+                                Next: {steps[(activeStep + 1) % steps.length].title}
+                                <ChevronRight size={16} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-center gap-3">
+                        {steps.map((_, i) => (
+                            <button key={i} onClick={() => setActiveStep(i)} className={`h-2 rounded-full transition-all duration-300 ${activeStep === i ? 'w-8 bg-blue-500' : 'w-2 bg-slate-200'}`} />
+                        ))}
+                    </div>
+
+                    <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
+                        <div className="flex gap-3">
+                            <button onClick={() => setIsPlaying(!isPlaying)} className={`flex items-center gap-2 px-5 py-2 rounded-full font-bold text-sm transition-all ${isPlaying ? 'bg-slate-900 text-white hover:bg-slate-800' : 'bg-blue-500 text-white hover:bg-blue-600'}`}>
+                                {isPlaying ? <><Pause size={16} /> Pause Cycle</> : <><Play size={16} /> Resume Cycle</>}
+                            </button>
+                            <button onClick={() => setActiveStep(0)} className="p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors">
+                                <RotateCcw size={20} />
+                            </button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase">Tempo</span>
+                            <div className="flex bg-slate-100 rounded-lg p-1">
+                                {[5000, 3000, 1000].map((s, idx) => (
+                                    <button key={s} onClick={() => setSpeed(s)} className={`px-3 py-1 rounded-md text-[10px] font-bold transition-all ${speed === s ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'}`}>
+                                        {['Slow', 'Mid', 'Fast'][idx]}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
     const [expanded, setExpanded] = useState(new Set());
     const [timerDone, setTimerDone] = useState(false);
