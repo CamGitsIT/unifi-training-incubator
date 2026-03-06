@@ -59,7 +59,7 @@ export default function Slide11CTA({ onInteracted }) {
                     <div className="bg-slate-800/30 border border-slate-700 rounded-xl p-6 text-center hover:border-cyan-500/50 transition-all flex flex-col items-center">
                         <Heart className="w-8 h-8 text-cyan-400 mx-auto mb-3" />
                         <h3 className="font-bold text-white mb-2">Invest as a Friend</h3>
-                        <p className="text-slate-400 text-sm">Revenue-based loans starting at $5,000. Get paid back with 10% return.</p>
+                        <p className="text-slate-400 text-sm">Revenue-based loans starting at $5,000, repaid with a fixed 10% return from operating revenue.</p>
                     </div>
                     <div className="bg-slate-800/30 border border-slate-700 rounded-xl p-6 text-center hover:border-purple-500/50 transition-all flex flex-col items-center">
                         <Sparkles className="w-8 h-8 text-purple-400 mx-auto mb-3" />
