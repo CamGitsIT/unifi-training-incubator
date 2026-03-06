@@ -117,7 +117,8 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         transition={{ delay: 0.65 }}
                         className="text-slate-400 text-base mb-10 leading-relaxed"
                     >
-                        We aren't just a gadget shop; we are the engine behind a technological shift. By combining the Ubiquiti UniFi stack with national Certified Training and AI-driven lead generation, we have created a business model where every division accelerates the others.
+                        We're raising <strong className="text-cyan-400">$300k</strong> to open the first{' '}
+                        <strong className="text-white">UniFi Experience Center</strong> to demo the possibilities of a fully integrated, owned system with no subscription fees while training and creating a network of experts to spread the message.
                     </motion.p>
 
                     {/* CTA */}
