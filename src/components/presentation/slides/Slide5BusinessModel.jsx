@@ -86,29 +86,37 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                     </p>
                 </motion.div>
 
-                {/* Three-pillar cards */}
-                <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-                    {[
-                        { icon: GraduationCap, color: '#34d399', bg: 'from-green-950/40', border: 'border-green-800/40', label: 'Our Training', sub: 'creates the installers.' },
-                        { icon: Camera,        color: '#22d3ee', bg: 'from-cyan-950/40',  border: 'border-cyan-800/40',  label: 'Our Experience Center', sub: 'creates the customers.' },
-                        { icon: Bot,           color: '#a78bfa', bg: 'from-violet-950/40',border: 'border-violet-800/40',label: 'Our AI', sub: 'connects the two.' },
-                    ].map(({ icon: Icon, color, bg, border, label, sub }) => (
-                        <div key={label} className={`bg-gradient-to-br ${bg} to-slate-900/20 border ${border} rounded-2xl p-6 flex flex-col items-center text-center gap-3`}>
-                            <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: `${color}18`, border: `1px solid ${color}35` }}>
-                                <Icon className="w-6 h-6" style={{ color }} />
+                {/* Flywheel animation + three pillars side by side */}
+                <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-col md:flex-row items-center gap-6 mb-5">
+                    <div className="flex-shrink-0">
+                        <RevenueFlywheelAnimation />
+                    </div>
+                    <div className="flex flex-col gap-3 flex-1 w-full">
+                        {[
+                            { icon: GraduationCap, color: '#34d399', bg: 'from-green-950/40', border: 'border-green-800/40', label: 'Our Training', sub: 'creates the installers.' },
+                            { icon: Camera,        color: '#22d3ee', bg: 'from-cyan-950/40',  border: 'border-cyan-800/40',  label: 'Our Experience Center', sub: 'creates the customers.' },
+                            { icon: Bot,           color: '#a78bfa', bg: 'from-violet-950/40',border: 'border-violet-800/40',label: 'Our AI', sub: 'connects the two.' },
+                        ].map(({ icon: Icon, color, bg, border, label, sub }) => (
+                            <div key={label} className={`bg-gradient-to-br ${bg} to-slate-900/20 border ${border} rounded-2xl p-4 flex items-center gap-4`}>
+                                <div className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: `${color}18`, border: `1px solid ${color}35` }}>
+                                    <Icon className="w-5 h-5" style={{ color }} />
+                                </div>
+                                <div>
+                                    <div className="text-white font-bold text-sm">{label}</div>
+                                    <div className="text-slate-400 text-xs mt-0.5">{sub}</div>
+                                </div>
                             </div>
-                            <div>
-                                <div className="text-white font-bold text-base">{label}</div>
-                                <div className="text-slate-400 text-sm mt-0.5">{sub}</div>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </motion.div>
 
                 {/* Interdependence statement */}
-                <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="mb-8 rounded-2xl border border-slate-700 bg-gradient-to-r from-slate-800/50 to-slate-800/20 px-6 py-4 text-center">
-                    <p className="text-slate-300 text-sm md:text-base leading-relaxed">
+                <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="mb-8 rounded-2xl border border-slate-700 bg-gradient-to-r from-slate-800/50 to-slate-800/20 px-6 py-5 text-center">
+                    <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-3">
                         Because these lines are <span className="text-cyan-400 font-semibold">interdependent</span>, the success of one guarantees the growth of the others — making this a <span className="text-green-400 font-semibold">low-risk, high-impact</span> investment.
+                    </p>
+                    <p className="text-slate-400 text-xs md:text-sm leading-relaxed">
+                        Our business lines are designed to be <span className="text-violet-400 font-semibold">synergistic</span>, where everything works together to create greater impact: <span className="text-green-400 font-medium">Certified training programs</span> produce skilled installers who accelerate UniFi deployments for clients, and our <span className="text-violet-400 font-medium">AI-powered matching</span> connects projects nationwide, fostering local jobs. Yet, they're not dependent — our in-person <span className="text-cyan-400 font-medium">Experience Center</span> generates <span className="text-amber-400 font-semibold">standalone revenue</span> through events and demos, our video studio supports independent online courses, and consulting services offer flexible, on-demand expertise. This structure <span className="text-green-400 font-semibold">minimizes risk</span>, ensuring that even if one area faces challenges (e.g., a dip in physical attendance), the others continue driving growth and ROI.
                     </p>
                 </motion.div>
 
