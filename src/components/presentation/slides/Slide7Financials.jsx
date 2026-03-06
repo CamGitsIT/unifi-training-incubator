@@ -135,6 +135,20 @@ export default function Slide7Financials({ onInteracted }) {
         setValues(Object.fromEntries(LINE_CONFIGS.map(l => [l.id, l.defaultValue])));
     };
 
+    // Build modified streams with current slider values
+    const modifiedStreams = BASELINE_STREAMS.map(s => ({
+        ...s,
+        plan_driver_m1: values[s.stream_id] ?? s.plan_driver_m1,
+    }));
+
+    // Run forecast engine with modified drivers — includes compounding effects
+    const currentForecast = runForecast(modifiedStreams, 'base');
+
+    // Extract year totals from engine
+    const y1 = currentForecast.totalY1;
+    const y2 = currentForecast.totalY2;
+    const y3 = currentForecast.totalY3;
+
     // Compute revenues using the forecast engine with current slider values
     const lineRevenues = LINE_CONFIGS.map(l => {
         const monthlyRev = values[l.id] * l.revenuePerDriver;
@@ -157,11 +171,6 @@ export default function Slide7Financials({ onInteracted }) {
         revenue: l.annual,
         color: l.color,
     }));
-
-    // Reference totals from the engine (base scenario, default drivers)
-    const y1 = DEFAULT_FORECAST.totalY1;
-    const y2 = DEFAULT_FORECAST.totalY2;
-    const y3 = DEFAULT_FORECAST.totalY3;
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 py-16 px-4 md:px-6">
