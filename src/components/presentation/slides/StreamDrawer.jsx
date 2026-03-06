@@ -131,9 +131,9 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
 
                     {/* What / Who / How */}
                     <div className="space-y-4">
-                        <InfoRow label="What it is" text={stream.what} />
-                        <InfoRow label="Who it serves" text={stream.whoServes} />
-                        <InfoRow label="How we earn" text={stream.howWeEarn} />
+                        <InfoRow label="What this stream is" text={stream.what} />
+                        <InfoRow label="Who this serves" text={stream.whoServes} />
+                        <InfoRow label="How OverIT earns here" text={stream.howWeEarn} />
                     </div>
 
                     {/* ── Driver Control ── */}
