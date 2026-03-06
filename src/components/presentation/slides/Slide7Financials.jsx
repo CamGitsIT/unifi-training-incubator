@@ -172,6 +172,7 @@ export default function Slide7Financials({ onInteracted }) {
     const locationFreePct = totalAnnual > 0 ? Math.round((locationFreeRevenue / totalAnnual) * 100) : 0;
 
     const chartData = lineRevenues.map(l => ({
+        id: l.id,
         name: l.name,
         revenue: l.annual,
         color: l.color,
