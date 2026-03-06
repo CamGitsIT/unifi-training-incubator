@@ -209,7 +209,7 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                             onClick={() => setAssumptionsOpen(o => !o)}
                             className="w-full flex items-center justify-between px-5 py-4 bg-slate-800/40 hover:bg-slate-800/70 transition-colors"
                         >
-                            <span className="text-sm font-semibold text-slate-300">Assumptions & Multipliers</span>
+                            <span className="text-sm font-semibold text-slate-300">Assumptions, unit economics & multipliers</span>
                             {assumptionsOpen
                                 ? <ChevronUp className="w-4 h-4 text-slate-400" />
                                 : <ChevronDown className="w-4 h-4 text-slate-400" />
