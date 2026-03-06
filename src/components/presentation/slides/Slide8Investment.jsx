@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { BASELINE_STREAMS, runForecast } from '@/components/forecast/forecastEngine';
+
+const _forecast = runForecast(BASELINE_STREAMS, 'base');
+const AVG_MONTHLY_REVENUE_Y1 = Math.round(_forecast.totalY1 / 12);
 import { Coins, TrendingUp, Shield, Clock, CheckCircle, AlertCircle, DollarSign } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Slider } from "@/components/ui/slider";
