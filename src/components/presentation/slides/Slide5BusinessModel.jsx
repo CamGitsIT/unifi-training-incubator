@@ -18,7 +18,7 @@ const businessLines = [
         subtitle: 'The DoorKing Killer',
         color: 'purple',
         revenue: '$216K',
-        description: 'Replace outdated, expensive intercom and access systems for properties and buildings with modern, subscription-free UniFi solutions.',
+        description: 'Retrofit DoorKing-style systems with subscription-free UniFi access control, delivering faster ROI and lower lifetime cost.',
         metrics: ['Average deal size: $15,000', '40% gross margin per project', '16-month ROI tipping point for clients']
     },
     {
