@@ -111,7 +111,7 @@ export default function Slide11CTA({ onInteracted }) {
                                 <Button type="submit" disabled={isSubmitting} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-5 text-lg rounded-xl">
                                     {isSubmitting ? 'Registering...' : 'Register Funding Intent'}
                                 </Button>
-                                <p className="text-xs text-slate-400 text-center">Debt/revenue-participation offering. No equity or voting shares issued.</p>
+                                <p className="text-xs text-slate-400 text-center">This is a revenue-participation debt offering. No equity or voting shares are issued.</p>
                             </form>
                         </>
                     ) : (
