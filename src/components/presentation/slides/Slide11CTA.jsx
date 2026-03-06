@@ -118,7 +118,7 @@ export default function Slide11CTA({ onInteracted }) {
                         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-8">
                             <Rocket className="w-16 h-16 mx-auto text-cyan-400 mb-4" />
                             <h3 className="text-3xl font-bold text-white mb-3">Intent Registered!</h3>
-                            <p className="text-slate-300 max-w-xl mx-auto mb-6">Your interest in the OverIT growth round has been logged. Our team will reach out with the participation agreement and yield schedule.</p>
+                            <p className="text-slate-300 max-w-xl mx-auto mb-6">Your interest in the OverIT growth round is logged. We'll follow up with the detailed participation terms, repayment schedule, and next steps.</p>
                             <div className="flex justify-center gap-4">
                                 <Button onClick={() => window.open('https://donate.stripe.com/aEU8xB9kM7IL8mo5kl', '_blank')} className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold px-6 py-4 rounded-xl">
                                     <DollarSign className="w-5 h-5 mr-2" /> Make a Donation Too
