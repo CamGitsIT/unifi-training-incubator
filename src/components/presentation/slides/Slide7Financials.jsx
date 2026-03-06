@@ -90,7 +90,7 @@ const DEFAULT_LINES = [
         emoji: '🌡️',
         color: '#38bdf8',
         locationIndependent: true,
-        tagline: '🌐 Cold chain compliance. 100% remote delivery.',
+        tagline: 'Remote cold-chain compliance monitoring for food and pharma locations.',
         unit: 'sensors/mo',
         unitLabel: 'Active Sensors',
         min: 5, max: 100, step: 5, default: 15,
