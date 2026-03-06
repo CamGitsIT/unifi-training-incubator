@@ -299,11 +299,10 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
         <div className="min-h-screen bg-slate-900 py-24 px-6">
             <div className="max-w-5xl mx-auto w-full">
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">One Mission, One Roof</h2>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">One Ecosystem. Endless Possibilities.</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                        Eight UniFi-powered business lines under one roof—aligned to the UniFi Experience Center and National Training Center.
+                        Synergistic business lines aligned under one roof, all propelled by the Experience Center and Training Hub.
                     </p>
-                    <p className="text-sm text-cyan-400 mt-4 animate-pulse">👇 Click any card to expand or collapse details</p>
                 </motion.div>
 
                 <div className="mb-12">

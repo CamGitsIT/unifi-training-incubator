@@ -1,396 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
-// ─── Shared copy ───────────────────────────────────────────────
-const COPY = {
-    kicker: 'UniFi Experience Center and Training Hub',
-    headlinePart1: 'Everything works',
-    headlinePart2: 'better together.',
-    subline: 'Teach. Simplify. Save. Enjoy. Repeat.',
-    support: 'We combine UniFi infrastructure, certified training, and AI-driven lead generation into one growth engine.',
-    cta: 'Learn How →',
-};
+import { motion } from 'framer-motion';
+import { Zap } from 'lucide-react';
 
 const BUTTON_UNLOCK_SECONDS = 10;
 
-// ─── Variation A: "Deep Space" — dark void + cyan grid + hard glow ───
-function VariationA({ onCTA }) {
+// Animated floating particle
+function Particle({ style }) {
     return (
-        <div className="relative w-full h-screen overflow-hidden flex items-center" style={{ background: '#020B18' }}>
-
-            {/* Grid overlay */}
-            <div className="absolute inset-0" style={{
-                backgroundImage: `
-                    linear-gradient(rgba(34,211,238,0.04) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(34,211,238,0.04) 1px, transparent 1px)
-                `,
-                backgroundSize: '80px 80px',
-            }} />
-
-            {/* Hard cyan glow — top right corner */}
-            <div className="absolute -top-32 right-0 w-[700px] h-[700px] rounded-full" style={{
-                background: 'radial-gradient(circle, rgba(34,211,238,0.18) 0%, rgba(14,165,233,0.06) 40%, transparent 70%)',
-            }} />
-
-            {/* Subtle bottom left glow */}
-            <div className="absolute bottom-0 -left-40 w-[500px] h-[500px] rounded-full" style={{
-                background: 'radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)',
-            }} />
-
-            {/* Horizontal light streak */}
-            <div className="absolute top-[38%] left-0 right-0 h-px" style={{
-                background: 'linear-gradient(90deg, transparent 0%, rgba(34,211,238,0.25) 30%, rgba(34,211,238,0.6) 50%, rgba(34,211,238,0.25) 70%, transparent 100%)',
-            }} />
-
-            {/* Content */}
-            <div className="relative z-10 px-16 md:px-24 max-w-5xl">
-
-                {/* Kicker */}
-                <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1, duration: 0.6 }}
-                    className="flex items-center gap-3 mb-10"
-                >
-                    <span className="block w-8 h-px bg-cyan-400" />
-                    <span className="text-cyan-400 text-xs font-semibold tracking-[0.25em] uppercase">{COPY.kicker}</span>
-                </motion.div>
-
-                {/* Headline */}
-                <motion.h1
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.25, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="font-black leading-[1.0] tracking-tight mb-8"
-                    style={{ fontSize: 'clamp(3.5rem, 8vw, 7.5rem)' }}
-                >
-                    <span className="text-white block">{COPY.headlinePart1}</span>
-                    <span className="block" style={{
-                        background: 'linear-gradient(135deg, #22d3ee 0%, #38bdf8 40%, #818cf8 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        filter: 'drop-shadow(0 0 40px rgba(34,211,238,0.5))',
-                    }}>
-                        {COPY.headlinePart2}
-                    </span>
-                </motion.h1>
-
-                {/* Subline */}
-                <motion.p
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.45, duration: 0.7 }}
-                    className="text-2xl md:text-3xl font-bold text-slate-200 mb-5 tracking-tight"
-                >
-                    {COPY.subline}
-                </motion.p>
-
-                {/* Support */}
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.6, duration: 0.7 }}
-                    className="text-slate-400 text-base md:text-lg max-w-xl mb-12 leading-relaxed"
-                >
-                    {COPY.support}
-                </motion.p>
-
-                {/* CTA */}
-                <motion.button
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.75, duration: 0.5 }}
-                    onClick={onCTA}
-                    whileHover={{ scale: 1.04, y: -2 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="relative px-10 py-4 rounded-full text-white font-bold text-lg overflow-hidden"
-                    style={{
-                        background: 'linear-gradient(135deg, #0891b2, #4f46e5)',
-                        boxShadow: '0 0 40px rgba(34,211,238,0.35), inset 0 1px 0 rgba(255,255,255,0.1)',
-                    }}
-                >
-                    <span className="relative z-10">{COPY.cta}</span>
-                    <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300"
-                        style={{ background: 'linear-gradient(135deg, #06b6d4, #6366f1)' }} />
-                </motion.button>
-            </div>
-
-            {/* Right-side vertical accent line */}
-            <div className="absolute right-16 top-1/4 bottom-1/4 w-px" style={{
-                background: 'linear-gradient(to bottom, transparent, rgba(34,211,238,0.4), transparent)',
-            }} />
-        </div>
+        <motion.div
+            className="absolute rounded-full bg-cyan-400/20 blur-sm"
+            style={style}
+            animate={{ y: [0, -30, 0], opacity: [0.2, 0.6, 0.2] }}
+            transition={{ duration: 4 + Math.random() * 4, repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 3 }}
+        />
     );
 }
 
-// ─── Variation B: "Glass Architecture" — frosted panels + photo bg ───
-function VariationB({ onCTA }) {
-    return (
-        <div className="relative w-full h-screen overflow-hidden flex items-center"
-            style={{ background: 'linear-gradient(135deg, #0a0f1e 0%, #0d1b2a 60%, #071020 100%)' }}
-        >
-            {/* Background photo — architectural, blurred */}
-            <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{
-                    backgroundImage: `url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/1234a93d7_experience-center_backdrop.png')`,
-                    opacity: 0.18,
-                    filter: 'blur(2px) saturate(0.6)',
-                }}
-            />
-
-            {/* Left gradient overlay for text contrast */}
-            <div className="absolute inset-0" style={{
-                background: 'linear-gradient(100deg, rgba(4,9,20,0.98) 0%, rgba(4,9,20,0.92) 45%, rgba(4,9,20,0.4) 75%, transparent 100%)',
-            }} />
-
-            {/* Frosted glass panel — decorative right side */}
-            <div className="absolute right-0 top-0 bottom-0 w-[45%] hidden lg:block" style={{
-                background: 'linear-gradient(135deg, rgba(34,211,238,0.03) 0%, rgba(99,102,241,0.06) 100%)',
-                backdropFilter: 'blur(1px)',
-                borderLeft: '1px solid rgba(34,211,238,0.08)',
-            }} />
-
-            {/* Diagonal accent stripe */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute" style={{
-                    top: '-20%', left: '42%', width: '1px', height: '160%',
-                    background: 'linear-gradient(to bottom, transparent, rgba(34,211,238,0.2), rgba(99,102,241,0.15), transparent)',
-                    transform: 'rotate(12deg)',
-                }} />
-            </div>
-
-            {/* Glow orb — upper right */}
-            <div className="absolute top-0 right-0 w-[600px] h-[600px]" style={{
-                background: 'radial-gradient(ellipse at top right, rgba(34,211,238,0.12) 0%, transparent 60%)',
-            }} />
-
-            {/* Content */}
-            <div className="relative z-10 px-16 md:px-24 max-w-[54%]">
-
-                {/* Kicker */}
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1, duration: 0.6 }}
-                    className="inline-flex items-center gap-2 mb-10 px-4 py-2 rounded-full"
-                    style={{
-                        background: 'rgba(34,211,238,0.07)',
-                        border: '1px solid rgba(34,211,238,0.2)',
-                        backdropFilter: 'blur(8px)',
-                    }}
-                >
-                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                    <span className="text-cyan-300 text-xs font-semibold tracking-[0.2em] uppercase">{COPY.kicker}</span>
-                </motion.div>
-
-                {/* Headline */}
-                <motion.h1
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                    className="font-black leading-[0.95] tracking-tight mb-8"
-                    style={{ fontSize: 'clamp(3rem, 7.5vw, 7rem)' }}
-                >
-                    <span className="block text-white">{COPY.headlinePart1}</span>
-                    <span className="block" style={{
-                        background: 'linear-gradient(90deg, #67e8f9 0%, #22d3ee 35%, #a78bfa 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        textShadow: 'none',
-                        filter: 'drop-shadow(0 0 60px rgba(34,211,238,0.4))',
-                    }}>
-                        {COPY.headlinePart2}
-                    </span>
-                </motion.h1>
-
-                {/* Subline */}
-                <motion.div
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4, duration: 0.7 }}
-                    className="mb-5"
-                >
-                    <p className="text-2xl md:text-[1.75rem] font-bold text-white/90 tracking-tight leading-tight">
-                        {COPY.subline}
-                    </p>
-                </motion.div>
-
-                {/* Support */}
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.55, duration: 0.7 }}
-                    className="text-slate-400 text-base max-w-lg mb-12 leading-relaxed"
-                >
-                    {COPY.support}
-                </motion.p>
-
-                {/* CTA */}
-                <motion.button
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7 }}
-                    onClick={onCTA}
-                    whileHover={{ scale: 1.04, x: 4 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="group flex items-center gap-3 px-8 py-4 rounded-xl text-white font-bold text-lg"
-                    style={{
-                        background: 'linear-gradient(135deg, rgba(34,211,238,0.15) 0%, rgba(99,102,241,0.15) 100%)',
-                        border: '1px solid rgba(34,211,238,0.35)',
-                        backdropFilter: 'blur(12px)',
-                        boxShadow: '0 0 30px rgba(34,211,238,0.15)',
-                    }}
-                >
-                    {COPY.cta}
-                </motion.button>
-            </div>
-        </div>
-    );
-}
-
-// ─── Variation C: "Minimal Typographic" — pure dark, oversized type, color on type only ───
-function VariationC({ onCTA }) {
-    return (
-        <div className="relative w-full h-screen overflow-hidden flex items-center"
-            style={{ background: '#03070F' }}
-        >
-            {/* Massive ambient glow top-center */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div style={{
-                    position: 'absolute',
-                    top: '-10%',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '900px',
-                    height: '600px',
-                    borderRadius: '50%',
-                    background: 'radial-gradient(ellipse, rgba(34,211,238,0.08) 0%, transparent 65%)',
-                }} />
-                <div style={{
-                    position: 'absolute',
-                    bottom: '-15%',
-                    right: '-5%',
-                    width: '700px',
-                    height: '600px',
-                    borderRadius: '50%',
-                    background: 'radial-gradient(ellipse, rgba(99,102,241,0.09) 0%, transparent 65%)',
-                }} />
-            </div>
-
-            {/* Noise texture overlay */}
-            <div className="absolute inset-0 opacity-[0.03]" style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
-                backgroundRepeat: 'repeat',
-                backgroundSize: '128px 128px',
-            }} />
-
-            {/* Thin top rule */}
-            <div className="absolute top-0 left-0 right-0 h-px" style={{
-                background: 'linear-gradient(90deg, transparent, rgba(34,211,238,0.5) 30%, rgba(34,211,238,0.5) 70%, transparent)',
-            }} />
-            {/* Thin bottom rule */}
-            <div className="absolute bottom-0 left-0 right-0 h-px" style={{
-                background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.4) 30%, rgba(99,102,241,0.4) 70%, transparent)',
-            }} />
-
-            {/* Left edge accent */}
-            <div className="absolute left-10 top-1/4 bottom-1/4 w-px" style={{
-                background: 'linear-gradient(to bottom, transparent, rgba(34,211,238,0.5), transparent)',
-            }} />
-
-            {/* Content */}
-            <div className="relative z-10 px-20 md:px-28">
-
-                {/* Kicker */}
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.05, duration: 0.8 }}
-                    className="text-xs font-bold tracking-[0.35em] uppercase text-slate-500 mb-8"
-                >
-                    {COPY.kicker}
-                </motion.p>
-
-                {/* Headline — oversized, spans most of viewport width */}
-                <div className="overflow-hidden mb-3">
-                    <motion.h1
-                        initial={{ y: '100%' }}
-                        animate={{ y: 0 }}
-                        transition={{ delay: 0.15, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                        className="font-black text-white leading-[0.9] tracking-tight"
-                        style={{ fontSize: 'clamp(4rem, 9.5vw, 8.5rem)' }}
-                    >
-                        {COPY.headlinePart1}
-                    </motion.h1>
-                </div>
-                <div className="overflow-hidden mb-10">
-                    <motion.h1
-                        initial={{ y: '100%' }}
-                        animate={{ y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                        className="font-black leading-[0.9] tracking-tight"
-                        style={{
-                            fontSize: 'clamp(4rem, 9.5vw, 8.5rem)',
-                            background: 'linear-gradient(90deg, #22d3ee 0%, #67e8f9 45%, #c084fc 100%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            filter: 'drop-shadow(0 0 80px rgba(34,211,238,0.45))',
-                        }}
-                    >
-                        {COPY.headlinePart2}
-                    </motion.h1>
-                </div>
-
-                {/* Divider */}
-                <motion.div
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ delay: 0.5, duration: 0.6 }}
-                    className="origin-left mb-8 h-px w-64"
-                    style={{ background: 'linear-gradient(90deg, rgba(34,211,238,0.7), transparent)' }}
-                />
-
-                {/* Subline + support in a two-column inline block */}
-                <motion.div
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.55, duration: 0.7 }}
-                    className="flex flex-col md:flex-row items-start gap-6 mb-12 max-w-3xl"
-                >
-                    <p className="text-xl md:text-2xl font-bold text-white whitespace-nowrap">{COPY.subline}</p>
-                    <div className="hidden md:block w-px h-8 self-center" style={{ background: 'rgba(255,255,255,0.15)' }} />
-                    <p className="text-slate-400 text-sm md:text-base leading-relaxed">{COPY.support}</p>
-                </motion.div>
-
-                {/* CTA */}
-                <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.75 }}
-                    onClick={onCTA}
-                    whileHover={{ letterSpacing: '0.08em', color: '#22d3ee' }}
-                    whileTap={{ scale: 0.97 }}
-                    className="text-white font-bold text-lg tracking-wide flex items-center gap-3 transition-all duration-300"
-                    style={{ color: 'rgba(255,255,255,0.9)' }}
-                >
-                    <span className="w-8 h-px bg-cyan-400 inline-block" />
-                    {COPY.cta}
-                </motion.button>
-            </div>
-        </div>
-    );
-}
-
-// ─── Wrapper + variation selector ─────────────────────────────
-const VARIATIONS = [
-    { id: 'A', label: 'Deep Space',      Component: VariationA },
-    { id: 'B', label: 'Glass Arch',      Component: VariationB },
-    { id: 'C', label: 'Bold Type',       Component: VariationC },
+const particles = [
+    { width: 8, height: 8, top: '15%', left: '10%' },
+    { width: 12, height: 12, top: '25%', left: '80%' },
+    { width: 6, height: 6, top: '60%', left: '5%' },
+    { width: 10, height: 10, top: '70%', left: '90%' },
+    { width: 8, height: 8, top: '40%', left: '95%' },
+    { width: 14, height: 14, top: '80%', left: '20%' },
+    { width: 6, height: 6, top: '10%', left: '55%' },
+    { width: 10, height: 10, top: '50%', left: '50%' },
 ];
 
 export default function Slide1Hero({ onInteracted, onNext }) {
-    const [variant, setVariant] = useState('A');
     const [acknowledged, setAcknowledged] = useState(false);
     const [countdown, setCountdown] = useState(BUTTON_UNLOCK_SECONDS);
 
@@ -409,62 +46,136 @@ export default function Slide1Hero({ onInteracted, onNext }) {
         if (onNext) onNext();
     };
 
-    const { Component } = VARIATIONS.find(v => v.id === variant);
-
     return (
-        <div className="relative">
-            {/* Variation Picker — floating top right */}
-            <div className="absolute top-4 right-4 z-50 flex items-center gap-1 rounded-full px-1.5 py-1.5"
-                style={{ background: 'rgba(15,23,42,0.85)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                {VARIATIONS.map(v => (
-                    <button
-                        key={v.id}
-                        onClick={() => setVariant(v.id)}
-                        className="px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200"
-                        style={variant === v.id
-                            ? { background: 'rgba(34,211,238,0.2)', color: '#22d3ee', border: '1px solid rgba(34,211,238,0.4)' }
-                            : { color: 'rgba(148,163,184,0.8)', border: '1px solid transparent' }
-                        }
-                    >
-                        {v.label}
-                    </button>
-                ))}
-            </div>
+        <div className="relative min-h-screen flex items-center overflow-hidden bg-slate-950">
 
-            {/* Slide */}
-            <AnimatePresence mode="wait">
+            {/* === BACKGROUND PHOTO === */}
+            <div
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                style={{ backgroundImage: `url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/1234a93d7_experience-center_backdrop.png')` }}
+            />
+            {/* Dark left-side gradient so text is legible */}
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/70 to-slate-950/10" />
+            {/* Bottom fade */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-slate-950/30" />
+
+            {/* Animated particles */}
+            {particles.map((p, i) => (
+                <Particle key={i} style={p} />
+            ))}
+
+            {/* === CONTENT — left aligned === */}
+            <div className="relative z-10 w-full max-w-6xl mx-auto px-8 md:px-16 py-24">
                 <motion.div
-                    key={variant}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.35 }}
+                    initial={{ opacity: 0, x: -24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.9 }}
+                    className="max-w-xl"
                 >
-                    <Component onCTA={handleStart} />
-                </motion.div>
-            </AnimatePresence>
-
-            {/* Countdown / Acknowledged overlay (bottom-left) */}
-            <div className="absolute bottom-8 left-8 z-50">
-                {acknowledged ? (
+                    {/* Badge */}
                     <motion.div
-                        initial={{ opacity: 0, y: 6 }}
+                        initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center gap-2 text-green-400 text-sm font-semibold"
+                        transition={{ delay: 0.2 }}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-xl border border-cyan-500/20 mb-8"
                     >
-                        <span className="w-2 h-2 rounded-full bg-green-400" />
-                        Acknowledged — continue
+                        <Zap className="w-3.5 h-3.5 text-cyan-400" />
+                        <span className="text-cyan-400 text-xs font-medium tracking-wide">UniFi Experience Center and Training Hub</span>
                     </motion.div>
-                ) : !canClick ? (
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="text-slate-500 text-xs"
+
+                    {/* Headline */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3, duration: 0.8 }}
+                        className="mb-5"
                     >
-                        Button available in <span className="text-cyan-400 font-bold tabular-nums">{countdown}s</span>
+                        <p className="text-cyan-400 text-lg md:text-xl font-semibold tracking-wide mb-2">Finally.</p>
+                        <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-[1.05] tracking-tight">
+                            Everything works
+                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+                                better together.
+                            </span>
+                        </h1>
+                    </motion.div>
+
+                    {/* Subheadline */}
+                    <motion.p
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="text-lg md:text-xl font-semibold text-slate-300 mb-4 leading-snug"
+                    >
+                        Teach. Simplify. Save. Enjoy.{' '}
+                        <strong className="text-white">Repeat.</strong>
                     </motion.p>
-                ) : null}
+
+                    {/* Short paragraph */}
+                    <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.65 }}
+                        className="text-slate-400 text-base mb-10 leading-relaxed"
+                    >
+                        We aren't just a gadget shop; we are the engine behind a technological shift. By combining the Ubiquiti UniFi stack with national Certified Training and AI-driven lead generation, we have created a business model where every division accelerates the others.
+                    </motion.p>
+
+                    {/* CTA */}
+                    {!acknowledged ? (
+                        <div className="flex flex-col items-start gap-3">
+                            <motion.button
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.8 }}
+                                onClick={handleStart}
+                                disabled={!canClick}
+                                whileHover={canClick ? { scale: 1.03, y: -2 } : {}}
+                                whileTap={canClick ? { scale: 0.97 } : {}}
+                                className={`
+                                    font-bold text-base px-8 py-4 rounded-full shadow-2xl transition-all flex items-center gap-3
+                                    ${canClick
+                                        ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-cyan-500/40 cursor-pointer'
+                                        : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                                    }
+                                `}
+                            >
+                                Learn How →
+                            </motion.button>
+
+                            {!canClick ? (
+                                <p className="text-slate-500 text-sm">
+                                    Available in <span className="text-cyan-400 font-bold tabular-nums">{countdown}s</span>
+                                </p>
+                            ) : (
+                                <p className="text-slate-500 text-xs flex items-center gap-1.5">
+                                    <span className="w-3.5 h-3.5 rounded-full border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-[9px]">↺</span>
+                                    Be part of a better way to own your IT.
+                                </p>
+                            )}
+                        </div>
+                    ) : (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="inline-flex items-center gap-3 bg-green-500/10 backdrop-blur-xl border border-green-500/30 text-green-400 font-semibold px-7 py-3.5 rounded-full"
+                        >
+                            ✓ Acknowledged — continue
+                        </motion.div>
+                    )}
+
+                </motion.div>
             </div>
+
+            {/* Scroll indicator */}
+            <motion.div
+                className="absolute bottom-8 left-1/2 -translate-x-1/2"
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+            >
+                <div className="w-6 h-10 border-2 border-slate-600/60 rounded-full flex items-start justify-center p-2">
+                    <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full" />
+                </div>
+            </motion.div>
         </div>
     );
 }
