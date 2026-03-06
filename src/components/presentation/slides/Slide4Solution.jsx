@@ -15,7 +15,7 @@ export default function Slide4Solution({ onInteracted }) {
                     </div>
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">The "No-OpEx" Revolution</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                        Replace recurring fees with one-time capital investment using Ubiquiti's UniFi ecosystem.
+                        Replace recurring OpEx with one-time CapEx using UniFi infrastructure—eliminating perpetual fees and turning subscriptions into owned equity.
                     </p>
                 </motion.div>
 
