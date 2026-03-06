@@ -1,0 +1,307 @@
+name: 📬 Issue → Orchestrator Dispatch
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Watches for GitHub Issues labeled `agent-task`.
+# When found, runs the full Planner → Explorer → Writer pipeline:
+#
+#   1. Claude Planner reads the issue, decomposes the task, posts a plan
+#   2. If plan is approved (label: plan-approved), Claude Explorer reads
+#      the relevant codebase sections
+#   3. Router selects the one Writer (Codex or Base44)
+#   4. Writer is dispatched with scoped instructions
+#   5. Orchestrator monitors the resulting PR
+#
+# Submit tasks at:
+#   https://github.com/CamGitsIT/unifi-training-incubator/issues
+# Use the "🤖 Agent Task Request" issue template.
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  issues:
+    types: [labeled]
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: issue-orchestrator-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  # ── Gate: only act on agent-task issues ──────────────────────────────────
+  gate:
+    name: 🚦 Gate Check
+    runs-on: ubuntu-latest
+    outputs:
+      should_plan:    ${{ steps.gate.outputs.should_plan }}
+      should_execute: ${{ steps.gate.outputs.should_execute }}
+      issue_number:   ${{ steps.gate.outputs.issue_number }}
+      issue_title:    ${{ steps.gate.outputs.issue_title }}
+      issue_body:     ${{ steps.gate.outputs.issue_body }}
+
+    steps:
+      - name: Evaluate trigger
+        id: gate
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue  = context.payload.issue;
+            const label  = context.payload.label?.name || '';
+            const comment = context.payload.comment?.body || '';
+            const labels  = issue.labels.map(l => l.name);
+
+            // Trigger planning when `agent-task` label is applied
+            const shouldPlan = label === 'agent-task';
+
+            // Trigger execution when `plan-approved` label is applied
+            // (human adds this after reviewing the Planner's comment)
+            const shouldExecute = label === 'plan-approved' && labels.includes('agent-task');
+
+            // Also allow /execute command in comments (from repo owner only)
+            const isOwner = context.payload.sender?.login === 'CamGitsIT';
+            const executeCommand = isOwner && comment.trim().startsWith('/execute');
+
+            core.setOutput('should_plan',    shouldPlan ? 'true' : 'false');
+            core.setOutput('should_execute', (shouldExecute || executeCommand) ? 'true' : 'false');
+            core.setOutput('issue_number',   String(issue.number));
+            core.setOutput('issue_title',    issue.title);
+
+            // Escape body for shell use
+            const safeBody = (issue.body || '').replace(/`/g, "'").replace(/\n/g, ' ').slice(0, 2000);
+            core.setOutput('issue_body', safeBody);
+
+            console.log(`should_plan=${shouldPlan}, should_execute=${shouldExecute || executeCommand}`);
+
+  # ── Job 1: Planner — decompose task, post plan as issue comment ──────────
+  planner:
+    name: 🧠 Planner (Claude)
+    runs-on: ubuntu-latest
+    needs: gate
+    if: needs.gate.outputs.should_plan == 'true'
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load repo context
+        id: context
+        run: |
+          # Give the Planner a map of the repo structure
+          TREE=$(find . -type f \
+            -not -path './.git/*' \
+            -not -path './node_modules/*' \
+            | head -80 | sort | tr '\n' '|')
+          echo "tree=$TREE" >> $GITHUB_OUTPUT
+
+          # Load CLAUDE.md as agent constitution
+          CLAUDE_MD=$(cat CLAUDE.md 2>/dev/null || echo "(no CLAUDE.md found)")
+          echo "claude_md_exists=$(test -f CLAUDE.md && echo true || echo false)" >> $GITHUB_OUTPUT
+
+      - name: Call Claude Planner
+        id: plan
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          ISSUE_TITLE="${{ needs.gate.outputs.issue_title }}"
+          ISSUE_BODY="${{ needs.gate.outputs.issue_body }}"
+          REPO_TREE="${{ steps.context.outputs.tree }}"
+
+          PROMPT="You are the Planner agent for the repo CamGitsIT/unifi-training-incubator. Your role is defined in CLAUDE.md: decompose tasks, assign roles, define tool boundaries. Do NOT write code.
+
+CLAUDE.md constitution summary:
+- Roles: Planner, Explorer, Reviewer, Writer (exactly ONE writer at a time), Monitor
+- Writers: codex (multi-file code changes, refactors) or base44 (full-stack features, UI, CRUD)
+- Never touch: .github/workflows/, CODEOWNERS, CLAUDE.md, *.env, migrations/
+- Every writer must branch → PR → review → merge (never push to main)
+- Commit prefix required: [codex], [base44], [claude], [orchestrator]
+
+Repo file tree (partial):
+${REPO_TREE//'|'/$'\n'}
+
+GitHub Issue #${{ needs.gate.outputs.issue_number }}:
+Title: $ISSUE_TITLE
+Body: $ISSUE_BODY
+
+Your job:
+1. Determine task complexity (low/medium/high)
+2. List exactly which files will need to change
+3. Choose ONE writer: 'codex' (for precise code edits, refactors, tests) or 'base44' (for full features, UI generation, scaffolding)
+4. Specify whether an Explorer pass is needed first
+5. Write a clear, scoped implementation spec for the Writer
+
+Output a GitHub-flavored markdown plan in this exact format — nothing else:
+
+## 🧠 Orchestrator Plan
+
+**Task summary:** (one sentence)
+**Complexity:** low | medium | high
+**Estimated files:** (list them)
+**Writer:** codex | base44
+**Explorer needed:** yes | no
+**Reviewer:** claude-sonnet (automatic)
+
+### Steps
+1. (Explorer: what to read and what questions to answer — or 'N/A')
+2. Planner: synthesize into implementation spec
+3. Writer (codex|base44): (specific, scoped instructions)
+4. Reviewer: check for conflicts, CODEOWNERS violations, security
+5. Human approval required: yes | no (yes if CODEOWNERS files affected)
+
+### Writer instructions
+(Detailed, unambiguous spec for the Writer — include branch name, commit message prefix, files to touch, what not to touch)
+
+### Risk assessment
+- Risk level: 🟢 Low | 🟡 Medium | 🔴 High
+- Rollback: (how to undo if it breaks)
+
+---
+*React with 👍 and add label \`plan-approved\` to execute, or comment \`/reject\` to cancel.*"
+
+          RESPONSE=$(curl -s -X POST "https://api.anthropic.com/v1/messages" \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg p "$PROMPT" \
+              '{model:"claude-sonnet-4-20250514",max_tokens:1500,messages:[{role:"user",content:$p}]}')")
+
+          PLAN=$(echo "$RESPONSE" | jq -r '.content[0].text // "Planning failed — check API key"')
+          # Write plan to file to avoid shell escaping issues
+          echo "$PLAN" > /tmp/plan.md
+          echo "plan_file=/tmp/plan.md" >> $GITHUB_OUTPUT
+
+      - name: Post plan as issue comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs     = require('fs');
+            const plan   = fs.readFileSync('/tmp/plan.md', 'utf8');
+            const runUrl = `https://github.com/CamGitsIT/unifi-training-incubator/actions/runs/${context.runId}`;
+
+            await github.rest.issues.createComment({
+              owner:        'CamGitsIT',
+              repo:         'unifi-training-incubator',
+              issue_number: ${{ needs.gate.outputs.issue_number }},
+              body: plan + `\n\n---\n> 🤖 Generated by Orchestrator Planner · [View Run](${runUrl})`
+            });
+
+            // Add `awaiting-approval` label
+            try {
+              await github.rest.issues.addLabels({
+                owner:        'CamGitsIT',
+                repo:         'unifi-training-incubator',
+                issue_number: ${{ needs.gate.outputs.issue_number }},
+                labels:       ['awaiting-approval']
+              });
+            } catch(e) { console.log('Label add failed:', e.message); }
+
+  # ── Job 2: Execute — after human approves plan ────────────────────────────
+  execute:
+    name: ⚡ Execute (Route + Dispatch Writer)
+    runs-on: ubuntu-latest
+    needs: gate
+    if: needs.gate.outputs.should_execute == 'true'
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for active writers (one-writer rule)
+        id: writer_check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check if any agent PRs are currently open (= a writer is active)
+          OPEN_AGENT_PRS=$(gh pr list \
+            --repo CamGitsIT/unifi-training-incubator \
+            --state open \
+            --json headRefName,title \
+            --jq '[.[] | select(.headRefName | test("^(codex|base44)\/"))] | length')
+
+          echo "open_agent_prs=$OPEN_AGENT_PRS" >> $GITHUB_OUTPUT
+
+          if [[ "$OPEN_AGENT_PRS" -gt 0 ]]; then
+            echo "writer_blocked=true" >> $GITHUB_OUTPUT
+            echo "⚠️  $OPEN_AGENT_PRS agent PR(s) currently open — writer slot occupied"
+          else
+            echo "writer_blocked=false" >> $GITHUB_OUTPUT
+            echo "✅ Writer slot is free"
+          fi
+
+      - name: Block if writer slot occupied
+        if: steps.writer_check.outputs.writer_blocked == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const openPRs = '${{ steps.writer_check.outputs.open_agent_prs }}';
+            await github.rest.issues.createComment({
+              owner:        'CamGitsIT',
+              repo:         'unifi-training-incubator',
+              issue_number: ${{ needs.gate.outputs.issue_number }},
+              body: `## ⏳ Writer Slot Occupied\n\n${openPRs} agent PR(s) are currently open. The one-writer rule prevents dispatching a new writer until they are merged or closed.\n\n**To proceed:**\n1. Review and merge/close the open agent PR(s)\n2. Re-add the \`plan-approved\` label to retry\n\nThis prevents file conflicts between agents.`
+            });
+            core.setFailed('Writer slot occupied — one-writer rule enforced');
+
+      - name: Route and dispatch writer
+        if: steps.writer_check.outputs.writer_blocked == 'false'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY:    ${{ secrets.OPENAI_API_KEY }}
+          GH_TOKEN:          ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_TITLE="${{ needs.gate.outputs.issue_title }}"
+          ISSUE_BODY="${{ needs.gate.outputs.issue_body }}"
+          ISSUE_NUM="${{ needs.gate.outputs.issue_number }}"
+
+          # Quick routing call to determine writer
+          ROUTE_PROMPT="Given this task, choose ONE writer: 'codex' (precise edits, refactors, tests, multi-file changes) or 'base44' (full features, UI, CRUD, scaffolding). Reply with ONLY the JSON: {\"writer\":\"codex\"|\"base44\",\"branch\":\"<branch-name>\",\"instructions\":\"<one paragraph of specific instructions>\"}\n\nTask: $ISSUE_TITLE\nDetails: $ISSUE_BODY"
+
+          ROUTE=$(curl -s -X POST "https://api.anthropic.com/v1/messages" \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg p "$ROUTE_PROMPT" \
+              '{model:"claude-sonnet-4-20250514",max_tokens:400,messages:[{role:"user",content:$p}]}')" \
+            | jq -r '.content[0].text' | sed 's/```json//;s/```//' | tr -d '\n')
+
+          WRITER=$(echo "$ROUTE"       | jq -r '.writer')
+          BRANCH=$(echo "$ROUTE"       | jq -r '.branch')
+          INSTRUCTIONS=$(echo "$ROUTE" | jq -r '.instructions')
+
+          echo "Selected writer: $WRITER"
+          echo "Branch: $BRANCH"
+
+          if [[ "$WRITER" == "codex" ]] && [[ -n "${OPENAI_API_KEY:-}" ]]; then
+            bash scripts/codex-dispatch.sh \
+              --repo "CamGitsIT/unifi-training-incubator" \
+              --task "$INSTRUCTIONS (Issue #$ISSUE_NUM: $ISSUE_TITLE)" \
+              --wait 60 || echo "Codex dispatch attempted"
+          fi
+
+          # Post status update to issue
+          gh issue comment "$ISSUE_NUM" \
+            --repo "CamGitsIT/unifi-training-incubator" \
+            --body "## ⚡ Writer Dispatched
+
+| Field | Value |
+|-------|-------|
+| **Writer** | \`$WRITER\` |
+| **Branch** | \`$BRANCH\` |
+| **Instructions** | $INSTRUCTIONS |
+
+The writer is now working. A PR will appear shortly at:
+https://github.com/CamGitsIT/unifi-training-incubator/pulls
+
+The orchestrator will auto-review the PR when it opens.
+*One-writer lock is held until the PR is merged or closed.*"
+
+          # Add in-progress label
+          gh issue edit "$ISSUE_NUM" \
+            --repo "CamGitsIT/unifi-training-incubator" \
+            --add-label "in-progress" \
+            --remove-label "awaiting-approval" 2>/dev/null || true

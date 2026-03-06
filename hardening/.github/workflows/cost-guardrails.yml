@@ -1,0 +1,113 @@
+name: 💰 Cost & Rate Guardrails
+
+# Monitors API usage and enforces rate limits on agent dispatches.
+# Prevents a misconfigured agent from running up unbounded API costs.
+#
+# Checks:
+#   • Max Codex dispatches per day (configurable)
+#   • Max GitHub Actions minutes consumed per week
+#   • Alerts when approaching limits
+
+on:
+  workflow_run:
+    workflows: ["🧠 Intelligent Task Router", "🤖 Agent Orchestrator"]
+    types: [completed]
+  schedule:
+    - cron: "0 6 * * *"   # Daily report at 6am UTC
+  workflow_dispatch:
+
+jobs:
+  cost-check:
+    name: 💰 API Cost Guardrails
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Count today's agent dispatches
+        id: count
+        run: |
+          TODAY=$(date -u +%Y-%m-%d)
+          REPO="${{ github.repository }}"
+
+          # Count router workflow runs today
+          ROUTER_RUNS=$(gh run list \
+            --repo "$REPO" \
+            --workflow "task-router.yml" \
+            --created ">${TODAY}T00:00:00Z" \
+            --json databaseId \
+            --jq 'length' 2>/dev/null || echo "0")
+
+          # Count orchestrator runs today
+          ORCH_RUNS=$(gh run list \
+            --repo "$REPO" \
+            --workflow "orchestrator.yml" \
+            --created ">${TODAY}T00:00:00Z" \
+            --json databaseId \
+            --jq 'length' 2>/dev/null || echo "0")
+
+          TOTAL=$((ROUTER_RUNS + ORCH_RUNS))
+
+          echo "router_runs=$ROUTER_RUNS"   >> $GITHUB_OUTPUT
+          echo "orch_runs=$ORCH_RUNS"       >> $GITHUB_OUTPUT
+          echo "total_runs=$TOTAL"          >> $GITHUB_OUTPUT
+
+          # Configurable limits (adjust to your budget)
+          MAX_DAILY_DISPATCHES=20
+          echo "max_daily=$MAX_DAILY_DISPATCHES" >> $GITHUB_OUTPUT
+
+          if [[ "$TOTAL" -ge "$MAX_DAILY_DISPATCHES" ]]; then
+            echo "limit_reached=true" >> $GITHUB_OUTPUT
+          else
+            echo "limit_reached=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "## 💰 Cost Guardrail Report — $TODAY" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value | Limit |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Router dispatches | $ROUTER_RUNS | — |" >> $GITHUB_STEP_SUMMARY
+          echo "| Orchestrator runs | $ORCH_RUNS | — |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Total today** | **$TOTAL** | **$MAX_DAILY_DISPATCHES** |" >> $GITHUB_STEP_SUMMARY
+
+          if [[ "$TOTAL" -ge "$MAX_DAILY_DISPATCHES" ]]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### ⚠️ DAILY LIMIT REACHED" >> $GITHUB_STEP_SUMMARY
+            echo "Further agent dispatches will be blocked until midnight UTC." >> $GITHUB_STEP_SUMMARY
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check weekly Actions minutes
+        run: |
+          # Log a warning if we're burning through Actions minutes
+          # (Actual minute count requires GitHub billing API with org token)
+          echo "ℹ️  Monitor Actions minutes at: https://github.com/settings/billing"
+          echo "ℹ️  Set a spending limit at:    https://github.com/settings/billing/spending_limit"
+
+      - name: Alert if limit reached
+        if: steps.count.outputs.limit_reached == 'true'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [[ -n "$SLACK_WEBHOOK" ]]; then
+            curl -s -X POST "$SLACK_WEBHOOK" \
+              -H 'Content-type: application/json' \
+              --data "{
+                \"attachments\": [{
+                  \"color\": \"warning\",
+                  \"text\": \"⚠️ *Cost Guardrail: Daily agent limit reached (${{ steps.count.outputs.total_runs }}/${{ steps.count.outputs.max_daily }} dispatches)*\nFurther Codex/router calls will be blocked until midnight UTC.\nAdjust limit in \`.github/workflows/cost-guardrails.yml\`\"
+                }]
+              }"
+          fi
+
+          echo "::warning::Daily agent dispatch limit reached (${{ steps.count.outputs.total_runs }}/${{ steps.count.outputs.max_daily }})"
+
+      - name: Block if limit exceeded
+        if: steps.count.outputs.limit_reached == 'true' && github.event_name == 'workflow_run'
+        run: |
+          echo "❌ Daily dispatch limit reached. Blocking this run."
+          exit 1

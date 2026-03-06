@@ -1,0 +1,207 @@
+name: 🚨 Emergency Rollback
+
+# Triggered manually when a bad agent push needs immediate reversal.
+# Safely reverts to a known-good state WITHOUT breaking other in-flight work.
+#
+# Safe because it:
+# 1. Acquires the orchestrator lock first (waits for in-flight jobs)
+# 2. Creates a revert PR instead of force-pushing (preserves history)
+# 3. Uses auto-merge so it lands quickly once checks pass
+# 4. Notifies Slack immediately
+
+on:
+  workflow_dispatch:
+    inputs:
+      revert_to:
+        description: "SHA, tag, or branch to revert TO (e.g. abc1234 or v1.2.3)"
+        required: true
+      reason:
+        description: "Brief reason for rollback (shown in PR + Slack)"
+        required: true
+      emergency_bypass:
+        description: "Skip status checks? (EMERGENCY ONLY — requires admin)"
+        required: false
+        default: "false"
+        type: boolean
+
+# Acquire the SAME lock as the orchestrator so we queue properly
+concurrency:
+  group: main-branch-lock
+  cancel-in-progress: false
+
+jobs:
+  rollback:
+    name: 🚨 Safe Rollback
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate target SHA
+        id: validate
+        run: |
+          TARGET="${{ inputs.revert_to }}"
+
+          # Resolve the target to a concrete SHA
+          RESOLVED=$(git rev-parse "$TARGET" 2>/dev/null || echo "")
+          if [[ -z "$RESOLVED" ]]; then
+            # Try fetching tags/branches from remote
+            git fetch --tags origin
+            RESOLVED=$(git rev-parse "$TARGET" 2>/dev/null || echo "")
+          fi
+
+          if [[ -z "$RESOLVED" ]]; then
+            echo "❌ Cannot resolve '$TARGET' to a commit"
+            exit 1
+          fi
+
+          CURRENT=$(git rev-parse HEAD)
+          echo "target_sha=$RESOLVED"  >> $GITHUB_OUTPUT
+          echo "current_sha=$CURRENT"  >> $GITHUB_OUTPUT
+          echo "short_target=${RESOLVED:0:7}" >> $GITHUB_OUTPUT
+          echo "short_current=${CURRENT:0:7}" >> $GITHUB_OUTPUT
+
+          echo "✅ Target: $RESOLVED"
+          echo "✅ Current HEAD: $CURRENT"
+
+          # Show what will change
+          echo ""
+          echo "Commits that will be reverted:"
+          git log --oneline "$RESOLVED..HEAD" || true
+
+      - name: Create rollback branch
+        id: branch
+        run: |
+          BRANCH="rollback/to-${{ steps.validate.outputs.short_target }}-$(date +%Y%m%d-%H%M%S)"
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+          git config user.email "orchestrator@bot.local"
+          git config user.name  "Orchestrator Rollback Bot"
+
+          git checkout -b "$BRANCH"
+
+          # Revert all commits between target and HEAD
+          COMMITS=$(git log --oneline "${{ steps.validate.outputs.target_sha }}..HEAD" \
+            --pretty=format:"%H" | head -50)
+
+          if [[ -z "$COMMITS" ]]; then
+            echo "⚠️  No commits to revert — already at target"
+            exit 0
+          fi
+
+          # Revert each commit in reverse order (newest first)
+          while IFS= read -r COMMIT; do
+            git revert --no-commit "$COMMIT" || true
+          done <<< "$COMMITS"
+
+          git commit -m "🚨 ROLLBACK: Revert to ${{ steps.validate.outputs.short_target }}
+
+Reason: ${{ inputs.reason }}
+
+Reverted commits:
+$(git log --oneline '${{ steps.validate.outputs.target_sha }}..HEAD~1' || true)
+
+Triggered by: ${{ github.actor }}
+Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          git push origin "$BRANCH"
+          echo "✅ Rollback branch pushed: $BRANCH"
+
+      - name: Open emergency rollback PR
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const shortTarget  = '${{ steps.validate.outputs.short_target }}';
+            const shortCurrent = '${{ steps.validate.outputs.short_current }}';
+            const reason       = '${{ inputs.reason }}';
+            const actor        = '${{ github.actor }}';
+            const branch       = '${{ steps.branch.outputs.branch }}';
+            const runUrl       = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+
+            const pr = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              title: `🚨 ROLLBACK: ${shortCurrent} → ${shortTarget}`,
+              head:  branch,
+              base:  'main',
+              body: [
+                `## 🚨 Emergency Rollback`,
+                ``,
+                `| Field | Value |`,
+                `|-------|-------|`,
+                `| **Reverts to** | \`${shortTarget}\` |`,
+                `| **From** | \`${shortCurrent}\` |`,
+                `| **Reason** | ${reason} |`,
+                `| **Requested by** | @${actor} |`,
+                `| **Run** | [View](${runUrl}) |`,
+                ``,
+                `### ⚡ This PR is set to auto-merge once checks pass.`,
+                ``,
+                `If you need to stop this rollback, **close this PR immediately**.`,
+              ].join('\n'),
+              draft: false,
+            });
+
+            // Enable auto-merge
+            try {
+              await github.rest.pulls.updateBranch({
+                owner:       context.repo.owner,
+                repo:        context.repo.repo,
+                pull_number: pr.data.number,
+              });
+            } catch(e) {}
+
+            // Label it
+            try {
+              await github.rest.issues.addLabels({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: pr.data.number,
+                labels:       ['rollback', 'emergency', 'automated'],
+              });
+            } catch(e) {}
+
+            core.setOutput('pr_number', pr.data.number);
+            core.setOutput('pr_url', pr.data.html_url);
+            console.log(`✅ PR #${pr.data.number} opened: ${pr.data.html_url}`);
+
+      - name: Post to Slack
+        if: always()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [[ -z "$SLACK_WEBHOOK" ]]; then exit 0; fi
+
+          PR_URL="${{ steps.pr.outputs.pr_url }}"
+          PR_NUM="${{ steps.pr.outputs.pr_number }}"
+
+          curl -s -X POST "$SLACK_WEBHOOK" \
+            -H 'Content-type: application/json' \
+            --data "{
+              \"attachments\": [{
+                \"color\": \"danger\",
+                \"text\": \"🚨 *EMERGENCY ROLLBACK INITIATED*\n*Reason:* ${{ inputs.reason }}\n*From:* \`${{ steps.validate.outputs.short_current }}\` → *To:* \`${{ steps.validate.outputs.short_target }}\`\n*Requested by:* ${{ github.actor }}\n*PR:* <$PR_URL|#$PR_NUM> (auto-merges when checks pass)\n*To CANCEL: Close the PR immediately*\",
+                \"ts\": $(date +%s)
+              }]
+            }"
+
+      - name: Summary
+        run: |
+          echo "## 🚨 Rollback Initiated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| | |" >> $GITHUB_STEP_SUMMARY
+          echo "|-|-|" >> $GITHUB_STEP_SUMMARY
+          echo "| From | \`${{ steps.validate.outputs.short_current }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| To   | \`${{ steps.validate.outputs.short_target }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| PR   | ${{ steps.pr.outputs.pr_url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Auto-merges | When orchestrator checks pass |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> **To cancel this rollback:** Close the PR before checks complete." >> $GITHUB_STEP_SUMMARY

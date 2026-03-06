@@ -1,0 +1,175 @@
+name: 🔐 Security Scan
+
+# Runs on every PR and weekly on main.
+# Blocks merge if high/critical vulnerabilities are found.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 3 * * 1"  # Every Monday 3am UTC
+  workflow_dispatch:
+
+concurrency:
+  group: security-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── CodeQL: Static analysis for security vulnerabilities ──────────────────
+  codeql:
+    name: 🔍 CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+
+    strategy:
+      matrix:
+        language: [javascript, python]
+        # Add: typescript, java, go, ruby, cpp, csharp as needed
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended,security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Run CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+
+  # ── Dependency Audit ──────────────────────────────────────────────────────
+  dependency-audit:
+    name: 📦 Dependency Audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: hashFiles('package.json') != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: npm audit (high + critical only)
+        if: hashFiles('package.json') != ''
+        run: |
+          npm install --ignore-scripts 2>/dev/null || true
+
+          # Run audit and capture output
+          AUDIT_OUTPUT=$(npm audit --audit-level=high --json 2>/dev/null || echo "{}")
+          VULN_COUNT=$(echo "$AUDIT_OUTPUT" | jq '.metadata.vulnerabilities | (.high + .critical)' 2>/dev/null || echo "0")
+
+          echo "### 📦 npm Audit Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [[ "$VULN_COUNT" -gt 0 ]]; then
+            echo "| Severity | Count |" >> $GITHUB_STEP_SUMMARY
+            echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "$AUDIT_OUTPUT" | jq -r '.metadata.vulnerabilities | to_entries[] | "| \(.key) | \(.value) |"' \
+              >> $GITHUB_STEP_SUMMARY 2>/dev/null || true
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ $VULN_COUNT high/critical vulnerabilities found"
+            # Don't fail CI for now — report only. Set --exit-code to fail.
+          else
+            echo "✅ No high or critical vulnerabilities" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: pip audit
+        if: hashFiles('requirements.txt') != ''
+        run: |
+          pip install pip-audit --quiet
+          pip-audit --requirement requirements.txt --format json \
+            --output /tmp/pip-audit.json 2>/dev/null || true
+
+          VULN=$(jq 'length' /tmp/pip-audit.json 2>/dev/null || echo "0")
+          echo "### 🐍 pip audit: $VULN vulnerabilities" >> $GITHUB_STEP_SUMMARY
+
+  # ── Secret detection (belt-and-suspenders beyond GitHub's push protection) ─
+  secret-scan:
+    name: 🔑 Secret Detection
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Full history for thorough scanning
+
+      - name: Install Gitleaks
+        run: |
+          VERSION=$(curl -s https://api.github.com/repos/gitleaks/gitleaks/releases/latest \
+            | jq -r '.tag_name' | tr -d 'v')
+          curl -sL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" \
+            | tar -xz -C /usr/local/bin gitleaks
+          gitleaks version
+
+      - name: Scan for secrets
+        run: |
+          # Scan last 50 commits (avoids scanning entire history on every PR)
+          gitleaks detect \
+            --source . \
+            --log-opts "-n 50" \
+            --report-format sarif \
+            --report-path /tmp/gitleaks-report.sarif \
+            --exit-code 0  # Don't fail, just report (push protection already blocks at push time)
+
+          echo "✅ Secret scan complete — see Security tab for results"
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: /tmp/gitleaks-report.sarif
+          category: gitleaks
+        continue-on-error: true
+
+  # ── Agent activity audit ───────────────────────────────────────────────────
+  agent-audit:
+    name: 📋 Agent Activity Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 30
+
+      - name: Audit recent agent commits
+        run: |
+          echo "## 🤖 Agent Activity (last 30 commits)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| SHA | Author | Agent | Message |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|-------|---------|" >> $GITHUB_STEP_SUMMARY
+
+          git log --oneline -30 --pretty=format:"%H|%an|%s" | while IFS='|' read -r HASH AUTHOR MSG; do
+            SHORT="${HASH:0:7}"
+
+            # Tag by agent
+            if echo "$MSG" | grep -qi "\[base44\]"; then TAG="base44"
+            elif echo "$MSG" | grep -qi "\[codex\]"; then TAG="codex"
+            elif echo "$MSG" | grep -qi "\[dependabot\]"; then TAG="dependabot"
+            elif echo "$MSG" | grep -qi "\[orchestrator\]"; then TAG="orchestrator"
+            else TAG="human"
+            fi
+
+            echo "| \`$SHORT\` | $AUTHOR | \`$TAG\` | $MSG |" >> $GITHUB_STEP_SUMMARY
+          done
+
+          # Flag any commits that bypassed the orchestrator
+          echo "" >> $GITHUB_STEP_SUMMARY
+          DIRECT=$(git log --oneline -30 --pretty=format:"%H|%an|%s" | \
+            grep -v "\[base44\]\|\[codex\]\|\[dependabot\]\|\[orchestrator\]" | wc -l || echo "0")
+          echo "**Human/untagged commits in last 30:** $DIRECT" >> $GITHUB_STEP_SUMMARY

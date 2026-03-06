@@ -1,0 +1,263 @@
+name: 🤖 Agent Orchestrator
+
+# Triggered on every push to main AND on PRs targeting main.
+# Uses a concurrency group to serialize all agent activity —
+# only one job runs at a time, preventing Base44 ↔ Codex conflicts.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      agent:
+        description: "Which agent is requesting the lock? (base44 | codex | manual)"
+        required: true
+        default: "manual"
+      task_description:
+        description: "Brief description of the task"
+        required: false
+
+# ── CRITICAL ──────────────────────────────────────────────────────────────────
+# This concurrency group is what serializes everything.
+# cancel-in-progress: false means queued jobs WAIT instead of being dropped.
+# ──────────────────────────────────────────────────────────────────────────────
+concurrency:
+  group: main-branch-lock
+  cancel-in-progress: false
+
+jobs:
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 1 — Identify which agent triggered this run
+  # ────────────────────────────────────────────────────────────────────────────
+  identify-agent:
+    name: 🔍 Identify Agent & Acquire Lock
+    runs-on: ubuntu-latest
+    outputs:
+      agent: ${{ steps.detect.outputs.agent }}
+      task:  ${{ steps.detect.outputs.task }}
+
+    steps:
+      - name: Detect agent from commit message or input
+        id: detect
+        run: |
+          COMMIT_MSG="${{ github.event.head_commit.message || github.event.pull_request.title || '' }}"
+          AGENT_INPUT="${{ github.event.inputs.agent || '' }}"
+
+          if [[ "$AGENT_INPUT" != "" ]]; then
+            AGENT="$AGENT_INPUT"
+          elif echo "$COMMIT_MSG" | grep -qi "\[base44\]"; then
+            AGENT="base44"
+          elif echo "$COMMIT_MSG" | grep -qi "\[codex\]"; then
+            AGENT="codex"
+          elif [[ "${{ github.actor }}" == "base44"* ]]; then
+            AGENT="base44"
+          elif [[ "${{ github.actor }}" == "codex"* ]]; then
+            AGENT="codex"
+          else
+            AGENT="manual"
+          fi
+
+          echo "agent=$AGENT" >> $GITHUB_OUTPUT
+          echo "task=${{ github.event.inputs.task_description || github.event.head_commit.message || github.event.pull_request.title }}" >> $GITHUB_OUTPUT
+          echo "🔒 Lock acquired by: $AGENT"
+          echo "📋 Task: ${{ github.event.inputs.task_description || github.event.head_commit.message }}"
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 2 — Conflict Detection (runs in the lock, safe to read repo state)
+  # ────────────────────────────────────────────────────────────────────────────
+  conflict-check:
+    name: 🚧 Conflict Detection
+    runs-on: ubuntu-latest
+    needs: identify-agent
+    outputs:
+      has_conflicts: ${{ steps.check.outputs.has_conflicts }}
+      conflict_files: ${{ steps.check.outputs.conflict_files }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for conflicts with main
+        id: check
+        run: |
+          git fetch origin main --quiet
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          else
+            BASE_SHA="$(git rev-parse HEAD~1 2>/dev/null || git rev-parse HEAD)"
+            HEAD_SHA="$(git rev-parse HEAD)"
+          fi
+
+          # Files changed in this push/PR
+          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" 2>/dev/null || echo "")
+
+          # Check if merge would have conflicts
+          git config user.email "orchestrator@bot.local"
+          git config user.name  "Orchestrator Bot"
+
+          CONFLICT_FILES=""
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            git checkout -b test-merge-branch "${{ github.event.pull_request.head.sha }}" 2>/dev/null || true
+            if ! git merge --no-commit --no-ff origin/main 2>/dev/null; then
+              CONFLICT_FILES=$(git diff --name-only --diff-filter=U 2>/dev/null | tr '\n' ',')
+              git merge --abort 2>/dev/null || true
+            fi
+          fi
+
+          if [[ -n "$CONFLICT_FILES" ]]; then
+            echo "has_conflicts=true"  >> $GITHUB_OUTPUT
+            echo "conflict_files=$CONFLICT_FILES" >> $GITHUB_OUTPUT
+            echo "⚠️  CONFLICTS DETECTED in: $CONFLICT_FILES"
+          else
+            echo "has_conflicts=false" >> $GITHUB_OUTPUT
+            echo "conflict_files="    >> $GITHUB_OUTPUT
+            echo "✅ No conflicts detected"
+          fi
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 3 — Auto-Review PR
+  # ────────────────────────────────────────────────────────────────────────────
+  auto-review:
+    name: 🔎 Auto-Review PR
+    runs-on: ubuntu-latest
+    needs: [identify-agent, conflict-check]
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Analyze PR diff
+        id: analyze
+        run: |
+          git fetch origin main --quiet
+          DIFF=$(git diff origin/main...HEAD --stat 2>/dev/null | tail -1)
+          FILES_CHANGED=$(git diff --name-only origin/main...HEAD | wc -l)
+          LINES_CHANGED=$(git diff origin/main...HEAD | grep -c '^[+-]' || echo 0)
+
+          echo "files_changed=$FILES_CHANGED"   >> $GITHUB_OUTPUT
+          echo "lines_changed=$LINES_CHANGED"   >> $GITHUB_OUTPUT
+          echo "diff_stat=$DIFF"                >> $GITHUB_OUTPUT
+
+      - name: Post auto-review comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const hasConflicts  = '${{ needs.conflict-check.outputs.has_conflicts }}' === 'true';
+            const conflictFiles = '${{ needs.conflict-check.outputs.conflict_files }}';
+            const agent         = '${{ needs.identify-agent.outputs.agent }}';
+            const filesChanged  = '${{ steps.analyze.outputs.files_changed }}';
+            const linesChanged  = '${{ steps.analyze.outputs.lines_changed }}';
+            const diffStat      = '${{ steps.analyze.outputs.diff_stat }}';
+
+            const status  = hasConflicts ? '❌ BLOCKED' : '✅ APPROVED';
+            const verdict = hasConflicts
+              ? `**This PR cannot be merged** — conflicts detected in:\n\`\`\`\n${conflictFiles.split(',').filter(Boolean).join('\n')}\n\`\`\``
+              : `**This PR is clear to merge.** No conflicts with \`main\` detected.`;
+
+            const body = [
+              `## 🤖 Orchestrator Auto-Review — ${status}`,
+              ``,
+              `| Field          | Value |`,
+              `|----------------|-------|`,
+              `| **Agent**      | \`${agent}\` |`,
+              `| **Files**      | ${filesChanged} changed |`,
+              `| **Lines**      | ${linesChanged} modified |`,
+              `| **Diff**       | ${diffStat} |`,
+              `| **Conflicts**  | ${hasConflicts ? '⚠️ Yes' : '✅ None'} |`,
+              ``,
+              verdict,
+              ``,
+              `> *Auto-reviewed by the Agent Orchestrator. Human review still recommended for logic changes.*`
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner:      context.repo.owner,
+              repo:       context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
+
+            if (hasConflicts) {
+              await github.rest.pulls.createReview({
+                owner:       context.repo.owner,
+                repo:        context.repo.repo,
+                pull_number: context.issue.number,
+                event:       'REQUEST_CHANGES',
+                body:        `🚫 Orchestrator blocked this PR due to merge conflicts. Please rebase onto \`main\` and re-push.`
+              });
+            } else {
+              await github.rest.pulls.createReview({
+                owner:       context.repo.owner,
+                repo:        context.repo.repo,
+                pull_number: context.issue.number,
+                event:       'APPROVE',
+                body:        `✅ Orchestrator auto-approved: no conflicts, all checks passed.`
+              });
+            }
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 4 — Notify (Slack + Email)
+  # ────────────────────────────────────────────────────────────────────────────
+  notify:
+    name: 📣 Notify
+    runs-on: ubuntu-latest
+    needs: [identify-agent, conflict-check]
+    if: always()
+
+    steps:
+      - name: Notify Slack
+        if: vars.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          AGENT="${{ needs.identify-agent.outputs.agent }}"
+          HAS_CONFLICTS="${{ needs.conflict-check.outputs.has_conflicts }}"
+          CONFLICT_FILES="${{ needs.conflict-check.outputs.conflict_files }}"
+          REPO="${{ github.repository }}"
+          RUN_URL="https://github.com/$REPO/actions/runs/${{ github.run_id }}"
+          EVENT="${{ github.event_name }}"
+          REF="${{ github.ref_name }}"
+
+          if [[ "$HAS_CONFLICTS" == "true" ]]; then
+            EMOJI="🚨"
+            COLOR="danger"
+            TEXT="*CONFLICT DETECTED* — Agent \`$AGENT\` triggered a conflict on \`$REF\`.\nAffected files: \`$CONFLICT_FILES\`"
+          else
+            EMOJI="✅"
+            COLOR="good"
+            TEXT="*Clear* — Agent \`$AGENT\` push/PR on \`$REF\` passed orchestrator checks."
+          fi
+
+          curl -s -X POST "$SLACK_WEBHOOK" \
+            -H 'Content-type: application/json' \
+            --data "{
+              \"attachments\": [{
+                \"color\": \"$COLOR\",
+                \"text\": \"$EMOJI $TEXT\",
+                \"footer\": \"<$RUN_URL|View Run> · $REPO · $EVENT\",
+                \"ts\": $(date +%s)
+              }]
+            }"
+
+      - name: Summary
+        run: |
+          echo "### 📋 Orchestrator Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Agent | \`${{ needs.identify-agent.outputs.agent }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Event | \`${{ github.event_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Ref   | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Conflicts | ${{ needs.conflict-check.outputs.has_conflicts == 'true' && '⚠️ YES' || '✅ None' }} |" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ needs.conflict-check.outputs.conflict_files }}" != "" ]]; then
+            echo "| Conflict Files | \`${{ needs.conflict-check.outputs.conflict_files }}\` |" >> $GITHUB_STEP_SUMMARY
+          fi

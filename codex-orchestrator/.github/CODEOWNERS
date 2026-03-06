@@ -1,0 +1,29 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# CODEOWNERS — Agent Orchestrator
+#
+# This file tells GitHub which humans (or teams) must review changes
+# to sensitive files, even when the orchestrator auto-approves.
+#
+# Place this file at: .github/CODEOWNERS in your repo.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Default owner for everything — update with your GitHub username or team
+* @YOUR_GITHUB_USERNAME
+
+# CI/Orchestrator configs require explicit human review
+.github/                          @YOUR_GITHUB_USERNAME
+.github/workflows/                @YOUR_GITHUB_USERNAME
+scripts/                          @YOUR_GITHUB_USERNAME
+
+# High-risk files — always require human review regardless of auto-approve
+package.json                      @YOUR_GITHUB_USERNAME
+package-lock.json                 @YOUR_GITHUB_USERNAME
+yarn.lock                         @YOUR_GITHUB_USERNAME
+*.env                             @YOUR_GITHUB_USERNAME
+*.env.*                           @YOUR_GITHUB_USERNAME
+Dockerfile                        @YOUR_GITHUB_USERNAME
+docker-compose*.yml               @YOUR_GITHUB_USERNAME
+
+# Database migrations — never auto-merge
+migrations/                       @YOUR_GITHUB_USERNAME
+db/                               @YOUR_GITHUB_USERNAME

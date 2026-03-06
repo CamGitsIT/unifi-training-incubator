@@ -1,0 +1,101 @@
+name: 🚧 Conflict Detector
+
+# Runs on every push to main to catch direct pushes (Base44's pattern)
+# and builds a rolling "file lock" map so agents know what's in-flight.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: conflict-detector-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect:
+    name: Scan for File Conflicts
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50   # enough history to compare recent agent activity
+
+      - name: Build file-touch map (last 20 commits)
+        id: filemap
+        run: |
+          echo "## 📁 File Touch Map (last 20 commits)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | Author | Files |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|--------|-------|" >> $GITHUB_STEP_SUMMARY
+
+          git log --oneline -20 --pretty=format:"%H|%an|%s" | while IFS='|' read -r HASH AUTHOR MSG; do
+            FILES=$(git show --name-only --format="" "$HASH" | tr '\n' ', ' | sed 's/,$//')
+            SHORT="${HASH:0:7}"
+            echo "| \`$SHORT\` | $AUTHOR | \`$FILES\` |" >> $GITHUB_STEP_SUMMARY
+          done
+
+      - name: Detect overlapping files between recent pushes
+        id: overlap
+        run: |
+          # Get files changed in the last 2 distinct commits (simulates two agent pushes)
+          COMMIT_A=$(git rev-parse HEAD)
+          COMMIT_B=$(git rev-parse HEAD~1 2>/dev/null || echo "")
+
+          FILES_A=$(git show --name-only --format="" "$COMMIT_A" 2>/dev/null | sort)
+          FILES_B=""
+          if [[ -n "$COMMIT_B" ]]; then
+            FILES_B=$(git show --name-only --format="" "$COMMIT_B" 2>/dev/null | sort)
+          fi
+
+          OVERLAP=$(comm -12 <(echo "$FILES_A") <(echo "$FILES_B") | tr '\n' ',')
+
+          if [[ -n "$OVERLAP" ]]; then
+            echo "⚠️  Overlapping files between last 2 commits: $OVERLAP"
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### ⚠️ Overlapping Files Detected" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            echo "$OVERLAP" | tr ',' '\n' >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            echo "overlap=$OVERLAP" >> $GITHUB_OUTPUT
+          else
+            echo "✅ No file overlaps between recent commits"
+            echo "overlap=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Write active file-lock manifest
+        run: |
+          # Creates a manifest of "hot" files changed in last 10 commits.
+          # Codex dispatch script reads this before submitting a job.
+          git log --oneline -10 --pretty=format:"%H" | while read -r HASH; do
+            git show --name-only --format="" "$HASH"
+          done | sort | uniq -c | sort -rn > /tmp/hot-files.txt
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔥 Hot Files (most touched in last 10 commits)" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          head -20 /tmp/hot-files.txt >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify Slack on overlap
+        if: steps.overlap.outputs.overlap != ''
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [[ -z "$SLACK_WEBHOOK" ]]; then
+            echo "No Slack webhook configured, skipping notification"
+            exit 0
+          fi
+
+          OVERLAP="${{ steps.overlap.outputs.overlap }}"
+          REPO="${{ github.repository }}"
+          RUN_URL="https://github.com/$REPO/actions/runs/${{ github.run_id }}"
+          AUTHOR="${{ github.actor }}"
+
+          curl -s -X POST "$SLACK_WEBHOOK" \
+            -H 'Content-type: application/json' \
+            --data "{
+              \"text\": \"🚨 *File Overlap Detected on \`main\`*\n\`$AUTHOR\` pushed files that were recently modified by another agent:\n\`\`\`$OVERLAP\`\`\`\n<$RUN_URL|View Details>\"
+            }"
