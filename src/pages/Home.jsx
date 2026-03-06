@@ -138,7 +138,7 @@ export default function Home() {
                         transition={{ duration: 0.35, ease: 'easeInOut' }}
                     >
                         <SlideComponent
-                            onInteracted={() => markInteracted(current)}
+                            onInteracted={() => markInteracted(safeCurrent)}
                             onNext={goNext}
                             onUnlockMessage={setUnlockMessage}
                         />
