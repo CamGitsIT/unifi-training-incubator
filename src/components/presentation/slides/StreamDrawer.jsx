@@ -306,7 +306,7 @@ function OutputsPanel({ rev, yearView, color }) {
     return (
         <div className="rounded-2xl border border-slate-700 overflow-hidden" style={{ background: '#1e293b' }}>
             <div className="px-5 py-3 border-b border-slate-700/60">
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Revenue Outputs</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Revenue outputs</p>
             </div>
             <div className="px-5 py-5">
                 {/* Big selected year number */}
