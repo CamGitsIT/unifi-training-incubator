@@ -1,129 +1,57 @@
 import React, { useState, useCallback } from 'react';
 import { TrendingUp, Globe, Zap, Shield, RefreshCw } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Slider } from "@/components/ui/slider";
+import { BASELINE_STREAMS, runForecast, formatCurrency, STREAM_COLORS } from '@/components/forecast/forecastEngine';
 
-// Business line definitions
-const DEFAULT_LINES = [
-    {
-        id: 'experience',
-        name: 'Experience Center',
-        emoji: '🏢',
-        color: '#22d3ee',
-        locationIndependent: false,
-        tagline: 'Local UniFi Experience Center that fuels every other revenue line.',
-        unit: 'visitors/mo',
-        unitLabel: 'Monthly Visitors',
-        min: 10, max: 200, step: 10, default: 40,
-        revenuePerUnit: 50, // $50 avg per visitor (demos, consultations)
-        description: 'Live demo space generates leads for all other lines.',
-    },
-    {
-        id: 'retrofit',
-        name: 'Keyless Retrofit',
-        emoji: '🔑',
-        color: '#818cf8',
-        locationIndependent: false,
-        tagline: 'Local retrofit installs that become the national playbook.',
-        unit: 'installs/mo',
-        unitLabel: 'Monthly Installs',
-        min: 1, max: 20, step: 1, default: 4,
-        revenuePerUnit: 1125,
-        description: 'One install = ~$1,125 avg. Local anchor, national blueprint.',
-    },
-    {
-        id: 'training',
-        name: 'UniFi Training',
-        emoji: '🎓',
-        color: '#f472b6',
-        locationIndependent: true,
-        tagline: 'Location-free National Training Center cohorts delivered online and on-site.',
-        unit: 'students/mo',
-        unitLabel: 'Monthly Students',
-        min: 1, max: 60, step: 1, default: 8,
-        revenuePerUnit: 792,
-        description: 'Online cohorts + in-person intensives. Scales globally.',
-    },
-    {
-        id: 'retail',
-        name: 'Multi-Location Retail',
-        emoji: '🏪',
-        color: '#fb923c',
-        locationIndependent: true,
-        tagline: 'Remote UniFi rollout design for franchise and multi-location retail brands.',
-        unit: 'sites/mo',
-        unitLabel: 'Sites Served/Mo',
-        min: 1, max: 20, step: 1, default: 2,
-        revenuePerUnit: 750,
-        description: 'Franchise & chain rollouts. You consult, they deploy.',
-    },
-    {
-        id: 'monitoring',
-        name: 'Pro Monitoring',
-        emoji: '👁️',
-        color: '#34d399',
-        locationIndependent: true,
-        tagline: 'Recurring UniFi monitoring revenue, managed from anywhere.',
-        unit: 'sites monitored',
-        unitLabel: 'Active Sites',
-        min: 5, max: 100, step: 5, default: 20,
-        revenuePerUnit: 100,
-        description: 'Monthly recurring. Pure margin after setup.',
-    },
-    {
-        id: 'rentals',
-        name: 'Tech Rentals',
-        emoji: '📦',
-        color: '#a78bfa',
-        locationIndependent: true,
-        tagline: 'UniFi infrastructure rentals for events and pop-ups, shippable anywhere.',
-        unit: 'rentals/mo',
-        unitLabel: 'Monthly Rentals',
-        min: 1, max: 30, step: 1, default: 5,
-        revenuePerUnit: 200,
-        description: 'Gear rental for events, staging, temp installs.',
-    },
-    {
-        id: 'refrigeration',
-        name: 'Fridge Monitoring',
-        emoji: '🌡️',
-        color: '#38bdf8',
-        locationIndependent: true,
-        tagline: 'Remote cold-chain compliance monitoring for food and pharma locations.',
-        unit: 'sensors/mo',
-        unitLabel: 'Active Sensors',
-        min: 5, max: 100, step: 5, default: 15,
-        revenuePerUnit: 83,
-        description: 'Set sensors, collect monthly. FDA-compliant reporting.',
-    },
-    {
-        id: 'isp',
-        name: 'Micro ISP',
-        emoji: '📡',
-        color: '#facc15',
-        locationIndependent: false,
-        tagline: 'Local Micro ISP infrastructure that can be replicated city by city.',
-        unit: 'subscribers',
-        unitLabel: 'Active Subscribers',
-        min: 10, max: 200, step: 10, default: 30,
-        revenuePerUnit: 100,
-        description: 'Community mesh wifi. High margin, high loyalty.',
-    },
-];
-
-const ANNUAL_DEBT_SERVICE = 55200;
-
-const formatDollar = (v) => {
-    if (v >= 1000000) return `$${(v / 1000000).toFixed(1)}M`;
-    if (v >= 1000) return `$${(v / 1000).toFixed(0)}K`;
-    return `$${v}`;
+// Location-free flag per stream
+const LOCATION_FREE = {
+    experience: false,
+    training: true,
+    retrofit: false,
+    retail: true,
+    monitoring: true,
+    rentals: true,
+    refrigeration: true,
+    isp: false,
 };
 
+const ANNUAL_DEBT_SERVICE = 55200;
 const MARGIN = 0.63;
 
+// Build slider config from baseline streams
+const LINE_CONFIGS = BASELINE_STREAMS.map(s => ({
+    id: s.stream_id,
+    name: s.stream_title,
+    emoji: { experience: '🏢', training: '🎓', retrofit: '🔑', retail: '🏪', monitoring: '👁️', rentals: '📦', refrigeration: '🌡️', isp: '📡' }[s.stream_id],
+    color: STREAM_COLORS[s.stream_id],
+    locationIndependent: LOCATION_FREE[s.stream_id],
+    unit: s.driver_unit,
+    unitLabel: s.driver_name,
+    min: { experience: 10, training: 1, retrofit: 1, retail: 1, monitoring: 5, rentals: 1, refrigeration: 5, isp: 1 }[s.stream_id],
+    max: { experience: 200, training: 60, retrofit: 20, retail: 20, monitoring: 150, rentals: 30, refrigeration: 100, isp: 50 }[s.stream_id],
+    step: { experience: 10, training: 1, retrofit: 1, retail: 1, monitoring: 5, rentals: 1, refrigeration: 5, isp: 1 }[s.stream_id],
+    defaultValue: s.plan_driver_m1,
+    // store unit_revenue × units_per_driver for per-driver monthly revenue calculation
+    revenuePerDriver: s.unit_revenue * s.units_per_driver,
+    tagline: {
+        experience: 'Local UniFi Experience Center that fuels every other revenue line.',
+        training: 'Location-free National Training Center cohorts delivered online and on-site.',
+        retrofit: 'Local retrofit installs that become the national playbook.',
+        retail: 'Remote UniFi rollout design for franchise and multi-location retail brands.',
+        monitoring: 'Recurring UniFi monitoring revenue, managed from anywhere.',
+        rentals: 'UniFi infrastructure rentals for events and pop-ups, shippable anywhere.',
+        refrigeration: 'Remote cold-chain compliance monitoring for food and pharma locations.',
+        isp: 'Local Micro ISP infrastructure that can be replicated city by city.',
+    }[s.stream_id],
+}));
+
+// Run default forecast once for initial totals reference
+const DEFAULT_FORECAST = runForecast(BASELINE_STREAMS, 'base');
+
 function LineCard({ line, value, onChange }) {
-    const monthlyRev = value * line.revenuePerUnit;
+    const monthlyRev = value * line.revenuePerDriver;
     const annualRev = monthlyRev * 12;
 
     return (
@@ -143,7 +71,7 @@ function LineCard({ line, value, onChange }) {
                     </div>
                 </div>
                 <div className="text-right">
-                    <div className="text-lg font-bold" style={{ color: line.color }}>{formatDollar(annualRev)}</div>
+                    <div className="text-lg font-bold" style={{ color: line.color }}>{formatCurrency(annualRev, true)}</div>
                     <div className="text-xs text-slate-500">/yr</div>
                 </div>
             </div>
@@ -161,7 +89,6 @@ function LineCard({ line, value, onChange }) {
                     max={line.max}
                     step={line.step}
                     className="flex-1"
-                    style={{ '--slider-color': line.color }}
                 />
             </div>
             <div className="flex justify-between text-xs text-slate-600 mt-1">
@@ -174,7 +101,7 @@ function LineCard({ line, value, onChange }) {
 
 export default function Slide7Financials({ onInteracted }) {
     const [values, setValues] = useState(() =>
-        Object.fromEntries(DEFAULT_LINES.map(l => [l.id, l.default]))
+        Object.fromEntries(LINE_CONFIGS.map(l => [l.id, l.defaultValue]))
     );
     const [hasInteracted, setHasInteracted] = useState(false);
     const [timerDone, setTimerDone] = useState(false);
@@ -205,15 +132,15 @@ export default function Slide7Financials({ onInteracted }) {
     }, [hasInteracted]);
 
     const handleReset = () => {
-        setValues(Object.fromEntries(DEFAULT_LINES.map(l => [l.id, l.default])));
+        setValues(Object.fromEntries(LINE_CONFIGS.map(l => [l.id, l.defaultValue])));
     };
 
-    // Totals
-    const lineRevenues = DEFAULT_LINES.map(l => ({
-        ...l,
-        monthly: values[l.id] * l.revenuePerUnit,
-        annual: values[l.id] * l.revenuePerUnit * 12,
-    }));
+    // Compute revenues using the forecast engine with current slider values
+    const lineRevenues = LINE_CONFIGS.map(l => {
+        const monthlyRev = values[l.id] * l.revenuePerDriver;
+        const annualRev = monthlyRev * 12;
+        return { ...l, monthly: monthlyRev, annual: annualRev };
+    });
 
     const totalAnnual = lineRevenues.reduce((s, l) => s + l.annual, 0);
     const totalProfit = Math.round(totalAnnual * MARGIN);
@@ -226,10 +153,15 @@ export default function Slide7Financials({ onInteracted }) {
     const locationFreePct = totalAnnual > 0 ? Math.round((locationFreeRevenue / totalAnnual) * 100) : 0;
 
     const chartData = lineRevenues.map(l => ({
-        name: l.name.replace(' ', '\n'),
+        name: l.name,
         revenue: l.annual,
         color: l.color,
     }));
+
+    // Reference totals from the engine (base scenario, default drivers)
+    const y1 = DEFAULT_FORECAST.totalY1;
+    const y2 = DEFAULT_FORECAST.totalY2;
+    const y3 = DEFAULT_FORECAST.totalY3;
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 py-16 px-4 md:px-6">
@@ -242,9 +174,9 @@ export default function Slide7Financials({ onInteracted }) {
                         <span className="text-green-400 text-sm font-medium">Interactive Financial Playground</span>
                     </div>
                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-3">
-                        8 Lines. One Ecosystem.
+                        Eight Lines. One Ecosystem.
                         <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 text-2xl md:text-3xl mt-1">
-                            Most of it works from anywhere on Earth.
+                            Separate revenue lines sharing one engine compound each other's reach and revenue.
                         </span>
                     </h2>
                     <p className="text-slate-300 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
@@ -252,22 +184,30 @@ export default function Slide7Financials({ onInteracted }) {
                     </p>
                 </motion.div>
 
-                {/* Summary Bar */}
-                <motion.div
-                    layout
-                    className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8"
-                >
+                {/* 3-Year Reference Totals from Forecast Engine */}
+                <div className="grid grid-cols-3 gap-3 mb-6">
                     {[
-                        { label: 'Total Annual Revenue', value: formatDollar(totalAnnual), color: 'text-white', sub: `${formatDollar(Math.round(totalAnnual/12))}/mo` },
-                        { label: 'Net Profit (~63%)', value: formatDollar(totalProfit), color: 'text-green-400', sub: 'After ops & overhead' },
+                        { label: 'Year 1 Total', val: y1, sub: 'Months 1–12 · Base' },
+                        { label: 'Year 2 Total', val: y2, sub: 'Months 13–24 · Base' },
+                        { label: 'Year 3 Total', val: y3, sub: 'Months 25–36 · Base' },
+                    ].map(({ label, val, sub }) => (
+                        <div key={label} className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center">
+                            <div className="text-xs text-slate-400 mb-1">{label}</div>
+                            <div className="text-2xl md:text-3xl font-bold text-white">{formatCurrency(val, true)}</div>
+                            <div className="text-xs text-slate-500 mt-1">{sub}</div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Summary Bar — based on slider values */}
+                <motion.div layout className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+                    {[
+                        { label: 'Slider Annual Revenue', value: formatCurrency(totalAnnual, true), color: 'text-white', sub: `${formatCurrency(Math.round(totalAnnual/12), true)}/mo` },
+                        { label: 'Net Profit (~63%)', value: formatCurrency(totalProfit, true), color: 'text-green-400', sub: 'After ops & overhead' },
                         { label: 'Debt Coverage Ratio', value: `${dscr}x`, color: dscrColor, sub: `vs $${(ANNUAL_DEBT_SERVICE/1000).toFixed(0)}K/yr debt service` },
                         { label: '% Location-Free Revenue', value: `${locationFreePct}%`, color: 'text-cyan-400', sub: 'Earnable from anywhere' },
                     ].map((s, i) => (
-                        <motion.div
-                            key={i}
-                            layout
-                            className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center"
-                        >
+                        <motion.div key={i} layout className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center">
                             <div className="text-xs text-slate-400 mb-1">{s.label}</div>
                             <motion.div
                                 key={s.value}
@@ -318,7 +258,7 @@ export default function Slide7Financials({ onInteracted }) {
                             </button>
                         </div>
                         <div className="space-y-3 max-h-[520px] overflow-y-auto pr-1">
-                            {DEFAULT_LINES.map(line => (
+                            {LINE_CONFIGS.map(line => (
                                 <LineCard
                                     key={line.id}
                                     line={line}
@@ -344,10 +284,10 @@ export default function Slide7Financials({ onInteracted }) {
                                         textAnchor="end"
                                         interval={0}
                                     />
-                                    <YAxis stroke="#475569" tick={{ fontSize: 10, fill: '#94a3b8' }} tickFormatter={formatDollar} />
+                                    <YAxis stroke="#475569" tick={{ fontSize: 10, fill: '#94a3b8' }} tickFormatter={v => formatCurrency(v, true)} />
                                     <Tooltip
                                         contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px', fontSize: '12px' }}
-                                        formatter={(v) => [formatDollar(v), 'Annual Revenue']}
+                                        formatter={(v) => [formatCurrency(v, true), 'Annual Revenue']}
                                     />
                                     <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
                                         {chartData.map((entry, i) => (
@@ -362,19 +302,13 @@ export default function Slide7Financials({ onInteracted }) {
                         <div className="bg-slate-800/30 border border-slate-700 rounded-2xl p-4">
                             <h4 className="text-sm font-semibold text-white mb-3">Revenue Geography</h4>
                             <div className="flex gap-2 mb-2">
-                                <div
-                                    className="h-3 rounded-full bg-cyan-400 transition-all duration-500"
-                                    style={{ width: `${locationFreePct}%` }}
-                                />
-                                <div
-                                    className="h-3 rounded-full bg-purple-500 transition-all duration-500"
-                                    style={{ width: `${100 - locationFreePct}%` }}
-                                />
+                                <div className="h-3 rounded-full bg-cyan-400 transition-all duration-500" style={{ width: `${locationFreePct}%` }} />
+                                <div className="h-3 rounded-full bg-purple-500 transition-all duration-500" style={{ width: `${100 - locationFreePct}%` }} />
                             </div>
                             <div className="flex justify-between text-xs text-slate-400">
                                 <span className="flex items-center gap-1">
                                     <span className="w-2 h-2 rounded-full bg-cyan-400 inline-block" />
-                                    {locationFreePct}% Location-free ({formatDollar(locationFreeRevenue)})
+                                    {locationFreePct}% Location-free ({formatCurrency(locationFreeRevenue, true)})
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <span className="w-2 h-2 rounded-full bg-purple-500 inline-block" />
@@ -386,8 +320,8 @@ export default function Slide7Financials({ onInteracted }) {
                         {/* The philosophy */}
                         <div className="bg-gradient-to-br from-slate-800/40 to-purple-950/20 border border-purple-800/30 rounded-2xl p-4">
                             <p className="text-sm text-slate-300 leading-relaxed italic">
-                                "We don't confront people with their tech difficulties. We spend our energy with calm, 
-                                content people who take care of themselves — and pay forward. 
+                                "We don't confront people with their tech difficulties. We spend our energy with calm,
+                                content people who take care of themselves — and pay forward.
                                 <strong className="text-white not-italic"> Most of what we do happens to support itself.</strong>"
                             </p>
                         </div>
