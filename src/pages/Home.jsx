@@ -117,9 +117,9 @@ export default function Home() {
                     </div>
                     <div className="flex items-center gap-3">
                         <span className="text-slate-500 text-sm hidden md:inline">
-                            {SLIDES[current].label}
+                            {SLIDES[safeCurrent].label}
                         </span>
-                        <span className="text-slate-600 text-sm">{current + 1} / {SLIDES.length}</span>
+                        <span className="text-slate-600 text-sm">{safeCurrent + 1} / {SLIDES.length}</span>
                     </div>
                 </div>
             </nav>
