@@ -1,0 +1,56 @@
+version: "1.0"
+repo: "CamGitsIT/unifi-training-incubator"
+
+routing:
+  min_confidence: 0.65
+  new_agent_threshold: 0.50
+  allow_multi_agent: false
+  max_agents_per_task: 1
+
+agents:
+  - id: codex
+    name: "OpenAI Codex"
+    type: cloud_agent
+    status: active
+    capabilities: [code_generation, code_editing, refactoring, debugging, test_writing, multi_file_changes]
+    cost_tier: medium
+    speed_tier: slow
+    tags: [code, pr, autonomous, multi_file]
+
+  - id: base44
+    name: "Base44"
+    type: cloud_agent
+    status: active
+    dispatch: direct_push_to_main
+    note: "Platform limitation - cannot push to branches, always writes to main"
+    capabilities: [app_building, rapid_prototyping, ui_generation, full_stack_scaffolding, crud_operations]
+    cost_tier: medium
+    speed_tier: fast
+    tags: [fullstack, ui, rapid, prototype]
+
+  - id: claude-sonnet
+    name: "Claude Sonnet"
+    type: api_model
+    status: active
+    capabilities: [code_review, documentation, architecture_design, planning, security_review, research]
+    cost_tier: low
+    speed_tier: fast
+    tags: [review, docs, analysis, planning]
+
+  - id: github-actions
+    name: "GitHub Actions"
+    type: ci_worker
+    status: active
+    capabilities: [automated_testing, linting, build, deployment, security_scanning]
+    cost_tier: low
+    speed_tier: medium
+    tags: [ci, cd, automation, testing, deploy]
+
+  - id: dependabot
+    name: "Dependabot"
+    type: bot
+    status: active
+    capabilities: [dependency_updates, security_patches]
+    cost_tier: low
+    speed_tier: slow
+    tags: [dependencies, security, automated]
