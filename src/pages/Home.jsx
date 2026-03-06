@@ -15,6 +15,11 @@ import Slide11CTA from '../components/presentation/slides/Slide11CTA';
 
 
 
+// ── Gating control ────────────────────────────────────────────────────────────
+// Set to `true` to re-enable per-slide interaction requirements and timers.
+const GATING_ENABLED = false;
+// ──────────────────────────────────────────────────────────────────────────────
+
 const SLIDES = [
     { component: Slide1Hero, label: 'Welcome' },
     { component: Slide5BusinessModel, label: 'Business Model' },
