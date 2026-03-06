@@ -46,28 +46,13 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         </span>
                     </h1>
 
-                    <p className="text-xl md:text-2xl font-semibold text-slate-300 mb-6 max-w-3xl mx-auto">
-                        Discover the UniFi ecosystem—where hardware, software, and security unite seamlessly. The more you adopt, the more you save and simplify.
+                    <p className="text-xl md:text-2xl font-semibold text-slate-300 mb-5 max-w-2xl mx-auto leading-snug">
+                        Own your IT infrastructure. End endless subscriptions. Simplify everything.
                     </p>
 
-                    <p className="text-lg md:text-lg text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed">
-                        We're raising <strong className="text-cyan-400">$300K</strong> to build a real-world <strong className="text-white">UniFi Experience Center</strong> in Atlanta. See, touch, and experience how it transforms businesses—escaping endless subscriptions for owned, efficient systems.
+                    <p className="text-base md:text-lg text-slate-400 mb-10 max-w-xl mx-auto leading-relaxed">
+                        We're raising <strong className="text-cyan-400">$300K</strong> to launch Atlanta's first <strong className="text-white">UniFi Experience Center</strong>—where businesses and MSPs test integrated systems that cut OpEx 40–60%.
                     </p>
-
-                    <div className="text-left max-w-3xl mx-auto mb-10 space-y-4">
-                        {[
-                            { label: 'The Opportunity', text: 'Organizations are abandoning fragmented SaaS vendors for owned UniFi infrastructure—eliminating recurring fees permanently.' },
-                            { label: 'Proven Impact', text: 'OverIT clients reduce OpEx 40–60%, simplify operations, and strengthen security—validated by live deployments.' },
-                            { label: 'Why OverIT', text: 'Ubiquiti-certified experts. 8 diversified revenue streams. SBA-backed acquisition with clear investor returns.' },
-                        ].map((b, i) => (
-                            <div key={i} className="flex items-start gap-4 bg-slate-800/40 border border-slate-700 rounded-xl px-5 py-4">
-                                <div className="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0 mt-2" />
-                                <p className="text-slate-300 text-sm leading-relaxed">
-                                    <strong className="text-white">{b.label}:</strong> {b.text}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
 
                     <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
                         <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
