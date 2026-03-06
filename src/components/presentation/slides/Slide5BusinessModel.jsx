@@ -44,7 +44,6 @@ const businessLines = BASELINE_STREAMS.map(s => {
 
 export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
     const [expanded, setExpanded] = useState(new Set());
-    const [yearView, setYearView] = useState('y3');
     const [timerDone, setTimerDone] = useState(false);
     const [secondsLeft, setSecondsLeft] = useState(60);
 
