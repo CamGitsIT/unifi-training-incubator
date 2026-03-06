@@ -79,17 +79,24 @@ function LineCard({ line, value, onChange }) {
             <p className="text-xs text-slate-400 mb-3 italic leading-relaxed">"{line.tagline}"</p>
 
             <div className="flex items-center gap-3">
-                <div className="text-xs text-slate-400 w-28 flex-shrink-0">
-                    {value} {line.unit}
-                </div>
-                <Slider
-                    value={[value]}
-                    onValueChange={(v) => onChange(v[0])}
-                    min={line.min}
-                    max={line.max}
-                    step={line.step}
-                    className="flex-1"
-                />
+                 <div className="text-xs text-slate-400 w-28 flex-shrink-0">
+                     <strong>{value}</strong> {line.unit}
+                 </div>
+                 <div className="flex-1 relative">
+                     <Slider
+                         value={[value]}
+                         onValueChange={(v) => onChange(v[0])}
+                         min={line.min}
+                         max={line.max}
+                         step={line.step}
+                         className="flex-1"
+                         style={{
+                             '--slider-track-background': '#0f172a',
+                             '--slider-thumb-background': '#22d3ee',
+                             '--slider-filled': '#06b6d4',
+                         }}
+                     />
+                 </div>
             </div>
             <div className="flex justify-between text-xs text-slate-600 mt-1">
                 <span>{line.min} {line.unit}</span>
