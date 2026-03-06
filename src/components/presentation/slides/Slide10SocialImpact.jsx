@@ -193,7 +193,7 @@ export default function Slide10SocialImpact({ onInteracted }) {
                         We don't hire installers.<br />We create them.
                     </h3>
                     <p className="text-slate-300 max-w-2xl mx-auto mb-10">
-                        Enabling training and expertise to enable a graduate or small business owner to explore their own passions while providing tangible value.
+                        Graduates leave with credentials, portfolio projects, and a pipeline of paid work—launching independent contractors and small businesses that keep SBA-backed impact circulating in the local economy.
                     </p>
                     <div className="grid md:grid-cols-3 gap-5">
                         {[
