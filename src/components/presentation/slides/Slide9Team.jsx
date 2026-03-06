@@ -99,7 +99,7 @@ export default function Slide9Team({ onInteracted }) {
                         <div className="border-t border-purple-700/50 pt-4">
                             <div className="text-sm text-slate-400 mb-1">AI Stack Cost</div>
                             <div className="text-2xl font-bold text-purple-400">$120K/year</div>
-                            <div className="text-xs text-slate-500 mt-1">Replaces $2.5M+ in traditional payroll</div>
+                            <div className="text-xs text-slate-500 mt-1">Replaces $2.5M+ in traditional sales, ops, and marketing headcount.</div>
                         </div>
                     </div>
                 </div>
