@@ -47,11 +47,11 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </h1>
 
                     <p className="text-xl md:text-2xl font-semibold text-slate-300 mb-6 max-w-3xl mx-auto">
-                        Own your infrastructure. Train your workforce. Scale your impact.
+                        Discover the UniFi ecosystem—where hardware, software, and security unite seamlessly. The more you adopt, the more you save and simplify.
                     </p>
 
                     <p className="text-lg md:text-lg text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed">
-                        <strong className="text-cyan-400">OverIT</strong> is acquiring a live-work facility to launch the <strong className="text-white">UniFi Experience Center</strong> and <strong className="text-white">National Training Center</strong> — certifying MSPs, businesses, and individuals while demonstrating fully integrated UniFi infrastructure.
+                        We're raising <strong className="text-cyan-400">$300K</strong> to build a real-world <strong className="text-white">UniFi Experience Center</strong> in Atlanta. See, touch, and experience how it transforms businesses—escaping endless subscriptions for owned, efficient systems.
                     </p>
 
                     <div className="text-left max-w-3xl mx-auto mb-10 space-y-4">
