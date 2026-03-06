@@ -103,7 +103,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                                     }
                                 `}
                             >
-                                See the Vision →
+                                Join the Movement →
                             </motion.button>
 
                             {!canClick && (
