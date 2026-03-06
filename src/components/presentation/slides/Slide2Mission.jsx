@@ -158,12 +158,26 @@ export default function Slide2Mission({ onInteracted }) {
                                     {/* Revenue output */}
                                     <motion.div key={revenueDisplay}
                                         initial={{ opacity: 0.5 }} animate={{ opacity: 1 }}
-                                        className="w-24 text-right flex-shrink-0"
+                                        className="w-28 text-right flex-shrink-0 group/rev relative"
+                                        title={stream.isPipelinePrimary
+                                            ? `Pipeline driver: ${driverVal} visits × ${Math.round(stream.pipelineOutputs.retrofitConversion * 100)}% conversion = ${Math.round(driverVal * stream.pipelineOutputs.retrofitConversion)} retrofit leads/mo`
+                                            : (() => {
+                                                const g = stream.driver.defaultValue === driverVal
+                                                    ? (BASELINE_STREAMS_MAP[stream.id]?.monthly_growth ?? 0)
+                                                    : 0;
+                                                const unitRev = BASELINE_STREAMS_MAP[stream.id]?.unit_revenue ?? 0;
+                                                const unitsPerDriver = BASELINE_STREAMS_MAP[stream.id]?.units_per_driver ?? 1;
+                                                const factor12 = g === 0 ? 12 : ((Math.pow(1 + g, 12) - 1) / g);
+                                                return `${driverVal} ${stream.driver.unitLabel} × ${unitsPerDriver} unit(s) × $${unitRev.toLocaleString()}/mo × ${factor12.toFixed(1)} (growth factor) = ${fmt(rev?.selectedYear)} Y1`;
+                                            })()
+                                        }
                                     >
                                         <div className="text-base font-bold tabular-nums" style={{ color: stream.color }}>
                                             {revenueDisplay}
                                         </div>
-                                        <div className="text-xs text-slate-600">Y1 rev</div>
+                                        <div className="text-xs text-slate-600">
+                                            {stream.isPipelinePrimary ? 'pipeline' : 'Y1 rev'}
+                                        </div>
                                     </motion.div>
 
                                     {/* Arrow to drawer */}
