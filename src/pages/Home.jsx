@@ -21,15 +21,15 @@ const GATING_ENABLED = false;
 // ──────────────────────────────────────────────────────────────────────────────
 
 const SLIDES = [
-    { component: Slide1Hero, label: 'Welcome' },
-    { component: Slide5BusinessModel, label: 'Business Model' },
-    { component: Slide2Mission, label: 'Revenue Streams' },
-    { component: Slide10SocialImpact, label: 'Impact' },
-    { component: Slide6Property, label: 'Property' },
-    { component: Slide7Financials, label: 'Financials' },
-    // { component: Slide8Investment, label: 'Investment' },
-    { component: Slide9Team, label: 'Team' },
-    { component: Slide11CTA, label: 'Join Us' },
+    { id: 'overview', component: Slide1Hero, label: 'Welcome' },
+    { id: 'business-model', component: Slide5BusinessModel, label: 'Business Model' },
+    { id: 'revenue-streams', component: Slide2Mission, label: 'Revenue Streams' },
+    { id: 'community-impact', component: Slide10SocialImpact, label: 'Community Impact' },
+    { id: 'the-property', component: Slide6Property, label: 'The Property' },
+    { id: 'financials', component: Slide7Financials, label: 'Financials' },
+    // { id: 'investment', component: Slide8Investment, label: 'Investment Terms' },
+    { id: 'team', component: Slide9Team, label: 'The Team' },
+    { id: 'call-to-action', component: Slide11CTA, label: 'Join the Mission' },
 ];
 
 export default function Home() {
