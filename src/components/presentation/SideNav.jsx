@@ -13,13 +13,7 @@ const NAV_SECTIONS = [
     { label: 'Revenue Streams', slideIndices: [2] },
     { label: 'Community Impact', slideIndices: [3] },
     { label: 'Flagship Property', slideIndices: [4] },
-    { 
-        label: 'Financials', 
-        parent: true,
-        subItems: [
-            { label: 'Revenue Model', slideIndices: [5] }
-        ]
-    },
+    { label: 'Revenue Model', slideIndices: [5] },
     { label: 'The Team', slideIndices: [7] },
     { 
         label: 'Join the Mission', 
