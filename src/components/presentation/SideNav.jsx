@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, ChevronRight } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -12,17 +12,17 @@ const NAV_SECTIONS = [
     { label: 'Business Model', slideIndices: [1] },
     { label: 'Revenue Streams', slideIndices: [2] },
     { label: 'Community Impact', slideIndices: [3] },
-    { label: 'Flagship Property', slideIndices: [3] },
+    { label: 'Flagship Property', slideIndices: [4] },
     { 
         label: 'Financials', 
         parent: true,
         subItems: [
-            { label: 'Revenue Model', slideIndices: [4] },
-            { label: 'Investment Terms', slideIndices: [5] }
+            { label: 'Revenue Model', slideIndices: [5] },
+            { label: 'Investment Terms', slideIndices: [6] }
         ]
     },
-    { label: 'Leadership', slideIndices: [6] },
-    { label: 'Invest Now', slideIndices: [7] },
+    { label: 'Leadership', slideIndices: [7] },
+    { label: 'Invest Now', slideIndices: [8] },
 ];
 
 function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
