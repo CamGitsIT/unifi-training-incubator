@@ -97,7 +97,7 @@ export default function Home() {
     const safeCurrent = Math.min(current, SLIDES.length - 1);
     if (current !== safeCurrent) setCurrent(safeCurrent);
     const SlideComponent = SLIDES[safeCurrent].component;
-    const canAdvance = !GATING_ENABLED || interacted[current];
+    const canAdvance = !GATING_ENABLED || interacted[safeCurrent];
 
     return (
         <div className="min-h-screen bg-slate-950 flex flex-col">
