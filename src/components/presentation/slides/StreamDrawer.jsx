@@ -237,7 +237,7 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                                             <ARow label="Avg cohort size" value={`${stream.assumptions.avgCohortSize} students`} />}
 
                                         <div className="border-t border-slate-800 pt-3 mt-3">
-                                            <p className="text-xs font-semibold text-slate-400 mb-2">Scenario Multipliers</p>
+                                            <p className="text-xs font-semibold text-slate-400 mb-2">Scenario multipliers</p>
                                             {Object.entries(SCENARIO_MULTIPLIERS).map(([k, v]) => (
                                                 <ARow key={k} label={v.label} value={`${v.revenue}×`} color={v.color} />
                                             ))}
