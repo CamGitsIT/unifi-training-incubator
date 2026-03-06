@@ -244,7 +244,7 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                                         </div>
 
                                         <div className="border-t border-slate-800 pt-3 mt-3">
-                                            <p className="text-xs font-semibold text-slate-400 mb-2">Year Ramp Factors</p>
+                                            <p className="text-xs font-semibold text-slate-400 mb-2">Year-ramp factors</p>
                                             {Object.entries(YEAR_RAMP).map(([k, v]) => (
                                                 <ARow key={k} label={YEAR_LABELS[k] || k} value={`${(v * 100).toFixed(0)}%`} />
                                             ))}
