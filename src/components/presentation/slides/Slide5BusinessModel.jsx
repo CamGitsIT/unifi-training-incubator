@@ -306,6 +306,10 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                     <p className="text-sm text-cyan-400 mt-4 animate-pulse">👇 Click any card to expand or collapse details</p>
                 </motion.div>
 
+                <div className="mb-12">
+                    <EcosystemFlywheel />
+                </div>
+
                 <div className="space-y-3">
                     {businessLines.map((line, i) => {
                         const colors = colorMap[line.color];
