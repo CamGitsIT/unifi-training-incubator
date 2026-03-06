@@ -64,7 +64,7 @@ const DEFAULT_LINES = [
         emoji: '👁️',
         color: '#34d399',
         locationIndependent: true,
-        tagline: '🌐 Recurring revenue. Monitored from anywhere.',
+        tagline: 'Recurring UniFi monitoring revenue, managed from anywhere.',
         unit: 'sites monitored',
         unitLabel: 'Active Sites',
         min: 5, max: 100, step: 5, default: 20,
