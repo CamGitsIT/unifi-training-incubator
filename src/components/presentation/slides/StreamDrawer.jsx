@@ -140,9 +140,9 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                     <div className="rounded-2xl border border-slate-700 overflow-hidden" style={{ background: '#1e293b' }}>
                         <div className="flex items-center justify-between px-5 py-3 border-b border-slate-700/60">
                             <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                                Driver Input
+                                Driver input (volume)
                             </p>
-                            <span className="text-xs text-slate-500 italic">Modeled (placeholder)</span>
+                            <span className="text-xs text-slate-500 italic">Modeled placeholder — will connect to Master Forecast</span>
                         </div>
                         <div className="px-5 py-4">
                             <p className="text-white font-semibold text-sm mb-4">{stream.driver.name}</p>
