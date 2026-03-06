@@ -97,8 +97,8 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
 
         {/* Header */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
-          <p className="text-xs font-semibold tracking-widest text-cyan-500 uppercase mb-3">Business Model</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+          <p className="text-xs font-semibold tracking-widest text-cyan-500 uppercase mb-4">Business Model</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
             One Platform. Eight Revenue Paths.
           </h2>
           <p className="text-lg text-slate-400 max-w-xl mx-auto">
