@@ -186,17 +186,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                     })}
                 </div>
 
-                <div className="mt-8 text-center bg-gradient-to-r from-slate-800/30 to-slate-800/10 border border-slate-700 rounded-2xl p-6">
-                    <div className="grid grid-cols-3 gap-4 mb-2">
-                        {[{ label: 'Year 1', val: FORECAST.totalY1 }, { label: 'Year 2', val: FORECAST.totalY2 }, { label: 'Year 3', val: FORECAST.totalY3 }].map(({ label, val }) => (
-                            <div key={label}>
-                                <div className="text-xs text-slate-500 mb-1">{label}</div>
-                                <div className="text-2xl font-bold text-white">{formatCurrency(val, true)}</div>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="text-slate-500 text-xs mt-2">Combined · Base Scenario · 36-month compound growth model</div>
-                </div>
+
 
                 {allExpanded && (
                     <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
