@@ -63,7 +63,7 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     </div>
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Creating the Next IT Workforce</h2>
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-4">
-                        Since 2012, Ubiquiti Academy has trained <strong className="text-white">50,000+ students worldwide</strong>. OverIT brings this engine to the local community.
+                        Ubiquiti Academy has certified 50,000+ students worldwide. OverIT's National Training Center brings that engine home—creating certified UniFi and UISP professionals in our region.
                     </p>
                     <p className="text-sm text-cyan-400 animate-pulse">👇 Click all 5 certification badges to continue</p>
                 </motion.div>
