@@ -119,14 +119,14 @@ export default function StreamForecastCard({
               </span>
             </div>
             <input
-              type="range"
-              min={0}
-              max={0.5}
-              step={0.005}
-              value={stream.monthly_growth}
-              onChange={e => onUpdateGrowth(parseFloat(e.target.value))}
-              className="w-full"
-              style={{ accentColor: color }}
+               type="range"
+               min={0}
+               max={0.5}
+               step={0.005}
+               value={stream.monthly_growth}
+               onChange={e => onUpdateGrowth(parseFloat(e.target.value))}
+               className="w-full"
+               style={{ accentColor: '#21d3ee' }}
             />
             <div className="flex justify-between text-xs text-slate-600 mt-0.5">
               <span>0%</span><span>50%</span>
