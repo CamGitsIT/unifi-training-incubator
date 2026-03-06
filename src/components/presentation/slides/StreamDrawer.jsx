@@ -253,8 +253,7 @@ export default function StreamDrawer({ stream, scenario, yearView, onClose }) {
                                         <div className="border-t border-slate-800 pt-3 mt-3">
                                             <p className="text-xs text-slate-500 italic">{stream.assumptions.scenarioNote}</p>
                                             <p className="text-xs text-amber-500/70 italic mt-2">
-                                                ⚠ All values are modeled placeholders.
-                                                {/* TODO: Replace with Master Forecast Google Sheet data source */}
+                                                ⚠ All values shown here are modeled placeholders and will be replaced by live Master Forecast data.
                                             </p>
                                         </div>
                                     </div>
