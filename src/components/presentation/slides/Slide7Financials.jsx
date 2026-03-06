@@ -51,7 +51,7 @@ const DEFAULT_LINES = [
         emoji: '🏪',
         color: '#fb923c',
         locationIndependent: true,
-        tagline: '🌐 Retail chains exist everywhere. You work remote.',
+        tagline: 'Remote UniFi rollout design for franchise and multi-location retail brands.',
         unit: 'sites/mo',
         unitLabel: 'Sites Served/Mo',
         min: 1, max: 20, step: 1, default: 2,
