@@ -25,7 +25,7 @@ const DEFAULT_LINES = [
         emoji: '🔑',
         color: '#818cf8',
         locationIndependent: false,
-        tagline: 'Local installs, but the playbook scales anywhere.',
+        tagline: 'Local retrofit installs that become the national playbook.',
         unit: 'installs/mo',
         unitLabel: 'Monthly Installs',
         min: 1, max: 20, step: 1, default: 4,
