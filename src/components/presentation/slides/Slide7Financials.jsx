@@ -318,10 +318,11 @@ export default function Slide7Financials({ onInteracted }) {
                                                                 <div className="text-slate-400">Monthly/Unit Rev: {formatCurrency(engineData.monthlyUnitRev, true)}</div>
                                                                 <div className="text-slate-400">Slider Value: {values[entry.id]} {config.unit}</div>
                                                                 <div className="text-slate-400">Growth: {(config.monthly_growth * 100).toFixed(1)}%/mo</div>
-                                            </>
-                                        )}
-                                    </div>
-                                );
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
                                         }}
                                     />
                                     <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
