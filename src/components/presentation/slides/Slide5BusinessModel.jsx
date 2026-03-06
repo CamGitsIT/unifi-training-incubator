@@ -38,7 +38,7 @@ const FRAMEWORK = [
     bg: 'bg-cyan-500/10',
     border: 'border-cyan-900/40',
     heading: 'Standalone Revenue',
-    body: 'Each of the 8 lines generates revenue independently — no single line depends on another to operate or close.',
+    body: 'Each line can close on its own.',
   },
   {
     icon: GitMerge,
@@ -46,15 +46,15 @@ const FRAMEWORK = [
     bg: 'bg-violet-500/10',
     border: 'border-violet-900/40',
     heading: 'Expansion Opportunities',
-    body: 'A retrofit client can become a monitoring client. A training graduate becomes a deployment partner. Each engagement opens a natural next conversation.',
+    body: 'One deployment often opens the next service.',
   },
   {
     icon: TrendingUp,
     color: 'text-green-400',
     bg: 'bg-green-500/10',
     border: 'border-green-900/40',
-    heading: 'Lower Risk · Higher LTV',
-    body: 'Concentration risk is distributed across eight paths. As each line matures, it compounds lifetime customer value across the portfolio.',
+    heading: 'Lower Risk, Higher Value',
+    body: 'Diversified revenue reduces dependency and increases client value.',
   },
 ];
 
