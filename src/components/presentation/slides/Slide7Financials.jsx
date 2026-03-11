@@ -8,6 +8,7 @@ import { BASELINE_STREAMS, runForecast, formatCurrency, STREAM_COLORS } from '@/
 // Location-free flag per stream
 const LOCATION_FREE = {
     experience: false,
+    experience_design_consulting: false,
     training: true,
     retrofit: false,
     retail: true,
@@ -24,20 +25,21 @@ const MARGIN = 0.63;
 const LINE_CONFIGS = BASELINE_STREAMS.map(s => ({
     id: s.stream_id,
     name: s.stream_title,
-    emoji: { experience: '🏢', training: '🎓', retrofit: '🔑', retail: '🏪', monitoring: '👁️', rentals: '📦', refrigeration: '🌡️', isp: '📡' }[s.stream_id],
+    emoji: { experience: '🏢', experience_design_consulting: '✏️', training: '🎓', retrofit: '🔑', retail: '🏪', monitoring: '👁️', rentals: '📦', refrigeration: '🌡️', isp: '📡' }[s.stream_id],
     color: STREAM_COLORS[s.stream_id],
     locationIndependent: LOCATION_FREE[s.stream_id],
     unit: s.driver_unit,
     unitLabel: s.driver_name,
-    min: { experience: 10, training: 1, retrofit: 1, retail: 1, monitoring: 5, rentals: 1, refrigeration: 5, isp: 1 }[s.stream_id],
-    max: { experience: 200, training: 60, retrofit: 20, retail: 20, monitoring: 150, rentals: 30, refrigeration: 100, isp: 50 }[s.stream_id],
-    step: { experience: 10, training: 1, retrofit: 1, retail: 1, monitoring: 5, rentals: 1, refrigeration: 5, isp: 1 }[s.stream_id],
+    min: { experience: 5, experience_design_consulting: 5, training: 1, retrofit: 1, retail: 1, monitoring: 5, rentals: 1, refrigeration: 5, isp: 1 }[s.stream_id],
+    max: { experience: 200, experience_design_consulting: 200, training: 60, retrofit: 20, retail: 20, monitoring: 150, rentals: 30, refrigeration: 100, isp: 50 }[s.stream_id],
+    step: { experience: 5, experience_design_consulting: 5, training: 1, retrofit: 1, retail: 1, monitoring: 5, rentals: 1, refrigeration: 5, isp: 1 }[s.stream_id],
     defaultValue: s.plan_driver_m1,
     // store unit_revenue × units_per_driver for per-driver monthly revenue calculation
     revenuePerDriver: s.unit_revenue * s.units_per_driver,
     tagline: {
-        experience: 'Local UniFi Experience Center that fuels every other revenue line.',
-        training: 'Location-free National Training Center cohorts delivered online and on-site.',
+    experience: 'Local UniFi Experience Center that fuels every other revenue line.',
+    experience_design_consulting: '2-hour design consult billed per visit — $300 per qualified visitor.',
+    training: 'Location-free National Training Center cohorts delivered online and on-site.',
         retrofit: 'Local retrofit installs that become the national playbook.',
         retail: 'Remote UniFi rollout design for franchise and multi-location retail brands.',
         monitoring: 'Recurring UniFi monitoring revenue, managed from anywhere.',
