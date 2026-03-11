@@ -5,8 +5,9 @@
 
 export const BASELINE_STREAMS = [
   // Values sourced from STREAMS_MODEL tab — OverIT Revenue Forecast 20260305 MASTER (updated 2026-03-06)
-  { stream_id: 'experience',    stream_title: 'Experience Center',                        driver_name: 'Qualified visits per month',   driver_unit: 'visits/mo',      plan_driver_m1: 40,  units_per_driver: 1,  unit_revenue: 12,     monthly_growth: 0.07,  enabled: true },
-  { stream_id: 'training',      stream_title: 'UniFi Certification Training (Multi-day)', driver_name: 'Seats per month',              driver_unit: 'seats/mo',       plan_driver_m1: 8,   units_per_driver: 1,  unit_revenue: 2000,   monthly_growth: 0.10,  enabled: true },
+  { stream_id: 'experience',                  stream_title: 'Experience Center',                              driver_name: 'Qualified visits per month', driver_unit: 'visits/mo',      plan_driver_m1: 20, units_per_driver: 1, unit_revenue: 300,    monthly_growth: 0.07,  enabled: true },
+  { stream_id: 'experience_design_consulting', stream_title: 'Experience Center — Design Consulting',          driver_name: 'Qualified visits per month', driver_unit: 'visits/mo',      plan_driver_m1: 20, units_per_driver: 1, unit_revenue: 300,    monthly_growth: 0.07,  enabled: true },
+  { stream_id: 'training',                    stream_title: 'UniFi Certification Training (Multi-day)',        driver_name: 'Seats per month',            driver_unit: 'seats/mo',       plan_driver_m1: 8,  units_per_driver: 1, unit_revenue: 2000,   monthly_growth: 0.10,  enabled: true },
   { stream_id: 'retrofit',      stream_title: 'Keyless Property Access (Retrofit)',        driver_name: 'Projects sold per month',      driver_unit: 'projects/mo',    plan_driver_m1: 4,   units_per_driver: 6,  unit_revenue: 937.5,  monthly_growth: 0.075, enabled: true },
   { stream_id: 'retail',        stream_title: 'Multi-Location Retail Businesses',          driver_name: 'Active brand accounts',        driver_unit: 'accounts/mo',    plan_driver_m1: 2,   units_per_driver: 2,  unit_revenue: 3500,   monthly_growth: 0.07,  enabled: true },
   { stream_id: 'monitoring',    stream_title: 'Professional Monitoring',                   driver_name: 'Active monitored sites',       driver_unit: 'sites/mo',       plan_driver_m1: 20,  units_per_driver: 1,  unit_revenue: 100,    monthly_growth: 0.06,  enabled: true },
@@ -32,6 +33,7 @@ export function applyImportedStreams(importedRows, baseStreams = BASELINE_STREAM
 
 export const DEPENDENCIES = [
   // Values sourced from DEPENDENCIES tab — OverIT Revenue Forecast 20260305 MASTER
+  { upstream: 'experience', downstream: 'experience_design_consulting', elasticity: 1.0  },
   { upstream: 'experience', downstream: 'training',      elasticity: 0.12 },
   { upstream: 'experience', downstream: 'retrofit',      elasticity: 0.05 },
   { upstream: 'training',   downstream: 'retrofit',      elasticity: 0.09 },
@@ -56,6 +58,7 @@ export const SCENARIO_MULTIPLIERS = {
 
 export const STREAM_COLORS = {
   experience:    '#22d3ee',
+  experience_design_consulting: '#06b6d4',
   training:      '#f472b6',
   retrofit:      '#818cf8',
   retail:        '#fb923c',
