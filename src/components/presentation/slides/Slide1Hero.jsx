@@ -117,7 +117,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         transition={{ delay: 0.65 }}
                         className="text-slate-400 text-base mb-10 leading-relaxed"
                     >
-                        Welcome to the future of IT infrastructure and software. We’ve *combined* the power of the Ubiquiti's newly released market disrupting subscription-free tech stack *with* our national Certification Training and AI-driven lead generation to create a truly synergistic business model. Here, no division operates in a silo. Every vertical feeds the others, driving seamless growth for us and delivering unmatched, frictionless value for our clients.
+                        Welcome to the future of IT infrastructure and software. We’ve <b>combined</b> the power of the Ubiquiti's newly released, market disrupting subscription-free tech stack <b>with</b> our first ever UniFi Experience Center for real-estate developers, professional property managers, and multi-location business operators. In parallel, we create a network of experts with our national Certification Training Center. Advanced AI-driven lead generation creates a truly synergistic business model. Here, no division operates in a silo. Every vertical feeds the others, driving seamless growth for us and delivering unmatched, frictionless value for our clients.
                     </motion.p>
 
                     {/* CTA */}
