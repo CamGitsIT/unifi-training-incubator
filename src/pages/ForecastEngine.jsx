@@ -192,8 +192,8 @@ export default function ForecastEngine() {
           </div>
         </div>
 
-        {/* Dependency Graph */}
-        <DependencyGraph streams={streams} dependencies={DEPENDENCIES} />
+        {/* Dependency Graph — hidden for now, restore when elasticity/multipliers are active */}
+        {/* <DependencyGraph streams={streams} dependencies={DEPENDENCIES} /> */}
 
         {/* Import Panel */}
         <ForecastImporter
