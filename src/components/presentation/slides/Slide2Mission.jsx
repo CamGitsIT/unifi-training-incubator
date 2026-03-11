@@ -40,18 +40,15 @@ export default function Slide2Mission({ onInteracted }) {
     , [drivers, scenario]);
 
     const total = useMemo(() =>
-        STREAMS.filter(s => !s.isPipelinePrimary)
-            .reduce((sum, s) => sum + (revenues[s.id]?.selectedYear ?? 0), 0)
+        STREAMS.reduce((sum, s) => sum + (revenues[s.id]?.selectedYear ?? 0), 0)
     , [revenues]);
 
     const totalY2 = useMemo(() =>
-        STREAMS.filter(s => !s.isPipelinePrimary)
-            .reduce((sum, s) => sum + (revenues[s.id]?.y2 ?? 0), 0)
+        STREAMS.reduce((sum, s) => sum + (revenues[s.id]?.y2 ?? 0), 0)
     , [revenues]);
 
     const totalY3 = useMemo(() =>
-        STREAMS.filter(s => !s.isPipelinePrimary)
-            .reduce((sum, s) => sum + (revenues[s.id]?.y3 ?? 0), 0)
+        STREAMS.reduce((sum, s) => sum + (revenues[s.id]?.y3 ?? 0), 0)
     , [revenues]);
 
     const chartData = [
@@ -61,7 +58,7 @@ export default function Slide2Mission({ onInteracted }) {
     ];
 
     const streamBreakdown = useMemo(() =>
-        STREAMS.filter(s => !s.isPipelinePrimary).map(s => ({
+        STREAMS.map(s => ({
             name: s.title.split(' ').slice(0, 2).join(' '),
             value: revenues[s.id]?.selectedYear ?? 0,
             color: s.color,
@@ -113,9 +110,7 @@ export default function Slide2Mission({ onInteracted }) {
                         {STREAMS.map((stream, i) => {
                             const driverVal = drivers[stream.id];
                             const rev = revenues[stream.id];
-                            const revenueDisplay = stream.isPipelinePrimary
-                                ? `${Math.round(driverVal * stream.pipelineOutputs.retrofitConversion)} leads/mo`
-                                : fmt(rev?.selectedYear);
+                            const revenueDisplay = fmt(rev?.selectedYear);
 
                             return (
                                 <motion.div key={stream.id}
@@ -162,25 +157,12 @@ export default function Slide2Mission({ onInteracted }) {
                                     <motion.div key={revenueDisplay}
                                         initial={{ opacity: 0.5 }} animate={{ opacity: 1 }}
                                         className="w-28 text-right flex-shrink-0 group/rev relative"
-                                        title={stream.isPipelinePrimary
-                                            ? `Pipeline driver: ${driverVal} visits × ${Math.round(stream.pipelineOutputs.retrofitConversion * 100)}% conversion = ${Math.round(driverVal * stream.pipelineOutputs.retrofitConversion)} retrofit leads/mo`
-                                            : (() => {
-                                                const g = stream.driver.defaultValue === driverVal
-                                                    ? (BASELINE_STREAMS_MAP[stream.id]?.monthly_growth ?? 0)
-                                                    : 0;
-                                                const unitRev = BASELINE_STREAMS_MAP[stream.id]?.unit_revenue ?? 0;
-                                                const unitsPerDriver = BASELINE_STREAMS_MAP[stream.id]?.units_per_driver ?? 1;
-                                                const factor12 = g === 0 ? 12 : ((Math.pow(1 + g, 12) - 1) / g);
-                                                return `${driverVal} ${stream.driver.unitLabel} × ${unitsPerDriver} unit(s) × $${unitRev.toLocaleString()}/mo × ${factor12.toFixed(1)} (growth factor) = ${fmt(rev?.selectedYear)} Y1`;
-                                            })()
-                                        }
+                                            title={`${driverVal} ${stream.driver.unitLabel} → ${fmt(rev?.selectedYear)} Y1`}
                                     >
                                         <div className="text-base font-bold tabular-nums" style={{ color: stream.color }}>
                                             {revenueDisplay}
                                         </div>
-                                        <div className="text-xs text-slate-600">
-                                            {stream.isPipelinePrimary ? 'pipeline' : 'Y1 rev'}
-                                        </div>
+                                        <div className="text-xs text-slate-600">Y1 rev</div>
                                     </motion.div>
 
                                     {/* Arrow to drawer */}
@@ -215,7 +197,7 @@ export default function Slide2Mission({ onInteracted }) {
                                 >
                                     {fmt(total)}
                                 </motion.div>
-                                <div className="text-slate-500 text-xs mt-0.5">/year (7 revenue streams)</div>
+                                <div className="text-slate-500 text-xs mt-0.5">/year (8 revenue streams)</div>
                             </div>
 
                             {/* Y1/Y2/Y3 strip */}
