@@ -117,7 +117,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         transition={{ delay: 0.65 }}
                         className="text-slate-400 text-base mb-10 leading-relaxed"
                     >
-                        We aren't just a gadget shop; we are the engine behind a technological shift. By combining the Ubiquiti UniFi stack with national Certified Training and AI-driven lead generation, we have created a business model where every division accelerates the others.
+                        We aren't just a gadget shop. We are the engine behind a technological shift. By combining the Ubiquiti UniFi stack with national Certified Training and AI-driven lead generation, we have created a business model where every division accelerates the others -- and everyone along the entire vlaue chain benefits.
                     </motion.p>
 
                     {/* CTA */}
