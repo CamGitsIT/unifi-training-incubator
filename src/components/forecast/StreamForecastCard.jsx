@@ -101,8 +101,8 @@ export default function StreamForecastCard({
             <input
                type="range"
                min={1}
-               max={Math.max(stream.plan_driver_m1 * 5, 20)}
-               step={stream.plan_driver_m1 >= 10 ? 1 : 0.5}
+               max={1000}
+               step={1}
                value={stream.plan_driver_m1}
                onChange={e => onUpdateDriver(parseFloat(e.target.value))}
                className="w-full"
