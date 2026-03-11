@@ -88,6 +88,25 @@ function computeRetailRevenue(accountsValue, scenario, yearView, sitesPerAccount
   return { y1: sr.y1, y2: sr.y2, y3: sr.y3, runRate, selectedYear };
 }
 
+// Special compute for Micro ISP:
+// buildings × unitsPerBuilding × $48.75/unit (75% of $65/unit, 25% kickback to HOA)
+function computeIspRevenue(buildingsValue, scenario, yearView, unitsPerBuilding = 20) {
+  const streams = BASELINE_STREAMS.map(s =>
+    s.stream_id === 'isp'
+      ? { ...s, plan_driver_m1: buildingsValue, units_per_driver: unitsPerBuilding }
+      : { ...s }
+  );
+  const result = runForecast(streams, scenario);
+  const sr = result.streams['isp'];
+  const runRate = sr.runRateM36;
+  const selectedYear =
+    yearView === 'y1'      ? sr.y1 :
+    yearView === 'y2'      ? sr.y2 :
+    yearView === 'y3'      ? sr.y3 :
+    yearView === 'runRate' ? runRate : sr.y1;
+  return { y1: sr.y1, y2: sr.y2, y3: sr.y3, runRate, selectedYear };
+}
+
 // Helper to map baseline stream data to STREAMS shape expected by Slide2/Drawer
 function baseline(id) {
   return BASELINE_STREAMS.find(s => s.stream_id === id);

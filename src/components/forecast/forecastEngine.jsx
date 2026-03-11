@@ -13,7 +13,7 @@ export const BASELINE_STREAMS = [
   { stream_id: 'monitoring',    stream_title: 'Professional Monitoring',                   driver_name: 'Active monitored sites',       driver_unit: 'sites/mo',       plan_driver_m1: 20,  units_per_driver: 1,  unit_revenue: 40,     monthly_growth: 0.06,  enabled: true },
   { stream_id: 'rentals',       stream_title: 'Tech Infrastructure Rentals',               driver_name: 'Productions served per month', driver_unit: 'productions/mo', plan_driver_m1: 5,   units_per_driver: 1,  unit_revenue: 800,    monthly_growth: 0.04,  enabled: true },
   { stream_id: 'refrigeration', stream_title: 'Refrigeration & Temp Monitoring',           driver_name: 'Locations monitored',          driver_unit: 'locations/mo',   plan_driver_m1: 15,  units_per_driver: 1,  unit_revenue: 83,     monthly_growth: 0.07,  enabled: true },
-  { stream_id: 'isp',           stream_title: 'Micro ISP',                                 driver_name: 'Buildings served',             driver_unit: 'buildings/mo',   plan_driver_m1: 3,   units_per_driver: 1,  unit_revenue: 100,    monthly_growth: 0.10,  enabled: true },
+  { stream_id: 'isp',           stream_title: 'Micro ISP',                                 driver_name: 'Buildings served',             driver_unit: 'buildings/mo',   plan_driver_m1: 3,   units_per_driver: 20, unit_revenue: 48.75,  monthly_growth: 0.10,  enabled: true },
 ];
 
 // Allows ForecastEngine page to override baseline at runtime via CSV/Excel import
