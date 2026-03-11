@@ -196,13 +196,13 @@ export default function Slide7Financials({ onInteracted }) {
                         <span className="text-green-400 text-sm font-medium">Interactive Financial Playground</span>
                     </div>
                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-3">
-                        Eight Lines. One Ecosystem.
+                        Nine Lines. One Ecosystem.
                         <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 text-2xl md:text-3xl mt-1">
                             Separate revenue lines sharing one engine compound each other's reach and revenue.
                         </span>
                     </h2>
                     <p className="text-slate-300 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
-                        Eight UniFi-powered revenue lines share one engine. Adjust volumes to see how training, services, and rentals together comfortably cover debt and compound profit.
+                        Nine UniFi-powered revenue lines share one engine. Adjust volumes to see how training, services, and rentals together comfortably cover debt and compound profit.
                     </p>
                 </motion.div>
 
@@ -258,7 +258,7 @@ export default function Slide7Financials({ onInteracted }) {
                 <div className="mb-6 bg-gradient-to-r from-cyan-950/30 to-slate-800/30 border border-cyan-900/50 rounded-xl px-5 py-3 flex flex-wrap items-center gap-3">
                     <Globe className="w-5 h-5 text-cyan-400 flex-shrink-0" />
                     <p className="text-sm text-slate-300 flex-1">
-                        <strong className="text-white">5 of 8 lines have zero geography.</strong>{' '}
+                        <strong className="text-white">5 of 9 lines have zero geography.</strong>{' '}
                         Training, monitoring, retail consulting, rentals, cold-chain sensing — these work from a laptop, a coffee shop, a beach.
                         The Experience Center is our showroom. The internet is our territory.
                     </p>
