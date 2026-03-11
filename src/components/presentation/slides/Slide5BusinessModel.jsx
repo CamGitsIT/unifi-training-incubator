@@ -46,7 +46,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
 
   useEffect(() => {
     if (timerDone) { if (onUnlockMessage) onUnlockMessage(null); return; }
-    if (onUnlockMessage) onUnlockMessage(`Unlocking in ${secondsLeft}s — or expand all 8 cards to unlock now`);
+    if (onUnlockMessage) onUnlockMessage(`Unlocking in ${secondsLeft}s — or expand all 9 cards to unlock now`);
   }, [secondsLeft, timerDone]);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
   const allExpanded = expanded.size === businessLines.length;
 
   useEffect(() => {
-    if (allExpanded && !timerDone) { setTimerDone(true); onInteracted(); if (onUnlockMessage) onUnlockMessage(null); }
+    if (allExpanded && !timerDone) { setTimerDone(true); onInteracted(); if (onUnlockMessage) onUnlockMessage(null); } // eslint-disable-line
   }, [allExpanded]);
 
   return (
@@ -80,7 +80,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
           <p className="text-xs font-semibold tracking-widest text-cyan-500 uppercase mb-4">Business Model</p>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
-            One Platform. Eight Revenue Paths.
+            One Platform. Nine Revenue Paths.
           </h2>
           <p className="text-lg text-slate-400 max-w-xl mx-auto">
             Independent revenue today. Expansion revenue tomorrow.
@@ -196,7 +196,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
 
         {allExpanded && (
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
-            ✓ All 8 lines explored — click Next to continue
+            ✓ All 9 lines explored — click Next to continue
           </motion.p>
         )}
       </div>
