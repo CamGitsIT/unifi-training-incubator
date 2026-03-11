@@ -199,7 +199,7 @@ export const STREAMS = [
     emoji: '🏪',
     what: 'We design and sell complete UniFi access/security rollout projects for multi-location retail brands. A licensed MSP handles installation — we earn a design and project management fee.',
     whoServes: 'Regional chains, franchise operators, QSR brands with 20–200+ locations.',
-    howWeEarn: 'We design each project and sell to an MSP. Avg 20 sites/account × $4,000/site = $80,000 gross project. Our fee: 12.5% = $500/site · $10,000/account.',
+    howWeEarn: 'We design each project and sell to an MSP. Avg 20 sites/account × $4,000/site = $80,000 gross project. Our fee: 12.5% = $500/site · $10,000/account. New account signings grow at ~7%/month as the sales pipeline matures.',
     driver: {
       name: baseline('retail').driver_name,
       unitLabel: baseline('retail').driver_unit,
@@ -215,7 +215,7 @@ export const STREAMS = [
       sitesPerAccount: 20,
       projectValuePerSite: 4000,
       feePercent: 12.5,
-      scenarioNote: 'Partner-executed MSP installs — no install labor bottleneck. Conservative/Stretch adjusts account volume.',
+      scenarioNote: 'New account signing rate grows 7%/month (compounding). Partner-executed MSP installs — no install labor bottleneck. Conservative/Stretch adjusts account volume.',
     },
     proof: [],
     computeRevenue: computeRetailRevenue,
