@@ -106,8 +106,8 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         transition={{ delay: 0.5 }}
                         className="text-lg md:text-xl font-semibold text-slate-300 mb-4 leading-snug"
                     >
-                        Teach. Simplify. Save.{' '}. Repeat.
-                        <strong className="text-white">Enjoy.</strong>
+                        Teach. Simplify. Save. {' '}
+                        <strong className="text-white">Enjoy.</strong>. Repeat.
                     </motion.p>
 
                     {/* Short paragraph */}
