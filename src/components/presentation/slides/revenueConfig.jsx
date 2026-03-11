@@ -124,7 +124,7 @@ export const STREAMS = [
     driver: {
       name: baseline('retrofit').driver_name,
       unitLabel: baseline('retrofit').driver_unit,
-      min: 1, max: 20, step: 1, defaultValue: baseline('retrofit').plan_driver_m1,
+      min: 1, max: 50, step: 1, defaultValue: baseline('retrofit').plan_driver_m1,
     },
     assumptions: {
       unitRevenue: baseline('retrofit').unit_revenue,
