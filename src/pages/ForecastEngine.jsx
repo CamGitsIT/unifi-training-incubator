@@ -170,7 +170,7 @@ export default function ForecastEngine() {
             <p className="text-slate-500 text-xs">Adjust drivers to see live impact on 36-month forecast</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
-            {streams.map((stream) => (
+            {streams.filter(s => s.stream_id !== 'experience_design_consulting').map((stream) => (
               <StreamForecastCard
                 key={stream.stream_id}
                 stream={stream}
@@ -178,7 +178,13 @@ export default function ForecastEngine() {
                 scenario={scenario}
                 isActive={activeStream === stream.stream_id}
                 onSelect={() => setActiveStream(activeStream === stream.stream_id ? null : stream.stream_id)}
-                onUpdateDriver={(val) => updateStream(stream.stream_id, 'plan_driver_m1', val)}
+                onUpdateDriver={(val) => {
+                  updateStream(stream.stream_id, 'plan_driver_m1', val);
+                  // Keep design consulting in lockstep with experience visits
+                  if (stream.stream_id === 'experience') {
+                    updateStream('experience_design_consulting', 'plan_driver_m1', val);
+                  }
+                }}
                 onUpdateGrowth={(val) => updateStream(stream.stream_id, 'monthly_growth', val)}
                 onToggle={() => updateStream(stream.stream_id, 'enabled', !stream.enabled)}
               />
