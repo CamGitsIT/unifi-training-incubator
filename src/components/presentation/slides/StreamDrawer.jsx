@@ -124,6 +124,11 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                                 ✓ {stream.proofBadge}
                             </span>
                         )}
+                        {momGrowth != null && (
+                            <span className="text-xs px-3 py-1 rounded-full font-semibold bg-emerald-950/60 text-emerald-400 border border-emerald-700/50">
+                                📈 {momGrowth}% MoM growth
+                            </span>
+                        )}
                         {stream.tags.map(t => (
                             <span key={t} className="text-xs px-3 py-1 rounded-full border border-slate-700 text-slate-400 bg-slate-800/60">
                                 {t}
