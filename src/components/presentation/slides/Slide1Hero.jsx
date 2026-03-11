@@ -4,7 +4,6 @@ import { Zap } from 'lucide-react';
 
 const BUTTON_UNLOCK_SECONDS = 10;
 
-// Animated floating particle
 function Particle({ style }) {
     return (
         <motion.div
@@ -49,22 +48,17 @@ export default function Slide1Hero({ onInteracted, onNext }) {
     return (
         <div className="relative min-h-screen flex items-center overflow-hidden bg-slate-950">
 
-            {/* === BACKGROUND PHOTO === */}
             <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                 style={{ backgroundImage: `url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/1234a93d7_experience-center_backdrop.png')` }}
             />
-            {/* Dark left-side gradient so text is legible */}
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/70 to-slate-950/10" />
-            {/* Bottom fade */}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-slate-950/30" />
 
-            {/* Animated particles */}
             {particles.map((p, i) => (
                 <Particle key={i} style={p} />
             ))}
 
-            {/* === CONTENT — left aligned === */}
             <div className="relative z-10 w-full max-w-6xl mx-auto px-8 md:px-16 py-24">
                 <motion.div
                     initial={{ opacity: 0, x: -24 }}
@@ -72,7 +66,6 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     transition={{ duration: 0.9 }}
                     className="max-w-xl"
                 >
-                    {/* Badge */}
                     <motion.div
                         initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -83,7 +76,6 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         <span className="text-cyan-400 text-xs font-medium tracking-wide">UniFi Experience Center and Training Hub</span>
                     </motion.div>
 
-                    {/* Headline */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -99,7 +91,6 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         </h1>
                     </motion.div>
 
-                    {/* Subheadline */}
                     <motion.p
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -110,16 +101,19 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         <strong className="text-white">Enjoy.</strong> Repeat.
                     </motion.p>
 
-                    {/* Short paragraph */}
                     <motion.p
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.65 }}
                         className="text-slate-400 text-base mb-10 leading-relaxed"
                     >
-                            Welcome to the future of IT infrastructure and software. We’ve <b>fused</b> Ubiquiti’s newly released, subscription-free, market-disrupting technology stack <b>with</b> the first-ever <b>UniFi Experience Center</b> - purpose-built for real estate developers, professional property managers, and multi-location operators who are tired of overpaying for fragmented systems. <br> At the same time, we’re building a national network of experts through our <b>Certification Training Center</b>, while advanced AI-driven lead generation helps keep the entire machine moving. <br> This is a deliberately connected ecosystem. The showroom supports the sales process. The training center builds authority and talent. The technology stack solves real operational problems. Each part feeds the others. The result is a scalable, efficient model for us - and a smoother, smarter, more frictionless experience for our clients.
+                        Welcome to the future of IT infrastructure and software. We've <strong>fused</strong> Ubiquiti's newly released, subscription-free, market-disrupting technology stack <strong>with</strong> the first-ever <strong>UniFi Experience Center</strong> — purpose-built for real estate developers, professional property managers, and multi-location operators who are tired of overpaying for fragmented systems.
+                        <br />
+                        At the same time, we're building a national network of experts through our <strong>Certification Training Center</strong>, while advanced AI-driven lead generation helps keep the entire machine moving.
+                        <br />
+                        This is a deliberately connected ecosystem. The showroom supports the sales process. The training center builds authority and talent. The technology stack solves real operational problems. Each part feeds the others. The result is a scalable, efficient model for us — and a smoother, smarter, more frictionless experience for our clients.
                     </motion.p>
-                    {/* CTA */}
+
                     {!acknowledged ? (
                         <div className="flex flex-col items-start gap-3">
                             <motion.button
@@ -165,7 +159,6 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                 </motion.div>
             </div>
 
-            {/* Scroll indicator */}
             <motion.div
                 className="absolute bottom-8 left-1/2 -translate-x-1/2"
                 animate={{ y: [0, 10, 0] }}
