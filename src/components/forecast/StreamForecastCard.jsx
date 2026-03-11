@@ -143,14 +143,10 @@ export default function StreamForecastCard({
               <span>Units per driver</span>
               <span className="text-slate-300">{stream.units_per_driver}×</span>
             </div>
-            <div className="flex justify-between">
-              <span>Scenario multiplier</span>
-              <span className="text-slate-300">{scenarioMult}×</span>
-            </div>
             <div className="flex justify-between border-t border-slate-700 pt-1">
               <span>M1 monthly revenue</span>
               <span className="text-slate-200 font-medium">
-                {formatCurrency(stream.plan_driver_m1 * stream.units_per_driver * stream.unit_revenue * scenarioMult)}
+                {formatCurrency(stream.plan_driver_m1 * stream.units_per_driver * stream.unit_revenue)}
               </span>
             </div>
           </div>

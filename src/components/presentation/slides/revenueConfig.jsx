@@ -119,8 +119,6 @@ export const STREAMS = [
     whoServes: 'HOAs, multi-family property managers, commercial landlords, and developers.',
     howWeEarn: `Fee on project value. Avg project: $9,000 · Our fee: ~12.5% = ~$1,125/project.`,
     liveProof: 'Proven in practice: the building we\'re acquiring is already running the retrofit.',
-    feedsInto: 'Professional Monitoring (every retrofitted property is a monitoring candidate via 0.14× elasticity).',
-    fedBy: 'Experience Center visits (0.5× elasticity) + Training graduates (0.3× elasticity).',
     proven: true,
     proofBadge: 'Live in Production',
     driver: {
@@ -132,7 +130,7 @@ export const STREAMS = [
       unitRevenue: baseline('retrofit').unit_revenue,
       avgProjectValue: 9000,
       feePercent: 12.5,
-      scenarioNote: 'Conservative/Stretch adjusts scenario multiplier. Partner-executed; no install labor bottleneck.',
+      scenarioNote: 'Partner-executed — no install labor bottleneck. Conservative/Stretch adjusts project volume.',
     },
     proof: [
       'Pilot client live — ~40 doors retrofitted',
@@ -153,8 +151,7 @@ export const STREAMS = [
     what: 'Multi-day Ubiquiti certification courses for IT professionals, MSPs, and technicians.',
     whoServes: 'IT professionals, career-changers, property managers, MSPs, and integrators.',
     howWeEarn: '$2,000 per seat — cohorts of 4–12 students. In-person or remote.',
-    feedsInto: 'Retrofit (0.3×), Retail (0.3×), Rentals (0.3×), Refrigeration (0.3×), Micro ISP (0.4×) via dependency elasticities.',
-    fedBy: 'Experience Center visits by IT professionals and MSPs (0.6× elasticity).',
+
     driver: {
       name: baseline('training').driver_name,
       unitLabel: baseline('training').driver_unit,
@@ -184,8 +181,7 @@ export const STREAMS = [
     what: 'Consulting and managed rollouts for retail brands replacing legacy access/security systems.',
     whoServes: 'Regional chains, franchise operators, QSR brands with 20–200+ locations.',
     howWeEarn: 'Retainer per brand account × 20 sites/account × $3,500/site/mo.',
-    fedBy: 'Training graduates via MSP relationships (0.3× elasticity).',
-    feedsInto: 'Professional Monitoring (0.14× elasticity on monitoring driver).',
+
     driver: {
       name: baseline('retail').driver_name,
       unitLabel: baseline('retail').driver_unit,
@@ -210,8 +206,7 @@ export const STREAMS = [
     emoji: '👁️',
     what: 'Remote monitoring of security cameras and access control systems with alerting, reporting, and escalation.',
     whoServes: 'Property managers, HOAs, retail chains, and any client whose infrastructure we touched.',
-    howWeEarn: '$100/site/month recurring. A single retail chain rollout of 40 locations = $4,000/mo MRR.',
-    fedBy: 'Every revenue stream that deploys infrastructure: Retrofit, Retail, Rentals, Refrigeration, ISP — all feed monitoring via 0.14× elasticity each.',
+    howWeEarn: '$40/site/month recurring. A single retail chain rollout of 40 locations = $1,600/mo MRR.',
     driver: {
       name: baseline('monitoring').driver_name,
       unitLabel: baseline('monitoring').driver_unit,
@@ -237,8 +232,7 @@ export const STREAMS = [
     what: 'Rent complete UniFi infrastructure kits to film crews, event producers, and pop-up operators.',
     whoServes: 'Film production companies, event coordinators, real estate stagers, pop-up retailers.',
     howWeEarn: '$800 avg per production rental (gear + remote setup support).',
-    fedBy: 'Training graduates expand partner/referral network (0.3× elasticity).',
-    feedsInto: 'Professional Monitoring (0.14× elasticity).',
+
     driver: {
       name: baseline('rentals').driver_name,
       unitLabel: baseline('rentals').driver_unit,
@@ -262,8 +256,7 @@ export const STREAMS = [
     emoji: '🌡️',
     what: 'IoT sensor monitoring for food-service and pharmaceutical refrigeration with automated FDA-compliant compliance reports.',
     howWeEarn: '$83/location/month — sensor hardware + cloud reporting service.',
-    fedBy: 'Training graduates (0.3× elasticity), Experience Center visits from food-service operators.',
-    feedsInto: 'Professional Monitoring (0.14× elasticity).',
+
     driver: {
       name: baseline('refrigeration').driver_name,
       unitLabel: baseline('refrigeration').driver_unit,
@@ -288,8 +281,7 @@ export const STREAMS = [
     what: 'Deploy and operate community-owned mesh WiFi networks for residential buildings and communities.',
     whoServes: 'Apartment buildings, mobile home communities, HOAs seeking internet as an amenity.',
     howWeEarn: '$100/building/month net margin after upstream wholesale cost.',
-    fedBy: 'Training graduates (0.4× elasticity — highest among downstream streams).',
-    feedsInto: 'Professional Monitoring (0.14× elasticity).',
+
     driver: {
       name: baseline('isp').driver_name,
       unitLabel: baseline('isp').driver_unit,
