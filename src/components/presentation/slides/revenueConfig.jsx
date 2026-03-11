@@ -324,18 +324,25 @@ export const STREAMS = [
     emoji: '📡',
     what: 'Deploy and operate community-owned mesh WiFi networks for residential buildings and communities.',
     whoServes: 'Apartment buildings, mobile home communities, HOAs seeking internet as an amenity.',
-    howWeEarn: '$100/building/month net margin after upstream wholesale cost.',
-
+    howWeEarn: '$65/unit/month connectivity fee. OverIT keeps 75% ($48.75/unit); 25% ($16.25/unit) is paid back to the HOA or property management. Example: 3 buildings × 20 units = 60 units → $2,925/mo to OverIT.',
     driver: {
       name: baseline('isp').driver_name,
       unitLabel: baseline('isp').driver_unit,
       min: 0, max: 50, step: 1, defaultValue: baseline('isp').plan_driver_m1,
     },
+    unitsDriver: {
+      name: 'Units per building',
+      unitLabel: 'units',
+      min: 1, max: 500, step: 1, defaultValue: 20,
+    },
     assumptions: {
-      unitRevenue: baseline('isp').unit_revenue,
-      scenarioNote: 'Conservative = single building pilot; Stretch = 5+ buildings with anchor subscriber density.',
+      unitRevenue: 48.75,
+      pricePerUnit: 65,
+      overiTakeRate: 0.75,
+      hoaKickback: 0.25,
+      scenarioNote: '$65/unit/month · 75% OverIT share = $48.75/unit net. Conservative = fewer buildings; Stretch = denser buildings or faster signings.',
     },
     proof: [],
-    computeRevenue: makeCompute('isp'),
+    computeRevenue: computeIspRevenue,
   },
 ];

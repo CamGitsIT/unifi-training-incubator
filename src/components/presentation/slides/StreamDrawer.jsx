@@ -16,12 +16,14 @@ const YEAR_LABELS = { y1: 'Y1', y2: 'Y2', y3: 'Y3', runRate: 'Run-rate' };
 export default function StreamDrawer({ stream, scenario, yearView, driverValue: externalDriverValue, onDriverChange, onClose }) {
     const [driverValue, setDriverValue] = useState(externalDriverValue ?? stream?.driver.defaultValue ?? 0);
     const [sitesPerAccount, setSitesPerAccount] = useState(stream?.sitesDriver?.defaultValue ?? 20);
+    const [unitsPerBuilding, setUnitsPerBuilding] = useState(stream?.unitsDriver?.defaultValue ?? 20);
     const [assumptionsOpen, setAssumptionsOpen] = useState(false);
 
     useEffect(() => {
         if (stream) {
             setDriverValue(externalDriverValue ?? stream.driver.defaultValue);
             setSitesPerAccount(stream.sitesDriver?.defaultValue ?? 20);
+            setUnitsPerBuilding(stream.unitsDriver?.defaultValue ?? 20);
             setAssumptionsOpen(false);
         }
     }, [stream?.id]);
@@ -33,7 +35,8 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
 
     if (!stream) return null;
 
-    const rev = stream.computeRevenue(driverValue, scenario, yearView, sitesPerAccount);
+    const secondParam = stream.sitesDriver ? sitesPerAccount : (stream.unitsDriver ? unitsPerBuilding : undefined);
+    const rev = stream.computeRevenue(driverValue, scenario, yearView, secondParam);
     const isPipeline = stream.isPipelinePrimary;
 
     const pipelineMetrics = isPipeline ? {
