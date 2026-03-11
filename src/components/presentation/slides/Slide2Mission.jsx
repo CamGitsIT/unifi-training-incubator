@@ -82,7 +82,7 @@ export default function Slide2Mission({ onInteracted }) {
                             <TrendingUp className="w-3.5 h-3.5 text-cyan-400" />
                             <span className="text-cyan-400 text-xs font-semibold tracking-wide">Revenue Streams Console</span>
                         </div>
-                        <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">Eight Lines. One Ecosystem.</h2>
+                        <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">Revenue lines, deliberately connected.</h2>
                         <p className="text-slate-400 text-sm mt-1">Drag the sliders to model each revenue driver. Click any row to explore details.</p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
