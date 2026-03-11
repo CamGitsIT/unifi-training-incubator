@@ -124,7 +124,7 @@ export const STREAMS = [
     driver: {
       name: baseline('retrofit').driver_name,
       unitLabel: baseline('retrofit').driver_unit,
-      min: 1, max: 50, step: 1, defaultValue: baseline('retrofit').plan_driver_m1,
+      min: 0, max: 50, step: 1, defaultValue: baseline('retrofit').plan_driver_m1,
     },
     assumptions: {
       unitRevenue: baseline('retrofit').unit_revenue,
@@ -155,7 +155,7 @@ export const STREAMS = [
     driver: {
       name: baseline('training').driver_name,
       unitLabel: baseline('training').driver_unit,
-      min: 1, max: 60, step: 1, defaultValue: baseline('training').plan_driver_m1,
+      min: 0, max: 60, step: 1, defaultValue: baseline('training').plan_driver_m1,
     },
     assumptions: {
       unitRevenue: baseline('training').unit_revenue,
@@ -185,7 +185,7 @@ export const STREAMS = [
     driver: {
       name: baseline('retail').driver_name,
       unitLabel: baseline('retail').driver_unit,
-      min: 1, max: 20, step: 1, defaultValue: baseline('retail').plan_driver_m1,
+      min: 0, max: 20, step: 1, defaultValue: baseline('retail').plan_driver_m1,
     },
     assumptions: {
       unitRevenue: baseline('retail').unit_revenue,
@@ -210,7 +210,7 @@ export const STREAMS = [
     driver: {
       name: baseline('monitoring').driver_name,
       unitLabel: baseline('monitoring').driver_unit,
-      min: 5, max: 150, step: 5, defaultValue: baseline('monitoring').plan_driver_m1,
+      min: 0, max: 150, step: 5, defaultValue: baseline('monitoring').plan_driver_m1,
     },
     assumptions: {
       unitRevenue: baseline('monitoring').unit_revenue,
@@ -236,7 +236,7 @@ export const STREAMS = [
     driver: {
       name: baseline('rentals').driver_name,
       unitLabel: baseline('rentals').driver_unit,
-      min: 1, max: 30, step: 1, defaultValue: baseline('rentals').plan_driver_m1,
+      min: 0, max: 30, step: 1, defaultValue: baseline('rentals').plan_driver_m1,
     },
     assumptions: {
       unitRevenue: baseline('rentals').unit_revenue,
@@ -260,7 +260,7 @@ export const STREAMS = [
     driver: {
       name: baseline('refrigeration').driver_name,
       unitLabel: baseline('refrigeration').driver_unit,
-      min: 5, max: 100, step: 5, defaultValue: baseline('refrigeration').plan_driver_m1,
+      min: 0, max: 100, step: 5, defaultValue: baseline('refrigeration').plan_driver_m1,
     },
     assumptions: {
       unitRevenue: baseline('refrigeration').unit_revenue,
@@ -285,7 +285,7 @@ export const STREAMS = [
     driver: {
       name: baseline('isp').driver_name,
       unitLabel: baseline('isp').driver_unit,
-      min: 1, max: 50, step: 1, defaultValue: baseline('isp').plan_driver_m1,
+      min: 0, max: 50, step: 1, defaultValue: baseline('isp').plan_driver_m1,
     },
     assumptions: {
       unitRevenue: baseline('isp').unit_revenue,
