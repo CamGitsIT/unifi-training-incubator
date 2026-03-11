@@ -141,146 +141,149 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                         <InfoRow label="How OverIT earns here" text={stream.howWeEarn} />
                     </div>
 
-                    {/* ── Driver Control ── */}
-                    {stream.id !== 'experience' && <div className="rounded-2xl border border-slate-700 overflow-hidden" style={{ background: '#1e293b' }}>
-                        <div className="flex items-center justify-between px-5 py-3 border-b border-slate-700/60">
-                            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                                Driver input (volume)
-                            </p>
-                            <span className="text-xs text-slate-500 italic">Modeled placeholder — will connect to Master Forecast</span>
-                        </div>
-                        <div className="px-5 py-4">
-                            <p className="text-white font-semibold text-sm mb-4">{stream.driver.name}</p>
+                    {/* ── Driver, Outputs, Assumptions, Proof — hidden for Experience Center ── */}
+                    {stream.id !== 'experience' && (<>
+                        {/* ── Driver Control ── */}
+                        <div className="rounded-2xl border border-slate-700 overflow-hidden" style={{ background: '#1e293b' }}>
+                            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-700/60">
+                                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                    Driver input (volume)
+                                </p>
+                                <span className="text-xs text-slate-500 italic">Modeled placeholder — will connect to Master Forecast</span>
+                            </div>
+                            <div className="px-5 py-4">
+                                <p className="text-white font-semibold text-sm mb-4">{stream.driver.name}</p>
 
-                            {/* Stepper + value display */}
-                            <div className="flex items-center gap-4 mb-4">
-                                <button
-                                    onClick={stepDown}
-                                    className="w-8 h-8 rounded-lg border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-400 transition-all"
-                                >
-                                    <Minus className="w-3.5 h-3.5" />
-                                </button>
-                                <div className="flex-1 text-center">
-                                    <motion.span
-                                        key={driverValue}
-                                        initial={{ opacity: 0.5, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className="text-3xl font-bold tabular-nums"
-                                        style={{ color: stream.color }}
+                                {/* Stepper + value display */}
+                                <div className="flex items-center gap-4 mb-4">
+                                    <button
+                                        onClick={stepDown}
+                                        className="w-8 h-8 rounded-lg border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-400 transition-all"
                                     >
-                                        {driverValue}
-                                    </motion.span>
-                                    <span className="text-slate-400 text-sm ml-2">{stream.driver.unitLabel}</span>
+                                        <Minus className="w-3.5 h-3.5" />
+                                    </button>
+                                    <div className="flex-1 text-center">
+                                        <motion.span
+                                            key={driverValue}
+                                            initial={{ opacity: 0.5, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            className="text-3xl font-bold tabular-nums"
+                                            style={{ color: stream.color }}
+                                        >
+                                            {driverValue}
+                                        </motion.span>
+                                        <span className="text-slate-400 text-sm ml-2">{stream.driver.unitLabel}</span>
+                                    </div>
+                                    <button
+                                        onClick={stepUp}
+                                        className="w-8 h-8 rounded-lg border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-400 transition-all"
+                                    >
+                                        <Plus className="w-3.5 h-3.5" />
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={stepUp}
-                                    className="w-8 h-8 rounded-lg border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-400 transition-all"
-                                >
-                                    <Plus className="w-3.5 h-3.5" />
-                                </button>
-                            </div>
 
-                            {/* Slider */}
-                            <Slider
-                                value={[driverValue]}
-                                onValueChange={v => handleDriverChange(v[0])}
-                                min={stream.driver.min}
-                                max={stream.driver.max}
-                                step={stream.driver.step}
-                                className="mb-1"
+                                {/* Slider */}
+                                <Slider
+                                    value={[driverValue]}
+                                    onValueChange={v => handleDriverChange(v[0])}
+                                    min={stream.driver.min}
+                                    max={stream.driver.max}
+                                    step={stream.driver.step}
+                                    className="mb-1"
+                                />
+                                <div className="flex justify-between text-xs text-slate-600 mt-1">
+                                    <span>{stream.driver.min} {stream.driver.unitLabel}</span>
+                                    <span>{stream.driver.max} {stream.driver.unitLabel}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* ── Outputs Panel ── */}
+                        {isPipeline ? (
+                            <OutputsPanelPipeline
+                                pipelineMetrics={pipelineMetrics}
+                                eventRev={rev.selectedYear}
+                                yearView={yearView}
+                                color={stream.color}
                             />
-                            <div className="flex justify-between text-xs text-slate-600 mt-1">
-                                <span>{stream.driver.min} {stream.driver.unitLabel}</span>
-                                <span>{stream.driver.max} {stream.driver.unitLabel}</span>
-                            </div>
+                        ) : (
+                            <OutputsPanel rev={rev} yearView={yearView} color={stream.color} />
+                        )}
+
+                        {/* ── Assumptions Accordion ── */}
+                        <div className="rounded-2xl border border-slate-700 overflow-hidden">
+                            <button
+                                onClick={() => setAssumptionsOpen(o => !o)}
+                                className="w-full flex items-center justify-between px-5 py-4 bg-slate-800/40 hover:bg-slate-800/70 transition-colors"
+                            >
+                                <span className="text-sm font-semibold text-slate-300">Assumptions, unit economics & multipliers</span>
+                                {assumptionsOpen
+                                    ? <ChevronUp className="w-4 h-4 text-slate-400" />
+                                    : <ChevronDown className="w-4 h-4 text-slate-400" />
+                                }
+                            </button>
+                            <AnimatePresence>
+                                {assumptionsOpen && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="px-5 py-4 space-y-2 bg-slate-900/60 border-t border-slate-700">
+                                            <p className="text-xs font-semibold text-slate-400 mb-3">Unit economics (per stream)</p>
+                                            <ARow label="Unit revenue (modeled)" value={`$${stream.assumptions.unitRevenue}/unit`} />
+                                            {stream.assumptions.feePercent != null &&
+                                                <ARow label="Fee %" value={`${stream.assumptions.feePercent}%`} />}
+                                            {stream.assumptions.avgProjectValue != null &&
+                                                <ARow label="Avg project value" value={`$${stream.assumptions.avgProjectValue.toLocaleString()}`} />}
+                                            {stream.assumptions.avgAnnualPerAccount != null &&
+                                                <ARow label="Avg annual / account" value={`$${stream.assumptions.avgAnnualPerAccount.toLocaleString()}`} />}
+                                            {stream.assumptions.avgCohortSize != null &&
+                                                <ARow label="Avg cohort size" value={`${stream.assumptions.avgCohortSize} students`} />}
+
+                                            <div className="border-t border-slate-800 pt-3 mt-3">
+                                                <p className="text-xs font-semibold text-slate-400 mb-2">Scenario multipliers</p>
+                                                {Object.entries(SCENARIO_MULTIPLIERS).map(([k, v]) => (
+                                                    <ARow key={k} label={v.label} value={`${v.revenue}×`} color={v.color} />
+                                                ))}
+                                            </div>
+
+                                            <div className="border-t border-slate-800 pt-3 mt-3">
+                                                <p className="text-xs font-semibold text-slate-400 mb-2">Year-ramp factors</p>
+                                                {Object.entries(YEAR_RAMP).map(([k, v]) => (
+                                                    <ARow key={k} label={YEAR_LABELS[k] || k} value={`${(v * 100).toFixed(0)}%`} />
+                                                ))}
+                                            </div>
+
+                                            <div className="border-t border-slate-800 pt-3 mt-3">
+                                                <p className="text-xs text-slate-500 italic">{stream.assumptions.scenarioNote}</p>
+                                                <p className="text-xs text-amber-500/70 italic mt-2">
+                                                    ⚠ All values shown here are modeled placeholders and will be replaced by live Master Forecast data.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
-                    </div>
 
-                    {/* ── Outputs Panel ── */}
-                    {isPipeline ? (
-                        <OutputsPanelPipeline
-                            pipelineMetrics={pipelineMetrics}
-                            eventRev={rev.selectedYear}
-                            yearView={yearView}
-                            color={stream.color}
-                        />
-                    ) : (
-                        <OutputsPanel rev={rev} yearView={yearView} color={stream.color} />
-                    )}
-
-                    {/* ── Assumptions Accordion ── */}
-                    <div className="rounded-2xl border border-slate-700 overflow-hidden">
-                        <button
-                            onClick={() => setAssumptionsOpen(o => !o)}
-                            className="w-full flex items-center justify-between px-5 py-4 bg-slate-800/40 hover:bg-slate-800/70 transition-colors"
-                        >
-                            <span className="text-sm font-semibold text-slate-300">Assumptions, unit economics & multipliers</span>
-                            {assumptionsOpen
-                                ? <ChevronUp className="w-4 h-4 text-slate-400" />
-                                : <ChevronDown className="w-4 h-4 text-slate-400" />
-                            }
-                        </button>
-                        <AnimatePresence>
-                            {assumptionsOpen && (
-                                <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="overflow-hidden"
-                                >
-                                    <div className="px-5 py-4 space-y-2 bg-slate-900/60 border-t border-slate-700">
-                                        <p className="text-xs font-semibold text-slate-400 mb-3">Unit economics (per stream)</p>
-                                        <ARow label="Unit revenue (modeled)" value={`$${stream.assumptions.unitRevenue}/unit`} />
-                                        {stream.assumptions.feePercent != null &&
-                                            <ARow label="Fee %" value={`${stream.assumptions.feePercent}%`} />}
-                                        {stream.assumptions.avgProjectValue != null &&
-                                            <ARow label="Avg project value" value={`$${stream.assumptions.avgProjectValue.toLocaleString()}`} />}
-                                        {stream.assumptions.avgAnnualPerAccount != null &&
-                                            <ARow label="Avg annual / account" value={`$${stream.assumptions.avgAnnualPerAccount.toLocaleString()}`} />}
-                                        {stream.assumptions.avgCohortSize != null &&
-                                            <ARow label="Avg cohort size" value={`${stream.assumptions.avgCohortSize} students`} />}
-
-                                        <div className="border-t border-slate-800 pt-3 mt-3">
-                                            <p className="text-xs font-semibold text-slate-400 mb-2">Scenario multipliers</p>
-                                            {Object.entries(SCENARIO_MULTIPLIERS).map(([k, v]) => (
-                                                <ARow key={k} label={v.label} value={`${v.revenue}×`} color={v.color} />
-                                            ))}
+                        {/* ── Proof Points ── */}
+                        {stream.proof?.length > 0 && (
+                            <div>
+                                <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Proof and traction</p>
+                                <div className="space-y-2">
+                                    {stream.proof.map((p, i) => (
+                                        <div key={i} className="flex items-start gap-3 text-sm text-slate-300">
+                                            <span className="text-green-400 flex-shrink-0 mt-0.5">✓</span>
+                                            <span>{p}</span>
                                         </div>
-
-                                        <div className="border-t border-slate-800 pt-3 mt-3">
-                                            <p className="text-xs font-semibold text-slate-400 mb-2">Year-ramp factors</p>
-                                            {Object.entries(YEAR_RAMP).map(([k, v]) => (
-                                                <ARow key={k} label={YEAR_LABELS[k] || k} value={`${(v * 100).toFixed(0)}%`} />
-                                            ))}
-                                        </div>
-
-                                        <div className="border-t border-slate-800 pt-3 mt-3">
-                                            <p className="text-xs text-slate-500 italic">{stream.assumptions.scenarioNote}</p>
-                                            <p className="text-xs text-amber-500/70 italic mt-2">
-                                                ⚠ All values shown here are modeled placeholders and will be replaced by live Master Forecast data.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-
-                    {/* ── Proof Points ── */}
-                    {stream.proof?.length > 0 && (
-                        <div>
-                            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Proof and traction</p>
-                            <div className="space-y-2">
-                                {stream.proof.map((p, i) => (
-                                    <div key={i} className="flex items-start gap-3 text-sm text-slate-300">
-                                        <span className="text-green-400 flex-shrink-0 mt-0.5">✓</span>
-                                        <span>{p}</span>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </>)}
 
                     {/* Close button at bottom */}
                     <button
