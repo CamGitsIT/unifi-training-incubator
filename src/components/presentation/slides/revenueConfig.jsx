@@ -197,22 +197,28 @@ export const STREAMS = [
     tags: ['Project', 'Location-free', 'Recurring'],
     color: STREAM_COLORS.retail,
     emoji: '🏪',
-    what: 'Consulting and managed rollouts for retail brands replacing legacy access/security systems.',
+    what: 'We design and sell complete UniFi access/security rollout projects for multi-location retail brands. A licensed MSP handles installation — we earn a design and project management fee.',
     whoServes: 'Regional chains, franchise operators, QSR brands with 20–200+ locations.',
-    howWeEarn: 'Retainer per brand account × 20 sites/account × $3,500/site/mo.',
-
+    howWeEarn: 'We design each project and sell to an MSP. Avg 20 sites/account × $4,000/site = $80,000 gross project. Our fee: 12.5% = $500/site · $10,000/account.',
     driver: {
       name: baseline('retail').driver_name,
       unitLabel: baseline('retail').driver_unit,
       min: 0, max: 20, step: 1, defaultValue: baseline('retail').plan_driver_m1,
     },
+    sitesDriver: {
+      name: 'Sites per account',
+      unitLabel: 'sites',
+      min: 1, max: 200, step: 1, defaultValue: 20,
+    },
     assumptions: {
-      unitRevenue: baseline('retail').unit_revenue,
-      avgAnnualPerAccount: baseline('retail').unit_revenue * 20 * 12,
-      scenarioNote: 'Stretch assumes 2 national accounts adding significant project volume.',
+      unitRevenue: 500,
+      sitesPerAccount: 20,
+      projectValuePerSite: 4000,
+      feePercent: 12.5,
+      scenarioNote: 'Partner-executed MSP installs — no install labor bottleneck. Conservative/Stretch adjusts account volume.',
     },
     proof: [],
-    computeRevenue: makeCompute('retail'),
+    computeRevenue: computeRetailRevenue,
   },
 
   // ── 5. Professional Monitoring ────────────────────────────────
