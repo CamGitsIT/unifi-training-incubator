@@ -154,7 +154,7 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                                 <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
                                     Driver input (volume)
                                 </p>
-                                <span className="text-xs text-slate-500 italic">Modeled placeholder — will connect to Master Forecast</span>
+                                <span className="text-xs text-slate-500 italic">Adjust sliders to model different scenarios</span>
                             </div>
                             <div className="px-5 py-4">
                                 <p className="text-white font-semibold text-sm mb-4">{stream.driver.name}</p>
@@ -200,6 +200,50 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                                     <span>{stream.driver.min} {stream.driver.unitLabel}</span>
                                     <span>{stream.driver.max} {stream.driver.unitLabel}</span>
                                 </div>
+
+                                {stream.unitsDriver && (
+                                    <div className="mt-4 pt-4 border-t border-slate-700/60">
+                                        <p className="text-white font-semibold text-sm mb-3">{stream.unitsDriver.name}</p>
+                                        <div className="flex items-center gap-4 mb-3">
+                                            <button
+                                                onClick={() => setUnitsPerBuilding(u => Math.max(stream.unitsDriver.min, u - stream.unitsDriver.step))}
+                                                className="w-8 h-8 rounded-lg border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-400 transition-all"
+                                            >
+                                                <Minus className="w-3.5 h-3.5" />
+                                            </button>
+                                            <div className="flex-1 text-center">
+                                                <motion.span
+                                                    key={unitsPerBuilding}
+                                                    initial={{ opacity: 0.5, scale: 0.95 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    className="text-3xl font-bold tabular-nums"
+                                                    style={{ color: stream.color }}
+                                                >
+                                                    {unitsPerBuilding}
+                                                </motion.span>
+                                                <span className="text-slate-400 text-sm ml-2">{stream.unitsDriver.unitLabel}</span>
+                                            </div>
+                                            <button
+                                                onClick={() => setUnitsPerBuilding(u => Math.min(stream.unitsDriver.max, u + stream.unitsDriver.step))}
+                                                className="w-8 h-8 rounded-lg border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-400 transition-all"
+                                            >
+                                                <Plus className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
+                                        <Slider
+                                            value={[unitsPerBuilding]}
+                                            onValueChange={v => setUnitsPerBuilding(v[0])}
+                                            min={stream.unitsDriver.min}
+                                            max={stream.unitsDriver.max}
+                                            step={stream.unitsDriver.step}
+                                            className="mb-1"
+                                        />
+                                        <div className="flex justify-between text-xs text-slate-600 mt-1">
+                                            <span>{stream.unitsDriver.min} {stream.unitsDriver.unitLabel}</span>
+                                            <span>{stream.unitsDriver.max} {stream.unitsDriver.unitLabel}</span>
+                                        </div>
+                                    </div>
+                                )}
 
                                 {stream.sitesDriver && (
                                     <div className="mt-4 pt-4 border-t border-slate-700/60">
@@ -305,9 +349,7 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
 
                                             <div className="border-t border-slate-800 pt-3 mt-3">
                                                 <p className="text-xs text-slate-500 italic">{stream.assumptions.scenarioNote}</p>
-                                                <p className="text-xs text-amber-500/70 italic mt-2">
-                                                    ⚠ All values shown here are modeled placeholders and will be replaced by live Master Forecast data.
-                                                </p>
+                                                
                                             </div>
                                         </div>
                                     </motion.div>
@@ -364,7 +406,7 @@ function OutputsPanel({ rev, yearView, color }) {
             <div className="px-5 py-5">
                 {/* Big selected year number */}
                 <p className="text-xs text-slate-500 mb-1">
-                    {YEAR_LABELS[yearView]} revenue <span className="italic">(modeled placeholder)</span>
+                    {YEAR_LABELS[yearView]} revenue
                 </p>
                 <motion.div
                     key={rev.selectedYear}
