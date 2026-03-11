@@ -77,66 +77,34 @@ function baseline(id) {
 export const STREAMS = [
 
   // ── 1. Experience Center ─────────────────────────────────────
+  // Combined: hardware dropship profit ($300/visit) + design consulting ($300/visit) = $600/visit
   {
     id: 'experience',
     title: 'Experience Center',
-    subtitle: 'Prospects get hands-on with UniFi solutions.',
-    tags: ['Pipeline Driver', 'Anchor'],
+    subtitle: '$600/visit · dropship profit + 2hr design consult',
+    tags: ['Direct Revenue', 'Anchor'],
     color: STREAM_COLORS.experience,
     emoji: '🏢',
-    what: 'A live UniFi showcase inside a real building. Every visit can drive design work, product sales, and education.',
+    what: 'A live UniFi showcase inside a real building. Every qualified visit generates hardware dropship profit AND a 2-hour design consultation.',
     whoServes: 'Developers, property managers, HOA boards, retail operators, MSPs, and future students.',
-    howWeEarn: 'Revenue comes from drop-ship sales, project design, and training. Its biggest value is the downstream pipeline it creates for new UniFi deployments and retrofits.',
-    liveProof: 'Sager Lofts is already retrofitted with UniFi keyless entry and biometrics, which makes the property itself a working proof point. The Experience Center builds on that by helping prospects see how the pieces fit together in a real deployment.',
-    isPipelinePrimary: true,
-    pipelineOutputs: {
-      retrofitConversion: 0.12,
-      trainingConversion: 0.08,
-    },
+    howWeEarn: '$300 hardware dropship profit + $300 design consulting (2hr × $150/hr) = $600 per qualified visit.',
+    liveProof: 'Sager Lofts is already retrofitted with UniFi keyless entry and biometrics — the property itself is the proof point.',
+    isPipelinePrimary: false,
     driver: {
       name: baseline('experience').driver_name,
       unitLabel: baseline('experience').driver_unit,
       min: 5, max: 200, step: 5, defaultValue: baseline('experience').plan_driver_m1,
     },
     assumptions: {
-      unitRevenue: 300,
-      scenarioNote: 'Revenue is secondary to pipeline generation. Conservative/Stretch adjusts event frequency.',
+      unitRevenue: 600,
+      scenarioNote: '$300 dropship + $300 consult per visit. Conservative/Stretch adjusts visit volume.',
     },
     proof: [
       'Building already retrofitted — instant live demo environment',
-      'Demand gen for 7 downstream revenue lines',
+      '$300 dropship profit per visitor (10% of avg $3,000 cart)',
+      '$300 design consulting per visitor (2hr × $150/hr)',
     ],
-    computeRevenue: makeCompute('experience'),
-  },
-
-  // ── 1b. Experience Center — Design Consulting ────────────────
-  {
-    id: 'experience_design_consulting',
-    title: 'Experience Center — Design Consulting',
-    subtitle: '2-hour design session billed per qualified visit',
-    tags: ['Direct Revenue', 'Anchor'],
-    color: STREAM_COLORS.experience_design_consulting,
-    emoji: '✏️',
-    what: 'Every qualified Experience Center visitor receives a 2-hour design consultation scoped to their property or project.',
-    whoServes: 'Same audience as the Experience Center: developers, property managers, HOA boards, and retail operators.',
-    howWeEarn: '2 hours × $150/hr = $300 billed per visit. Separate line item from hardware drop-ship profit.',
-    liveProof: 'Design consulting is baked into every Experience Center visit — not an add-on. Revenue is predictable.',
-    fedBy: 'Driven 1:1 by Experience Center visits (elasticity 1.0).',
-    isPipelinePrimary: false,
-    driver: {
-      name: baseline('experience_design_consulting').driver_name,
-      unitLabel: baseline('experience_design_consulting').driver_unit,
-      min: 5, max: 200, step: 5, defaultValue: baseline('experience_design_consulting').plan_driver_m1,
-    },
-    assumptions: {
-      unitRevenue: baseline('experience_design_consulting').unit_revenue,
-      scenarioNote: 'Directly tied to visit volume. Conservative/Stretch follow the Experience Center trajectory.',
-    },
-    proof: [
-      '2hr consultation is a standard industry practice at $150/hr',
-      'Tied 1:1 to every Experience Center visit',
-    ],
-    computeRevenue: makeCompute('experience_design_consulting'),
+    computeRevenue: computeExperienceRevenue,
   },
 
   // ── 2. Keyless Property Access Retrofit ──────────────────────
