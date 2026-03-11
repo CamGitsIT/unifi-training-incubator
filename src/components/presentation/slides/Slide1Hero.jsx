@@ -117,7 +117,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         transition={{ delay: 0.65 }}
                         className="text-slate-400 text-base mb-10 leading-relaxed"
                     >
-                        We aren't just a gadget shop. We are the engine behind a technological shift. By combining the Ubiquiti UniFi stack with national Certified Training and AI-driven lead generation, we have created a business model where every division accelerates the others -- and everyone along the entire vlaue chain benefits.
+                        We are the engine behind a technological shift. By fusing the Ubiquiti UniFi stack with national Certification Training and AI-driven lead generation, we’ve built a self-sustaining business model. Every division naturally accelerates the others—creating a compounding ecosystem where everyone across the value chain wins.
                     </motion.p>
 
                     {/* CTA */}
@@ -149,7 +149,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                             ) : (
                                 <p className="text-slate-500 text-xs flex items-center gap-1.5">
                                     <span className="w-3.5 h-3.5 rounded-full border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-[9px]">↺</span>
-                                    Be part of a better way to own your IT.
+                                    Be part of a better way to own your IT infrastructure and data.
                                 </p>
                             )}
                         </div>
