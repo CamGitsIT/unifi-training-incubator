@@ -107,7 +107,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         className="text-lg md:text-xl font-semibold text-slate-300 mb-4 leading-snug"
                     >
                         Teach. Simplify. Save. {' '}
-                        <strong className="text-white">Enjoy.</strong>. Repeat.
+                        <strong className="text-white">Enjoy.</strong> Repeat.
                     </motion.p>
 
                     {/* Short paragraph */}
