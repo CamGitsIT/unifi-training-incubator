@@ -335,6 +335,12 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                                                 <ARow label="Sites per account (default)" value={`${stream.assumptions.sitesPerAccount} sites`} />}
                                             {stream.assumptions.projectValuePerSite != null &&
                                                 <ARow label="Project value / site" value={`$${stream.assumptions.projectValuePerSite.toLocaleString()}`} />}
+                                            {stream.assumptions.pricePerUnit != null &&
+                                                <ARow label="Price per unit/mo" value={`$${stream.assumptions.pricePerUnit}`} />}
+                                            {stream.assumptions.overiTakeRate != null &&
+                                                <ARow label="OverIT share" value={`${stream.assumptions.overiTakeRate * 100}%`} />}
+                                            {stream.assumptions.hoaKickback != null &&
+                                                <ARow label="HOA/mgmt kickback" value={`${stream.assumptions.hoaKickback * 100}%`} />}
                                             {stream.assumptions.avgAnnualPerAccount != null &&
                                                 <ARow label="Avg annual / account" value={`$${stream.assumptions.avgAnnualPerAccount.toLocaleString()}`} />}
                                             {stream.assumptions.avgCohortSize != null &&
