@@ -36,6 +36,9 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
 
     if (!stream) return null;
 
+    const baselineStream = BASELINE_STREAMS.find(s => s.stream_id === stream.id);
+    const momGrowth = baselineStream ? (baselineStream.monthly_growth * 100).toFixed(1) : null;
+
     const secondParam = stream.sitesDriver ? sitesPerAccount : (stream.unitsDriver ? unitsPerBuilding : undefined);
     const rev = stream.computeRevenue(driverValue, scenario, yearView, secondParam);
     const isPipeline = stream.isPipelinePrimary;
