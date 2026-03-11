@@ -107,11 +107,11 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         transition={{ delay: 0.65 }}
                         className="text-slate-400 text-base mb-10 leading-relaxed"
                     >
-                        Welcome to the future of IT infrastructure and software. We've <strong>fused</strong> Ubiquiti's newly released, subscription-free, market-disrupting technology stack <strong>with</strong> the first-ever <strong>UniFi Experience Center</strong> — purpose-built for real estate developers, professional property managers, and multi-location operators who are tired of overpaying for fragmented systems.
+                        We've combined Ubiquiti's new subscription-free technology stack with the first <strong>UniFi Experience Center</strong> for developers, property managers, and multi-location operators who are done with fragmented systems and recurring software costs.
                         <br />
-                        At the same time, we're building a national network of experts through our <strong>Certification Training Center</strong>, while advanced AI-driven lead generation helps keep the entire machine moving.
+                        Alongside it, our <strong>Certification Training Center</strong> is building UniFi talent at scale, while AI-driven lead generation keeps the pipeline active.
                         <br />
-                        This is a deliberately connected ecosystem. The showroom supports the sales process. The training center builds authority and talent. The technology stack solves real operational problems. Each part feeds the others. The result is a scalable, efficient model for us — and a smoother, smarter, more frictionless experience for our clients.
+                        The model is simple: the showroom drives demand, the training center builds trust and talent, and the technology solves real problems. Each part supports the others.
                     </motion.p>
 
                     {!acknowledged ? (
