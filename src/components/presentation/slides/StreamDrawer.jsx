@@ -142,7 +142,7 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                     </div>
 
                     {/* ── Driver Control ── */}
-                    <div className="rounded-2xl border border-slate-700 overflow-hidden" style={{ background: '#1e293b' }}>
+                    {stream.id !== 'experience' && <div className="rounded-2xl border border-slate-700 overflow-hidden" style={{ background: '#1e293b' }}>
                         <div className="flex items-center justify-between px-5 py-3 border-b border-slate-700/60">
                             <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
                                 Driver input (volume)
