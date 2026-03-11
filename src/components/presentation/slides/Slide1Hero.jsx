@@ -149,7 +149,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                             ) : (
                                 <p className="text-slate-500 text-xs flex items-center gap-1.5">
                                     <span className="w-3.5 h-3.5 rounded-full border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-[9px]">↺</span>
-                                    Be part of a better way to own your IT infrastructure and data.
+                                    Step into a smarter way to own your IT infrastructure *and* your data.
                                 </p>
                             )}
                         </div>
