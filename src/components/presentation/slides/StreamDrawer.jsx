@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, ChevronUp, Minus, Plus } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import { SCENARIO_MULTIPLIERS } from './revenueConfig';
+import { BASELINE_STREAMS } from '@/components/forecast/forecastEngine';
 
 const fmt = (v) => {
     if (v == null || isNaN(v)) return '—';
