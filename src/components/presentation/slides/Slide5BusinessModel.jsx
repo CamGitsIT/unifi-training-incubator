@@ -6,15 +6,14 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 import { BASELINE_STREAMS, STREAM_COLORS } from '@/components/forecast/forecastEngine';
 
 const STREAM_DISPLAY = {
-  experience:    { icon: Camera,       color: 'cyan',   title: 'Experience Center',            subtitle: 'Live showroom · zero inventory',    tag: 'Direct Revenue',     description: 'A live demo environment that drives hardware sales and qualifies prospects for every other service line — without holding inventory.', metrics: ['High-confidence sales environment', 'No inventory risk', 'Qualifies buyers for downstream services'] },
-  experience_design_consulting: { icon: Camera, color: 'cyan', title: 'Experience Center — Design', subtitle: '2hr consult billed per visit · $300', tag: 'Direct Revenue', description: 'Every qualified visitor receives a 2-hour design consultation at $150/hr — a separate, predictable revenue line tied 1:1 to visit volume.', metrics: ['$300/visit (2hr × $150)', 'Tied 1:1 to visit volume', 'Predictable, immediate revenue'] },
-  retrofit:      { icon: Building2,    color: 'purple', title: 'Access Control Retrofit',       subtitle: 'Replacing legacy intercom systems', tag: 'Project Revenue',    description: 'Replace aging legacy access systems with modern hardware — executed through certified installer partners at a scalable margin.', metrics: ['Avg. deal: $9,000 · Fee: ~12.5%', 'Partner-executed — no labor bottleneck', 'Natural lead-in to monitoring'] },
-  training:      { icon: GraduationCap,color: 'green',  title: 'Certification Training',        subtitle: 'Authorized Ubiquiti education',     tag: 'Direct Revenue',     description: 'Nationally recognized certifications delivered in-person or remotely. Produces the skilled workforce that supports all downstream lines.', metrics: ['$2,000/seat · cohorts of 4–12', 'In-person or remote', 'Feeds 5 downstream revenue paths'] },
-  retail:        { icon: Store,        color: 'amber',  title: 'Multi-Location Retail',         subtitle: 'Network rollouts for retail chains', tag: 'Retainer Revenue',   description: 'Standardized network deployments for retail brands and franchise groups, with recurring support retainers per location.', metrics: ['Per-brand retainer × multiple sites', '2 accounts = meaningful volume', 'Each rollout feeds monitoring'] },
-  monitoring:    { icon: Shield,       color: 'red',    title: 'Professional Monitoring',       subtitle: 'Recurring security monitoring MRR', tag: 'MRR',                description: 'Modern alarm and security monitoring replacing legacy vendors — sticky recurring revenue at lower cost for clients.', metrics: ['$100/site/month MRR', 'Fed by retrofit, retail, and ISP lines', 'Compounds as infrastructure grows'] },
-  rentals:       { icon: Camera,       color: 'indigo', title: 'Infrastructure Rentals',        subtitle: 'Film & production deployments',     tag: 'Asset Revenue',      description: 'Reusable gear packages rented to film productions and live events — high-margin income from existing inventory with no new CapEx.', metrics: ['$800 avg per production', 'No per-project capital outlay', 'Builds ATL industry relationships'] },
-  refrigeration: { icon: Thermometer,  color: 'orange', title: 'Compliance Monitoring',         subtitle: 'Refrigeration & temp logging',      tag: 'MRR',                description: 'Automated sensor monitoring for commercial refrigeration — eliminating manual logs and reducing spoilage risk across food and pharma clients.', metrics: ['$83/location/month recurring', 'Replaces manual compliance labor', 'Scales across chains'] },
-  isp:           { icon: Wifi,         color: 'teal',   title: 'Micro ISP',                     subtitle: 'Community broadband for HOAs',      tag: 'Infrastructure MRR', description: 'HOA-owned broadband that undercuts monopoly pricing — generating recurring net revenue on infrastructure we deploy and manage.', metrics: ['$100/building/month net', 'Underserved by incumbents', 'Training graduates drive rollout'] },
+  experience:    { icon: Camera,        color: 'cyan',   title: 'Experience Center',       subtitle: 'Live showroom · no inventory',          tag: 'Direct',      description: 'A live UniFi demo environment that drives hardware sales and qualifies buyers for the rest of the business—without tying up capital in inventory.', metrics: ['Stronger sales environment', 'No inventory risk', 'Supports every downstream line'] },
+  training:      { icon: GraduationCap, color: 'green',  title: 'Certification Training',  subtitle: 'Official UniFi training',               tag: 'Direct',      description: 'Authorized Ubiquiti training delivered in person or remotely. It generates revenue now while building the talent pipeline that strengthens the rest of the model.', metrics: ['$2,000 per seat · cohorts of 4–12', 'In person or remote', 'Supports multiple downstream lines'] },
+  retrofit:      { icon: Building2,     color: 'purple', title: 'Access Control Retrofit', subtitle: 'Modern entry upgrades',                 tag: 'Project',     description: 'Replace aging intercom and access systems with UniFi hardware, using certified installer partners to scale without creating a labor bottleneck.', metrics: ['Avg. deal: $9,000 · Fee: ~12.5%', 'Partner-executed', 'Often leads into monitoring'] },
+  retail:        { icon: Store,         color: 'amber',  title: 'Multi-Location Retail',   subtitle: 'Standardized retail rollouts',          tag: 'Recurring',   description: 'Network deployments for retail chains and franchise groups, paired with recurring support across multiple locations.', metrics: ['Per-brand retainer across multiple sites', 'Two accounts can create meaningful volume', 'Rollouts often lead into monitoring'] },
+  monitoring:    { icon: Shield,        color: 'red',    title: 'Professional Monitoring', subtitle: 'Modern security monitoring',            tag: 'Recurring',   description: 'Recurring monitoring revenue that replaces legacy vendors with a simpler, lower-cost model for clients.', metrics: ['$100/site/month', 'Fed by retrofit, retail, and ISP work', 'Grows as infrastructure grows'] },
+  rentals:       { icon: Camera,        color: 'indigo', title: 'Infrastructure Rentals',  subtitle: 'Production-ready gear rentals',         tag: 'Asset',       description: 'Reusable gear packages rented to productions and live events, turning owned equipment into revenue without new capital spending.', metrics: ['$800 average per production', 'No per-project CapEx', 'Builds Atlanta industry relationships'] },
+  refrigeration: { icon: Thermometer,   color: 'orange', title: 'Compliance Monitoring',   subtitle: 'Temperature and compliance logging',    tag: 'Recurring',   description: 'Automated sensor monitoring for food, retail, and pharma environments that replaces manual logs and reduces spoilage and compliance risk.', metrics: ['$83/location/month', 'Replaces manual compliance work', 'Scales well across chains'] },
+  isp:           { icon: Wifi,          color: 'teal',   title: 'Micro ISP',                subtitle: 'Community broadband for HOAs',         tag: 'Infrastructure', description: 'HOA-focused broadband that creates recurring revenue from infrastructure we deploy and manage while offering a better fit where incumbents underdeliver.', metrics: ['$100/building/month net', 'Better fit where incumbents underdeliver', 'Training graduates help support rollout'] },
 };
 
 const colorMap = {
@@ -28,10 +27,12 @@ const colorMap = {
   teal:   { bg: 'from-teal-950/30',   border: 'border-teal-900/50',   icon: 'bg-teal-500/10',   iconColor: 'text-teal-400',   accent: 'text-teal-400',   tag: 'bg-teal-900/40 text-teal-300',    hex: STREAM_COLORS.isp },
 };
 
-const businessLines = BASELINE_STREAMS.map((s) => {
-  const display = STREAM_DISPLAY[s.stream_id];
-  return { id: s.stream_id, ...display, color: display.color };
-});
+const businessLines = BASELINE_STREAMS
+  .filter(s => STREAM_DISPLAY[s.stream_id])
+  .map((s) => {
+    const display = STREAM_DISPLAY[s.stream_id];
+    return { id: s.stream_id, ...display, color: display.color };
+  });
 
 const STACK_DATA = [
   { label: 'Standalone', standalone: 40, expansion: 0, compounding: 0, color: '#22d3ee', desc: 'Each line closes on its own' },
@@ -46,7 +47,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
 
   useEffect(() => {
     if (timerDone) { if (onUnlockMessage) onUnlockMessage(null); return; }
-    if (onUnlockMessage) onUnlockMessage(`Unlocking in ${secondsLeft}s — or expand all 9 cards to unlock now`);
+    if (onUnlockMessage) onUnlockMessage(`Unlocking in ${secondsLeft}s — or expand all 8 cards to unlock now`);
   }, [secondsLeft, timerDone]);
 
   useEffect(() => {
@@ -80,10 +81,10 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
           <p className="text-xs font-semibold tracking-widest text-cyan-500 uppercase mb-4">Business Model</p>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
-            One Platform. Nine Revenue Paths.
+            Separate revenue lines.<br />Shared momentum.
           </h2>
           <p className="text-lg text-slate-400 max-w-xl mx-auto">
-            Independent revenue today. Expansion revenue tomorrow.
+            Each line earns on its own. Together, they open the next opportunity.
           </p>
         </motion.div>
 
@@ -137,7 +138,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
         {/* Section break */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="mt-14 mb-8 flex items-center gap-4">
           <div className="flex-1 border-t border-slate-800" />
-          <p className="text-xs font-semibold tracking-widest text-slate-500 uppercase whitespace-nowrap">Why This Model Works</p>
+          <p className="text-xs font-semibold tracking-widest text-slate-500 uppercase whitespace-nowrap">Why This Model Works — Standalone. Expandable. Compounding.</p>
           <div className="flex-1 border-t border-slate-800" />
         </motion.div>
 
@@ -177,9 +178,9 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
             {/* Right: legend */}
             <div className="space-y-4">
               {[
-                { color: 'bg-cyan-500/70', label: 'Standalone Revenue', desc: 'Each line can close on its own.' },
-                { color: 'bg-violet-500/70', label: 'Expansion Opportunities', desc: 'One deployment often opens the next service.' },
-                { color: 'bg-green-500/70', label: 'Lower Risk, Higher Value', desc: 'Diversified revenue reduces dependency and increases client value.' },
+                { color: 'bg-cyan-500/70', label: 'Standalone Revenue', desc: 'Each line can close and generate revenue on its own.' },
+                { color: 'bg-violet-500/70', label: 'Expansion Revenue', desc: 'One deployment often opens the door to the next service.' },
+                { color: 'bg-green-500/70', label: 'Lower Risk. More Value.', desc: 'Diversified revenue reduces dependency on any one offer and increases long-term client value.' },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <div className={`w-3 h-3 rounded-sm ${item.color} flex-shrink-0 mt-1`} />
@@ -196,7 +197,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
 
         {allExpanded && (
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
-            ✓ All 9 lines explored — click Next to continue
+            ✓ All 8 lines explored — click Next to continue
           </motion.p>
         )}
       </div>
