@@ -111,20 +111,13 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </motion.p>
 
                     {/* Short paragraph */}
-                    <motion.p
+ //#                   <motion.p
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.65 }}
                         className="text-slate-400 text-base mb-10 leading-relaxed"
                     >
-                        We are the engine behind a technological shift. By fusing the Ubiquiti UniFi stack with national Certification Training and AI-driven lead generation, we’ve built a self-sustaining business model. Every division naturally accelerates the others—creating a compounding ecosystem where everyone across the value chain wins.
-                    </motion.p>                    <motion.p
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.65 }}
-                        className="text-slate-400 text-base mb-10 leading-relaxed"
-                    >
-                        Welcome to the future of IT infrastructure. We’ve combined the power of the Ubiquiti UniFi stack with national Certification Training and AI-driven lead generation to create a truly unified business model. Here, no division operates in a silo. Every vertical feeds the next, driving seamless growth for us and delivering unmatched, frictionless value for our clients.
+                        Welcome to the future of IT infrastructure and software. We’ve *combined* the power of the Ubiquiti's newly released market disrupting subscription-free tech stack *with* our national Certification Training and AI-driven lead generation to create a truly synergistic business model. Here, no division operates in a silo. Every vertical feeds the others, driving seamless growth for us and delivering unmatched, frictionless value for our clients.
                     </motion.p>
 
                     {/* CTA */}
