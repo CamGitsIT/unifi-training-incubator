@@ -28,32 +28,45 @@ export const YEAR_RAMP = {
 // -------------------------------------------------------
 function makeCompute(streamId) {
   return function computeRevenue(driverValue, scenario, yearView) {
-    // Build stream list with this stream's driver overridden
     const streams = BASELINE_STREAMS.map(s =>
       s.stream_id === streamId
         ? { ...s, plan_driver_m1: driverValue }
         : { ...s }
     );
-
     const result = runForecast(streams, scenario);
     const sr = result.streams[streamId];
-
-    const runRate = sr.runRateM36; // M36 = "run-rate"
-
+    const runRate = sr.runRateM36;
     const selectedYear =
       yearView === 'y1'      ? sr.y1 :
       yearView === 'y2'      ? sr.y2 :
       yearView === 'y3'      ? sr.y3 :
       yearView === 'runRate' ? runRate : sr.y1;
-
-    return {
-      y1:           sr.y1,
-      y2:           sr.y2,
-      y3:           sr.y3,
-      runRate:      runRate,
-      selectedYear: selectedYear,
-    };
+    return { y1: sr.y1, y2: sr.y2, y3: sr.y3, runRate, selectedYear };
   };
+}
+
+// Special combined compute for Experience Center:
+// Each visit generates hardware dropship profit ($300) + 2hr design consult ($300) = $600/visit.
+// experience_design_consulting is 1:1 with experience visits, so we sum both streams.
+function computeExperienceRevenue(driverValue, scenario, yearView) {
+  const streams = BASELINE_STREAMS.map(s =>
+    (s.stream_id === 'experience' || s.stream_id === 'experience_design_consulting')
+      ? { ...s, plan_driver_m1: driverValue }
+      : { ...s }
+  );
+  const result = runForecast(streams, scenario);
+  const expR = result.streams['experience'];
+  const consultR = result.streams['experience_design_consulting'];
+  const y1 = expR.y1 + consultR.y1;
+  const y2 = expR.y2 + consultR.y2;
+  const y3 = expR.y3 + consultR.y3;
+  const runRate = expR.runRateM36 + consultR.runRateM36;
+  const selectedYear =
+    yearView === 'y1'      ? y1 :
+    yearView === 'y2'      ? y2 :
+    yearView === 'y3'      ? y3 :
+    yearView === 'runRate' ? runRate : y1;
+  return { y1, y2, y3, runRate, selectedYear };
 }
 
 // Helper to map baseline stream data to STREAMS shape expected by Slide2/Drawer

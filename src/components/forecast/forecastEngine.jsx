@@ -32,22 +32,11 @@ export function applyImportedStreams(importedRows, baseStreams = BASELINE_STREAM
 }
 
 export const DEPENDENCIES = [
-  // Values sourced from DEPENDENCIES tab — OverIT Revenue Forecast 20260305 MASTER
-  { upstream: 'experience', downstream: 'experience_design_consulting', elasticity: 1.0  },
-  { upstream: 'experience', downstream: 'training',      elasticity: 0.12 },
-  { upstream: 'experience', downstream: 'retrofit',      elasticity: 0.05 },
-  { upstream: 'training',   downstream: 'retrofit',      elasticity: 0.09 },
-  { upstream: 'training',   downstream: 'retail',        elasticity: 0.08 },
-  { upstream: 'training',   downstream: 'rentals',       elasticity: 0.06 },
-  { upstream: 'training',   downstream: 'refrigeration', elasticity: 0.06 },
-  { upstream: 'training',   downstream: 'isp',           elasticity: 0.12 },
-  { upstream: 'retrofit',   downstream: 'monitoring',    elasticity: 0.14 },
-  { upstream: 'retail',     downstream: 'monitoring',    elasticity: 0.14 },
-  { upstream: 'rentals',    downstream: 'monitoring',    elasticity: 0.15 },
-  { upstream: 'refrigeration', downstream: 'monitoring', elasticity: 0.34 },
-  { upstream: 'isp',        downstream: 'monitoring',    elasticity: 0.14 },
-  { upstream: 'retrofit',   downstream: 'refrigeration', elasticity: 0.10 },
-  { upstream: 'retail',     downstream: 'refrigeration', elasticity: 0.10 },
+  // Per XLSX DEPENDENCIES tab (MASTER TEMPLATE):
+  // Only experience → experience_design_consulting is active (elasticity 1.0 — 1:1 lockstep).
+  // All other cross-stream dependencies are intentionally placeholder/near-zero in the template.
+  // Each stream is otherwise independent.
+  { upstream: 'experience', downstream: 'experience_design_consulting', elasticity: 1.0 },
 ];
 
 export const SCENARIO_MULTIPLIERS = {
