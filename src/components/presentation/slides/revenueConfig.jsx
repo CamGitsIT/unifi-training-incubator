@@ -86,7 +86,7 @@ export const STREAMS = [
       min: 5, max: 200, step: 5, defaultValue: baseline('experience').plan_driver_m1,
     },
     assumptions: {
-      unitRevenue: baseline('experience').unit_revenue,
+      unitRevenue: 300,
       scenarioNote: 'Revenue is secondary to pipeline generation. Conservative/Stretch adjusts event frequency.',
     },
     proof: [
@@ -94,6 +94,36 @@ export const STREAMS = [
       'Demand gen for 7 downstream revenue lines',
     ],
     computeRevenue: makeCompute('experience'),
+  },
+
+  // ── 1b. Experience Center — Design Consulting ────────────────
+  {
+    id: 'experience_design_consulting',
+    title: 'Experience Center — Design Consulting',
+    subtitle: '2-hour design session billed per qualified visit',
+    tags: ['Direct Revenue', 'Anchor'],
+    color: STREAM_COLORS.experience_design_consulting,
+    emoji: '✏️',
+    what: 'Every qualified Experience Center visitor receives a 2-hour design consultation scoped to their property or project.',
+    whoServes: 'Same audience as the Experience Center: developers, property managers, HOA boards, and retail operators.',
+    howWeEarn: '2 hours × $150/hr = $300 billed per visit. Separate line item from hardware drop-ship profit.',
+    liveProof: 'Design consulting is baked into every Experience Center visit — not an add-on. Revenue is predictable.',
+    fedBy: 'Driven 1:1 by Experience Center visits (elasticity 1.0).',
+    isPipelinePrimary: false,
+    driver: {
+      name: baseline('experience_design_consulting').driver_name,
+      unitLabel: baseline('experience_design_consulting').driver_unit,
+      min: 5, max: 200, step: 5, defaultValue: baseline('experience_design_consulting').plan_driver_m1,
+    },
+    assumptions: {
+      unitRevenue: baseline('experience_design_consulting').unit_revenue,
+      scenarioNote: 'Directly tied to visit volume. Conservative/Stretch follow the Experience Center trajectory.',
+    },
+    proof: [
+      '2hr consultation is a standard industry practice at $150/hr',
+      'Tied 1:1 to every Experience Center visit',
+    ],
+    computeRevenue: makeCompute('experience_design_consulting'),
   },
 
   // ── 2. Keyless Property Access Retrofit ──────────────────────
