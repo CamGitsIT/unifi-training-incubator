@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, ChevronUp, Minus, Plus } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
-import { SCENARIO_MULTIPLIERS, YEAR_RAMP } from './revenueConfig';
+import { SCENARIO_MULTIPLIERS } from './revenueConfig';
 
 const fmt = (v) => {
     if (v == null || isNaN(v)) return '—';
@@ -15,11 +15,13 @@ const YEAR_LABELS = { y1: 'Y1', y2: 'Y2', y3: 'Y3', runRate: 'Run-rate' };
 
 export default function StreamDrawer({ stream, scenario, yearView, driverValue: externalDriverValue, onDriverChange, onClose }) {
     const [driverValue, setDriverValue] = useState(externalDriverValue ?? stream?.driver.defaultValue ?? 0);
+    const [sitesPerAccount, setSitesPerAccount] = useState(stream?.sitesDriver?.defaultValue ?? 20);
     const [assumptionsOpen, setAssumptionsOpen] = useState(false);
 
     useEffect(() => {
         if (stream) {
             setDriverValue(externalDriverValue ?? stream.driver.defaultValue);
+            setSitesPerAccount(stream.sitesDriver?.defaultValue ?? 20);
             setAssumptionsOpen(false);
         }
     }, [stream?.id]);
@@ -31,7 +33,7 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
 
     if (!stream) return null;
 
-    const rev = stream.computeRevenue(driverValue, scenario, yearView);
+    const rev = stream.computeRevenue(driverValue, scenario, yearView, sitesPerAccount);
     const isPipeline = stream.isPipelinePrimary;
 
     const pipelineMetrics = isPipeline ? {
@@ -195,6 +197,50 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                                     <span>{stream.driver.min} {stream.driver.unitLabel}</span>
                                     <span>{stream.driver.max} {stream.driver.unitLabel}</span>
                                 </div>
+
+                                {stream.sitesDriver && (
+                                    <div className="mt-4 pt-4 border-t border-slate-700/60">
+                                        <p className="text-white font-semibold text-sm mb-3">{stream.sitesDriver.name}</p>
+                                        <div className="flex items-center gap-4 mb-3">
+                                            <button
+                                                onClick={() => setSitesPerAccount(s => Math.max(stream.sitesDriver.min, s - stream.sitesDriver.step))}
+                                                className="w-8 h-8 rounded-lg border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-400 transition-all"
+                                            >
+                                                <Minus className="w-3.5 h-3.5" />
+                                            </button>
+                                            <div className="flex-1 text-center">
+                                                <motion.span
+                                                    key={sitesPerAccount}
+                                                    initial={{ opacity: 0.5, scale: 0.95 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    className="text-3xl font-bold tabular-nums"
+                                                    style={{ color: stream.color }}
+                                                >
+                                                    {sitesPerAccount}
+                                                </motion.span>
+                                                <span className="text-slate-400 text-sm ml-2">{stream.sitesDriver.unitLabel}</span>
+                                            </div>
+                                            <button
+                                                onClick={() => setSitesPerAccount(s => Math.min(stream.sitesDriver.max, s + stream.sitesDriver.step))}
+                                                className="w-8 h-8 rounded-lg border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-400 transition-all"
+                                            >
+                                                <Plus className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
+                                        <Slider
+                                            value={[sitesPerAccount]}
+                                            onValueChange={v => setSitesPerAccount(v[0])}
+                                            min={stream.sitesDriver.min}
+                                            max={stream.sitesDriver.max}
+                                            step={stream.sitesDriver.step}
+                                            className="mb-1"
+                                        />
+                                        <div className="flex justify-between text-xs text-slate-600 mt-1">
+                                            <span>{stream.sitesDriver.min} {stream.sitesDriver.unitLabel}</span>
+                                            <span>{stream.sitesDriver.max} {stream.sitesDriver.unitLabel}</span>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -238,6 +284,10 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                                                 <ARow label="Fee %" value={`${stream.assumptions.feePercent}%`} />}
                                             {stream.assumptions.avgProjectValue != null &&
                                                 <ARow label="Avg project value" value={`$${stream.assumptions.avgProjectValue.toLocaleString()}`} />}
+                                            {stream.assumptions.sitesPerAccount != null &&
+                                                <ARow label="Sites per account (default)" value={`${stream.assumptions.sitesPerAccount} sites`} />}
+                                            {stream.assumptions.projectValuePerSite != null &&
+                                                <ARow label="Project value / site" value={`$${stream.assumptions.projectValuePerSite.toLocaleString()}`} />}
                                             {stream.assumptions.avgAnnualPerAccount != null &&
                                                 <ARow label="Avg annual / account" value={`$${stream.assumptions.avgAnnualPerAccount.toLocaleString()}`} />}
                                             {stream.assumptions.avgCohortSize != null &&
@@ -247,13 +297,6 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                                                 <p className="text-xs font-semibold text-slate-400 mb-2">Scenario multipliers</p>
                                                 {Object.entries(SCENARIO_MULTIPLIERS).map(([k, v]) => (
                                                     <ARow key={k} label={v.label} value={`${v.revenue}×`} color={v.color} />
-                                                ))}
-                                            </div>
-
-                                            <div className="border-t border-slate-800 pt-3 mt-3">
-                                                <p className="text-xs font-semibold text-slate-400 mb-2">Year-ramp factors</p>
-                                                {Object.entries(YEAR_RAMP).map(([k, v]) => (
-                                                    <ARow key={k} label={YEAR_LABELS[k] || k} value={`${(v * 100).toFixed(0)}%`} />
                                                 ))}
                                             </div>
 

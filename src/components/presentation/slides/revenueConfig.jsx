@@ -69,6 +69,25 @@ function computeExperienceRevenue(driverValue, scenario, yearView) {
   return { y1, y2, y3, runRate, selectedYear };
 }
 
+// Special compute for Multi-Location Retail:
+// accounts × sitesPerAccount × $500/site (12.5% of $4,000/site)
+function computeRetailRevenue(accountsValue, scenario, yearView, sitesPerAccount = 20) {
+  const streams = BASELINE_STREAMS.map(s =>
+    s.stream_id === 'retail'
+      ? { ...s, plan_driver_m1: accountsValue, units_per_driver: sitesPerAccount }
+      : { ...s }
+  );
+  const result = runForecast(streams, scenario);
+  const sr = result.streams['retail'];
+  const runRate = sr.runRateM36;
+  const selectedYear =
+    yearView === 'y1'      ? sr.y1 :
+    yearView === 'y2'      ? sr.y2 :
+    yearView === 'y3'      ? sr.y3 :
+    yearView === 'runRate' ? runRate : sr.y1;
+  return { y1: sr.y1, y2: sr.y2, y3: sr.y3, runRate, selectedYear };
+}
+
 // Helper to map baseline stream data to STREAMS shape expected by Slide2/Drawer
 function baseline(id) {
   return BASELINE_STREAMS.find(s => s.stream_id === id);
