@@ -4,7 +4,7 @@ import { RotateCcw, TrendingUp, ChevronRight } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { STREAMS, SCENARIO_MULTIPLIERS } from './revenueConfig';
-import { BASELINE_STREAMS } from '@/components/forecast/forecastEngine';
+import { BASELINE_STREAMS, SCENARIO_MULTIPLIERS as ENGINE_SCENARIO_MULTIPLIERS } from '@/components/forecast/forecastEngine';
 import StreamDrawer from './StreamDrawer';
 
 const BASELINE_STREAMS_MAP = Object.fromEntries(BASELINE_STREAMS.map(s => [s.stream_id, s]));
