@@ -29,9 +29,28 @@ export default function Slide2Mission({ onInteracted }) {
     const [activeStream, setActive] = useState(null);
     const [hasInteracted, setInteracted] = useState(false);
 
-    const defaultDrivers = useMemo(() =>
+    // Base drivers from BASELINE_STREAMS (the plan_driver_m1 values)
+    const baseDrivers = useMemo(() =>
         Object.fromEntries(STREAMS.map(s => [s.id, s.driver.defaultValue])), []);
-    const [drivers, setDrivers] = useState(defaultDrivers);
+
+    // Compute scenario-snapped drivers: round(base × scenario_multiplier)
+    const scenarioDrivers = useMemo(() => {
+        const mult = ENGINE_SCENARIO_MULTIPLIERS[scenario].multiplier;
+        return Object.fromEntries(
+            STREAMS.map(s => [s.id, Math.round(baseDrivers[s.id] * mult)])
+        );
+    }, [scenario, baseDrivers]);
+
+    const [drivers, setDrivers] = useState(scenarioDrivers);
+
+    // When scenario changes, snap sliders to scenario values
+    const prevScenario = React.useRef(scenario);
+    React.useEffect(() => {
+        if (prevScenario.current !== scenario) {
+            prevScenario.current = scenario;
+            setDrivers(scenarioDrivers);
+        }
+    }, [scenario, scenarioDrivers]);
 
     const markInteracted = () => { if (!hasInteracted) { setInteracted(true); onInteracted(); } };
 
