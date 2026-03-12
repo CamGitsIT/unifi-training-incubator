@@ -165,6 +165,7 @@ export const STREAMS = [
       unitLabel: baseline('retrofit').driver_unit,
       min: 0, max: 50, step: 1, defaultValue: baseline('retrofit').plan_driver_m1,
     },
+    revenueFormula: (d) => `$1,125/project × ${d} projects/mo × growth_factor\n= $9,000 avg project × 12.5% fee = $1,125/project`,
     assumptions: {
       unitRevenue: baseline('retrofit').unit_revenue,
       avgProjectValue: 9000,
