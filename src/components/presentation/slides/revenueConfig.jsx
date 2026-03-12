@@ -306,7 +306,7 @@ export const STREAMS = [
     emoji: '🌡️',
     what: 'IoT sensor monitoring for food-service and pharmaceutical refrigeration with automated FDA-compliant compliance reports.',
     whoServes: 'Restaurants, pharmacies, food distributors, and any regulated business requiring cold chain compliance.',
-    howWeEarn: '$83/location/month — sensor hardware + cloud reporting service.',
+    howWeEarn: 'Setup of sensors + cloud reporting service hardware varies, but usually less than $1000 hardware per store with estimated one-time labor & configuration costs around $2500 .',
 
     driver: {
       name: baseline('refrigeration').driver_name,
@@ -354,4 +354,4 @@ export const STREAMS = [
     proof: [],
     computeRevenue: computeIspRevenue,
   },
-];
+];d
