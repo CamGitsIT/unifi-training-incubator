@@ -313,6 +313,7 @@ export const STREAMS = [
       unitLabel: baseline('refrigeration').driver_unit,
       min: 0, max: 100, step: 1, defaultValue: baseline('refrigeration').plan_driver_m1,
     },
+    revenueFormula: (d) => `$83/location/mo × ${d} locations × growth_factor\n= sensor hardware + FDA-compliant cloud reporting`,
     assumptions: {
       unitRevenue: baseline('refrigeration').unit_revenue,
       scenarioNote: 'Stretch assumes chain-level contracts (50+ locations per client).',
