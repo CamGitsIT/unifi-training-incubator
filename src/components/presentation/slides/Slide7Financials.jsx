@@ -224,10 +224,10 @@ export default function Slide7Financials({ onInteracted }) {
                 {/* Summary Bar — based on slider values */}
                 <motion.div layout className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
                     {[
-                        { label: 'Slider Annual Revenue', value: formatCurrency(totalAnnual, true), color: 'text-white', sub: `${formatCurrency(Math.round(totalAnnual/12), true)}/mo` },
-                        { label: 'Net Profit (~63%)', value: formatCurrency(totalProfit, true), color: 'text-green-400', sub: 'After ops & overhead' },
+                        { label: 'Slider Annual Revenue', value: formatCurrency(totalAnnual, true), color: '#ffffff', sub: `${formatCurrency(Math.round(totalAnnual/12), true)}/mo` },
+                        { label: 'Net Profit (~63%)', value: formatCurrency(totalProfit, true), color: '#4ade80', sub: 'After ops & overhead' },
                         { label: 'Debt Coverage Ratio', value: `${dscr}x`, color: dscrColor, sub: `vs $${(ANNUAL_DEBT_SERVICE/1000).toFixed(0)}K/yr debt service` },
-                        { label: '% Location-Free Revenue', value: `${locationFreePct}%`, color: 'text-cyan-400', sub: 'Earnable from anywhere' },
+                        { label: '% Location-Free Revenue', value: `${locationFreePct}%`, color: '#22d3ee', sub: 'Earnable from anywhere' },
                     ].map((s, i) => (
                         <motion.div key={i} layout className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center">
                             <div className="text-xs text-slate-400 mb-1">{s.label}</div>
