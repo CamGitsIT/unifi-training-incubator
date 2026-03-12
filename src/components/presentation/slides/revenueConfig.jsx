@@ -48,10 +48,10 @@ function makeCompute(streamId) {
 // Special combined compute for Experience Center:
 // Each visit generates hardware dropship profit ($300) + 2hr design consult ($300) = $600/visit.
 // experience_design_consulting is 1:1 with experience visits, so we sum both streams.
-function computeExperienceRevenue(driverValue, scenario, yearView) {
+function computeExperienceRevenue(driverValue, scenario, yearView, _secondParam, customGrowthRate) {
   const streams = BASELINE_STREAMS.map(s =>
     (s.stream_id === 'experience' || s.stream_id === 'experience_design_consulting')
-      ? { ...s, plan_driver_m1: driverValue }
+      ? { ...s, plan_driver_m1: driverValue, ...(customGrowthRate != null ? { monthly_growth: customGrowthRate } : {}) }
       : { ...s }
   );
   const result = runForecast(streams, scenario);
