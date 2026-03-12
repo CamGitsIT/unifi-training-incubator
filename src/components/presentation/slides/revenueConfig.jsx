@@ -219,7 +219,7 @@ export const STREAMS = [
     tags: ['Project', 'Location-free', 'Recurring'],
     color: STREAM_COLORS.retail,
     emoji: '🏪',
-    what: 'We design and sell complete UniFi access/security rollout templatizale projects for multi-location retail brands. A licensed MSP handles installation — we earn a design and project management fee.',
+    what: 'We design and sell complete UniFi access/security rollout plans for aimed to templatizale projects best for for multi-location retail brands. A licensed MSP handles installation — we earn a design and project management fee.',
     whoServes: 'Regional chains, franchise operators, QSR brands with 20–200+ locations.',
     howWeEarn: 'We design each project and sell to an MSP. Avg 20 sites/account × $4,000/site = $80,000 gross project. Our fee: 12.5% = $500/site · $10,000/account. New account signings grow at ~7%/month as the sales pipeline matures.',
     driver: {
