@@ -189,8 +189,8 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                         </div>
                     </div>
 
-                    {/* ── Driver, Outputs, Assumptions, Proof — hidden for Experience Center ── */}
-                    {stream.id !== 'experience' ? (<>
+                    {/* ── Driver, Outputs, Assumptions, Proof ── */}
+                    {(<>
                         {/* ── Driver Control ── */}
                         <div className="rounded-2xl border border-slate-700 overflow-hidden" style={{ background: '#1e293b' }}>
                             <div className="flex items-center justify-between px-5 py-3 border-b border-slate-700/60">
