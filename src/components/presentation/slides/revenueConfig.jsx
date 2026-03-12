@@ -354,4 +354,4 @@ export const STREAMS = [
     proof: [],
     computeRevenue: computeIspRevenue,
   },
-];d
+];
