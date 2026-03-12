@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RotateCcw, TrendingUp, ChevronRight } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
