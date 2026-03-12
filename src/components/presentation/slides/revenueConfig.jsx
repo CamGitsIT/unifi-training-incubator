@@ -305,6 +305,7 @@ export const STREAMS = [
     color: STREAM_COLORS.refrigeration,
     emoji: '🌡️',
     what: 'IoT sensor monitoring for food-service and pharmaceutical refrigeration with automated FDA-compliant compliance reports.',
+    whoServes: 'Restaurants, pharmacies, food distributors, and any regulated business requiring cold chain compliance.',
     howWeEarn: '$83/location/month — sensor hardware + cloud reporting service.',
 
     driver: {
