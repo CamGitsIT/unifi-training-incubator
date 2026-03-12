@@ -93,7 +93,7 @@ function computeRetailRevenue(accountsValue, scenario, yearView, sitesPerAccount
 function computeIspRevenue(buildingsValue, scenario, yearView, unitsPerBuilding = 20, customGrowthRate) {
   const streams = BASELINE_STREAMS.map(s =>
     s.stream_id === 'isp'
-      ? { ...s, plan_driver_m1: buildingsValue, units_per_driver: unitsPerBuilding }
+      ? { ...s, plan_driver_m1: buildingsValue, units_per_driver: unitsPerBuilding, ...(customGrowthRate != null ? { monthly_growth: customGrowthRate } : {}) }
       : { ...s }
   );
   const result = runForecast(streams, scenario);
