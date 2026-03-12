@@ -217,8 +217,8 @@ export default function Slide2Mission({ onInteracted }) {
                                 <div className="flex items-center gap-2 mb-1">
                                     <div className="w-2 h-2 rounded-full" style={{ background: SCENARIO_MULTIPLIERS[scenario].color }} />
                                     <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                                        Total · Y1 · {SCENARIO_MULTIPLIERS[scenario].label}
-                                    </span>
+                                             Total · Y1 · {isAtScenario ? SCENARIO_MULTIPLIERS[scenario].label : `${SCENARIO_MULTIPLIERS[scenario].label} (Custom)`}
+                                         </span>
                                 </div>
                                 <motion.div key={total}
                                     initial={{ scale: 0.95, opacity: 0.4 }} animate={{ scale: 1, opacity: 1 }}
