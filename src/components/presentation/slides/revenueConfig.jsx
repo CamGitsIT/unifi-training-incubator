@@ -188,9 +188,9 @@ export const STREAMS = [
     tags: ['Recurring', 'Location-free', 'High-margin'],
     color: STREAM_COLORS.training,
     emoji: '🎓',
-    what: 'Multi-day Ubiquiti certification courses for IT professionals, MSPs, and technicians.',
-    whoServes: 'IT professionals, career-changers, property managers, MSPs, and integrators.',
-    howWeEarn: '$2,000 per seat — cohorts of 4–12 students. In-person or remote.',
+    what: 'Multi-day Ubiquiti/UniFi certification courses for IT professionals, MSPs, integrators, and technicians. In-person or remotee all from our National Training Center.',
+   // whoServes: 'IT professionals, career-changers, property managers, MSPs, and integrators.',
+    howWeEarn: '$2,000 per seat — cohorts of 4–12 students.',
 
     driver: {
       name: baseline('training').driver_name,
@@ -219,7 +219,7 @@ export const STREAMS = [
     tags: ['Project', 'Location-free', 'Recurring'],
     color: STREAM_COLORS.retail,
     emoji: '🏪',
-    what: 'We design and sell complete UniFi access/security rollout projects for multi-location retail brands. A licensed MSP handles installation — we earn a design and project management fee.',
+    what: 'We design and sell complete UniFi access/security rollout templatizale projects for multi-location retail brands. A licensed MSP handles installation — we earn a design and project management fee.',
     whoServes: 'Regional chains, franchise operators, QSR brands with 20–200+ locations.',
     howWeEarn: 'We design each project and sell to an MSP. Avg 20 sites/account × $4,000/site = $80,000 gross project. Our fee: 12.5% = $500/site · $10,000/account. New account signings grow at ~7%/month as the sales pipeline matures.',
     driver: {
