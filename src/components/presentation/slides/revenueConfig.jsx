@@ -90,7 +90,7 @@ function computeRetailRevenue(accountsValue, scenario, yearView, sitesPerAccount
 
 // Special compute for Micro ISP:
 // buildings × unitsPerBuilding × $48.75/unit (75% of $65/unit, 25% kickback to HOA)
-function computeIspRevenue(buildingsValue, scenario, yearView, unitsPerBuilding = 20) {
+function computeIspRevenue(buildingsValue, scenario, yearView, unitsPerBuilding = 20, customGrowthRate) {
   const streams = BASELINE_STREAMS.map(s =>
     s.stream_id === 'isp'
       ? { ...s, plan_driver_m1: buildingsValue, units_per_driver: unitsPerBuilding }
