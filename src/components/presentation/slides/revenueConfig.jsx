@@ -287,6 +287,7 @@ export const STREAMS = [
       unitLabel: baseline('rentals').driver_unit,
       min: 0, max: 30, step: 1, defaultValue: baseline('rentals').plan_driver_m1,
     },
+    revenueFormula: (d) => `$800/production × ${d} productions/mo × growth_factor\n= gear kit + remote setup support per rental`,
     assumptions: {
       unitRevenue: baseline('rentals').unit_revenue,
       scenarioNote: 'Stretch assumes established film industry relationships and repeat clients.',
