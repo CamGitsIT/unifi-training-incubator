@@ -431,7 +431,7 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                                 </div>
                             </div>
                         )}
-                    </>)
+                    </>
 
                     {/* Close button at bottom */}
                     <button
