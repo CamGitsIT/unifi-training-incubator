@@ -332,7 +332,7 @@ export const STREAMS = [
     emoji: '📡',
     what: 'Deploy and operate community-owned mesh WiFi networks for residential buildings and communities.',
     whoServes: 'Apartment buildings, mobile home communities, HOAs seeking internet as an amenity.',
-    howWeEarn: '$65/unit/month connectivity fee. OverIT keeps 75% ($48.75/unit); 25% ($16.25/unit) is paid back to the HOA or property management. Example: 3 buildings × 20 units = 60 units → $2,925/mo to OverIT.',
+    howWeEarn: '$55/unit/month connectivity fee. OverIT keeps 75% ($41.25/unit); 25% ($13.75/unit) is paid back to the HOA or property management. Example: 3 buildings × 40 units = 120 units → $4,950/mo to OverIT.',
     driver: {
       name: baseline('isp').driver_name,
       unitLabel: baseline('isp').driver_unit,
