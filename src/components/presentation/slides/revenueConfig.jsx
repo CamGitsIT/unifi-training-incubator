@@ -232,6 +232,7 @@ export const STREAMS = [
       unitLabel: 'sites',
       min: 1, max: 200, step: 1, defaultValue: 20,
     },
+    revenueFormula: (d, sites = 20) => `$500/site × ${sites} sites/account × ${d} accounts × growth_factor\n= $4,000/site × 12.5% fee × ${sites} sites × ${d} accounts`,
     assumptions: {
       unitRevenue: 500,
       sitesPerAccount: 20,
