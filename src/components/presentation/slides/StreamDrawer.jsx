@@ -48,6 +48,8 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
     const secondParam = stream.sitesDriver ? sitesPerAccount : (stream.unitsDriver ? unitsPerBuilding : undefined);
     const rev = stream.computeRevenue(driverValue, scenario, yearView, secondParam, customGrowthRate);
     const isPipeline = stream.isPipelinePrimary;
+    // auto-open assumptions so formula is visible
+
 
     const pipelineMetrics = isPipeline ? {
         retrofitLeads: Math.round(driverValue * stream.pipelineOutputs.retrofitConversion),
