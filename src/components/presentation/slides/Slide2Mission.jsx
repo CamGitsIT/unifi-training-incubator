@@ -109,16 +109,21 @@ export default function Slide2Mission({ onInteracted }) {
                     <div className="flex flex-wrap items-center gap-2">
                         {/* Scenario */}
                         <div className="flex bg-slate-800/80 border border-slate-700 rounded-xl overflow-hidden">
-                            {SCENARIO_OPTIONS.map(opt => (
-                                <button key={opt.key}
-                                    onClick={() => { setScenario(opt.key); markInteracted(); }}
-                                    className={`px-3.5 py-2 text-xs font-semibold transition-all ${scenario === opt.key ? 'text-slate-950' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}
-                                    style={scenario === opt.key ? { backgroundColor: opt.color } : {}}
-                                >
-                                    {opt.label}
-                                </button>
-                            ))}
-                        </div>
+                             {SCENARIO_OPTIONS.map(opt => {
+                                 const isActive = scenario === opt.key && isAtScenario;
+                                 const isSelected = scenario === opt.key;
+                                 return (
+                                     <button key={opt.key}
+                                         onClick={() => { setScenario(opt.key); markInteracted(); }}
+                                         className={`px-3.5 py-2 text-xs font-semibold transition-all ${isActive ? 'text-slate-950' : isSelected ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}
+                                         style={isActive ? { backgroundColor: opt.color } : isSelected ? { backgroundColor: `${opt.color}30`, borderRight: `1px solid ${opt.color}50` } : {}}
+                                         title={isSelected && !isAtScenario ? 'Sliders have been customized — values no longer match this scenario' : ''}
+                                     >
+                                         {opt.label}{isSelected && !isAtScenario ? ' *' : ''}
+                                     </button>
+                                 );
+                             })}
+                         </div>
                         <button onClick={handleReset}
                             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-400 hover:text-white text-xs font-semibold transition-all">
                             <RotateCcw className="w-3.5 h-3.5" /> Reset
