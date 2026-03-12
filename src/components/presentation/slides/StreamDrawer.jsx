@@ -163,6 +163,32 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                         <InfoRow label="How OverIT earns here" text={stream.howWeEarn} />
                     </div>
 
+                    {/* ── MoM Growth slider — shown for ALL streams including Experience Center ── */}
+                    <div className="rounded-2xl border border-slate-700 overflow-hidden" style={{ background: '#1e293b' }}>
+                        <div className="px-5 py-4">
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="text-white font-semibold text-sm">MoM Growth Rate</p>
+                                <span className="text-sm font-bold tabular-nums" style={{ color: stream.color }}>
+                                    {customGrowthPct.toFixed(1)}%
+                                </span>
+                            </div>
+                            <Slider
+                                value={[customGrowthPct]}
+                                onValueChange={v => setCustomGrowthPct(v[0])}
+                                min={0}
+                                max={100}
+                                step={0.5}
+                                className="mb-1"
+                                style={{ '--slider-filled': stream.color }}
+                            />
+                            <div className="flex justify-between text-xs text-slate-600 mt-1">
+                                <span>0%</span>
+                                <span className="text-slate-500 italic text-center">Default: {momGrowth}%</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* ── Driver, Outputs, Assumptions, Proof — hidden for Experience Center ── */}
                     {stream.id !== 'experience' ? (<>
                         {/* ── Driver Control ── */}
