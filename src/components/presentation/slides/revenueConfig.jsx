@@ -343,6 +343,7 @@ export const STREAMS = [
       unitLabel: 'units',
       min: 1, max: 500, step: 1, defaultValue: 20,
     },
+    revenueFormula: (d, units = 20) => `$48.75/unit/mo × ${units} units/building × ${d} buildings × growth_factor\n= $65/unit × 75% OverIT share. ${d * units} total units → $${(d * units * 48.75).toFixed(0)}/mo at M1`,
     assumptions: {
       unitRevenue: 48.75,
       pricePerUnit: 65,
