@@ -4,16 +4,16 @@
 // ============================================================
 
 export const BASELINE_STREAMS = [
-  // Values sourced from STREAMS_MODEL tab — OverIT Revenue Forecast 20260305 MASTER (updated 2026-03-06)
-  { stream_id: 'experience',                  stream_title: 'Experience Center',                              driver_name: 'Qualified visits per month', driver_unit: 'visits/mo',      plan_driver_m1: 20, units_per_driver: 1, unit_revenue: 300,    monthly_growth: 0.07,  enabled: true },
-  { stream_id: 'experience_design_consulting', stream_title: 'Experience Center — Design Consulting',          driver_name: 'Qualified visits per month', driver_unit: 'visits/mo',      plan_driver_m1: 20, units_per_driver: 1, unit_revenue: 300,    monthly_growth: 0.07,  enabled: true },
-  { stream_id: 'training',                    stream_title: 'UniFi Certification Training (Multi-day)',        driver_name: 'Seats per month',            driver_unit: 'seats/mo',       plan_driver_m1: 8,  units_per_driver: 1, unit_revenue: 2000,   monthly_growth: 0.10,  enabled: true },
-  { stream_id: 'retrofit',      stream_title: 'Keyless Property Access (Retrofit)',        driver_name: 'Projects sold per month',      driver_unit: 'projects/mo',    plan_driver_m1: 10,  units_per_driver: 1,  unit_revenue: 1125,   monthly_growth: 0.075, enabled: true },
-  { stream_id: 'retail',        stream_title: 'Multi-Location Retail Businesses',          driver_name: 'Active brand accounts',        driver_unit: 'accounts/mo',    plan_driver_m1: 2,   units_per_driver: 20, unit_revenue: 500,    monthly_growth: 0.07,  enabled: true },
-  { stream_id: 'monitoring',    stream_title: 'Professional Monitoring',                   driver_name: 'Active monitored sites',       driver_unit: 'sites/mo',       plan_driver_m1: 20,  units_per_driver: 1,  unit_revenue: 40,     monthly_growth: 0.06,  enabled: true },
-  { stream_id: 'rentals',       stream_title: 'Tech Infrastructure Rentals',               driver_name: 'Productions served per month', driver_unit: 'productions/mo', plan_driver_m1: 5,   units_per_driver: 1,  unit_revenue: 800,    monthly_growth: 0.04,  enabled: true },
-  { stream_id: 'refrigeration', stream_title: 'Refrigeration & Temp Monitoring',           driver_name: 'Locations monitored',          driver_unit: 'locations/mo',   plan_driver_m1: 15,  units_per_driver: 1,  unit_revenue: 83,     monthly_growth: 0.07,  enabled: true },
-  { stream_id: 'isp',           stream_title: 'Micro ISP',                                 driver_name: 'Buildings served',             driver_unit: 'buildings/mo',   plan_driver_m1: 3,   units_per_driver: 20, unit_revenue: 48.75,  monthly_growth: 0.10,  enabled: true },
+  // BASE MONTH 1 DRIVERS — sourced directly from Excel MASTER FORECAST (Base * 1.0 multiplier)
+  { stream_id: 'experience',                   stream_title: 'Experience Center',                              driver_name: 'Qualified visits per month', driver_unit: 'visits/mo',      plan_driver_m1: 10,  units_per_driver: 1,  unit_revenue: 300,    monthly_growth: 0.07,  enabled: true },
+  { stream_id: 'experience_design_consulting',  stream_title: 'Experience Center — Design Consulting',          driver_name: 'Qualified visits per month', driver_unit: 'visits/mo',      plan_driver_m1: 10,  units_per_driver: 1,  unit_revenue: 300,    monthly_growth: 0.07,  enabled: true },
+  { stream_id: 'training',                     stream_title: 'UniFi Certification Training (Multi-day)',        driver_name: 'Seats per month',            driver_unit: 'seats/mo',       plan_driver_m1: 30,  units_per_driver: 1,  unit_revenue: 2000,   monthly_growth: 0.10,  enabled: true },
+  { stream_id: 'retrofit',                     stream_title: 'Keyless Property Access (Retrofit)',             driver_name: 'Projects sold per month',      driver_unit: 'projects/mo',    plan_driver_m1: 4,   units_per_driver: 1,  unit_revenue: 1125,   monthly_growth: 0.075, enabled: true },
+  { stream_id: 'retail',                       stream_title: 'Multi-Location Retail Businesses',               driver_name: 'Active brand accounts',        driver_unit: 'accounts/mo',    plan_driver_m1: 2,   units_per_driver: 20, unit_revenue: 500,    monthly_growth: 0.07,  enabled: true },
+  { stream_id: 'monitoring',                   stream_title: 'Professional Monitoring',                        driver_name: 'Active monitored sites',       driver_unit: 'sites/mo',       plan_driver_m1: 10,  units_per_driver: 1,  unit_revenue: 40,     monthly_growth: 0.06,  enabled: true },
+  { stream_id: 'rentals',                      stream_title: 'Tech Infrastructure Rentals',                    driver_name: 'Productions served per month', driver_unit: 'productions/mo', plan_driver_m1: 3,   units_per_driver: 1,  unit_revenue: 800,    monthly_growth: 0.04,  enabled: true },
+  { stream_id: 'refrigeration',                stream_title: 'Refrigeration & Temp Monitoring',                driver_name: 'Locations monitored',          driver_unit: 'locations/mo',   plan_driver_m1: 5,   units_per_driver: 1,  unit_revenue: 83,     monthly_growth: 0.07,  enabled: true },
+  { stream_id: 'isp',                          stream_title: 'Micro ISP',                                      driver_name: 'Buildings served',             driver_unit: 'buildings/mo',   plan_driver_m1: 3,   units_per_driver: 20, unit_revenue: 48.75,  monthly_growth: 0.10,  enabled: true },
 ];
 
 // Allows ForecastEngine page to override baseline at runtime via CSV/Excel import
@@ -114,8 +114,9 @@ export function runForecast(streams, scenario = 'base') {
   const results = {};
   streams.forEach(s => {
     const eff = s.enabled ? (effective[s.stream_id] || 0) : 0;
-    const monthlyUnitRev = s.enabled ? s.units_per_driver * s.unit_revenue * mult : 0;
-    const g = s.monthly_growth;
+    // Scenario multiplier applies to growth rate (per Excel model), not to unit revenue
+    const monthlyUnitRev = s.enabled ? s.units_per_driver * s.unit_revenue : 0;
+    const g = s.monthly_growth * mult;
     const factor12 = g === 0 ? MONTHS : (Math.pow(1 + g, MONTHS) - 1) / g;
 
     const y1 = eff * monthlyUnitRev * factor12;
