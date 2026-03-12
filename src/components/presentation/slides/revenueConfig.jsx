@@ -254,7 +254,7 @@ export const STREAMS = [
     driver: {
       name: baseline('monitoring').driver_name,
       unitLabel: baseline('monitoring').driver_unit,
-      min: 0, max: 150, step: 5, defaultValue: baseline('monitoring').plan_driver_m1,
+      min: 0, max: 150, step: 1, defaultValue: baseline('monitoring').plan_driver_m1,
     },
     assumptions: {
       unitRevenue: baseline('monitoring').unit_revenue,
