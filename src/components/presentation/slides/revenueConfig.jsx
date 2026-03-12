@@ -133,6 +133,7 @@ export const STREAMS = [
       unitLabel: baseline('experience').driver_unit,
       min: 0, max: 200, step: 1, defaultValue: baseline('experience').plan_driver_m1,
     },
+    revenueFormula: (d) => `$600/visit × ${d} visits/mo × growth_factor\n= ($300 hardware dropship + $300 design consult) × visits`,
     assumptions: {
       unitRevenue: 600,
       scenarioNote: '$300 dropship + $300 consult per visit. Conservative/Stretch adjusts visit volume.',
