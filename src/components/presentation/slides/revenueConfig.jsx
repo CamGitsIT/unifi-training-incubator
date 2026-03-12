@@ -260,6 +260,7 @@ export const STREAMS = [
       unitLabel: baseline('monitoring').driver_unit,
       min: 0, max: 150, step: 1, defaultValue: baseline('monitoring').plan_driver_m1,
     },
+    revenueFormula: (d) => `$40/site/mo × ${d} active sites × growth_factor\n= recurring monthly monitoring fee per managed property`,
     assumptions: {
       unitRevenue: baseline('monitoring').unit_revenue,
       churnRate: 0.03,
