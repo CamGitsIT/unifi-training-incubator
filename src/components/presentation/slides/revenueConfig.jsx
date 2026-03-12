@@ -197,6 +197,7 @@ export const STREAMS = [
       unitLabel: baseline('training').driver_unit,
       min: 0, max: 60, step: 1, defaultValue: baseline('training').plan_driver_m1,
     },
+    revenueFormula: (d) => `$2,000/seat × ${d} seats/mo × growth_factor\n≈ ${Math.ceil(d/6)} classes/mo × ~6 students avg cohort × $2,000/seat`,
     assumptions: {
       unitRevenue: baseline('training').unit_revenue,
       avgCohortSize: 6,
