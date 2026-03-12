@@ -84,6 +84,11 @@ export default function Slide2Mission({ onInteracted }) {
         }))
     , [revenues]);
 
+    // True if all sliders match the current scenario's values
+    const isAtScenario = useMemo(() =>
+        STREAMS.every(s => drivers[s.id] === scenarioDrivers[s.id])
+    , [drivers, scenarioDrivers]);
+
     const handleReset = () => setDrivers(scenarioDrivers);
 
     return (
