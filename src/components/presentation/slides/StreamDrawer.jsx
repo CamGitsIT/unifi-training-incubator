@@ -20,12 +20,18 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
     const [unitsPerBuilding, setUnitsPerBuilding] = useState(stream?.unitsDriver?.defaultValue ?? 20);
     const [assumptionsOpen, setAssumptionsOpen] = useState(false);
 
+    const baselineStream = BASELINE_STREAMS.find(s => s.stream_id === (stream?.id === 'experience' ? 'experience' : stream?.id));
+    const defaultGrowthPct = baselineStream ? parseFloat((baselineStream.monthly_growth * 100).toFixed(1)) : 7;
+    const [customGrowthPct, setCustomGrowthPct] = useState(defaultGrowthPct);
+
     useEffect(() => {
         if (stream) {
             setDriverValue(externalDriverValue ?? stream.driver.defaultValue);
             setSitesPerAccount(stream.sitesDriver?.defaultValue ?? 20);
             setUnitsPerBuilding(stream.unitsDriver?.defaultValue ?? 20);
             setAssumptionsOpen(false);
+            const bs = BASELINE_STREAMS.find(s => s.stream_id === stream.id);
+            setCustomGrowthPct(bs ? parseFloat((bs.monthly_growth * 100).toFixed(1)) : 7);
         }
     }, [stream?.id]);
 
@@ -36,11 +42,11 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
 
     if (!stream) return null;
 
-    const baselineStream = BASELINE_STREAMS.find(s => s.stream_id === stream.id);
-    const momGrowth = baselineStream ? (baselineStream.monthly_growth * 100).toFixed(1) : null;
+    const momGrowth = defaultGrowthPct;
+    const customGrowthRate = customGrowthPct / 100;
 
     const secondParam = stream.sitesDriver ? sitesPerAccount : (stream.unitsDriver ? unitsPerBuilding : undefined);
-    const rev = stream.computeRevenue(driverValue, scenario, yearView, secondParam);
+    const rev = stream.computeRevenue(driverValue, scenario, yearView, secondParam, customGrowthRate);
     const isPipeline = stream.isPipelinePrimary;
 
     const pipelineMetrics = isPipeline ? {
