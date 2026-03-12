@@ -341,7 +341,7 @@ export const STREAMS = [
     unitsDriver: {
       name: 'Units per building',
       unitLabel: 'units',
-      min: 1, max: 500, step: 1, defaultValue: 20,
+      min: 1, max: 500, step: 1, defaultValue: 40,
     },
     revenueFormula: (d, units = 40) => `$41.25/unit/mo × ${units} units/building × ${d} buildings × growth_factor\n= $55/unit × 75% OverIT share. ${d * units} total units → $${(d * units * 41.25).toFixed(0)}/mo at M1`,
     assumptions: {
