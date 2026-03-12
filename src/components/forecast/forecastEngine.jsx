@@ -39,6 +39,9 @@ export const DEPENDENCIES = [
   { upstream: 'experience', downstream: 'experience_design_consulting', elasticity: 1.0 },
 ];
 
+// Net profit margin used across the app — single source of truth
+export const NET_MARGIN = 0.63;
+
 export const SCENARIO_MULTIPLIERS = {
   conservative: { label: 'Conservative', multiplier: 0.8,  color: '#f59e0b' },
   base:          { label: 'Base',         multiplier: 1.0,  color: '#22d3ee' },
@@ -146,7 +149,16 @@ export function runForecast(streams, scenario = 'base') {
     enabled.reduce((a, s) => a + results[s.stream_id].monthly[i], 0)
   );
 
-  return { streams: results, totalY1, totalY2, totalY3, totalMonthly };
+  const totalNetProfitY1 = Math.round(totalY1 * NET_MARGIN);
+  const totalNetProfitY2 = Math.round(totalY2 * NET_MARGIN);
+  const totalNetProfitY3 = Math.round(totalY3 * NET_MARGIN);
+
+  return {
+    streams: results,
+    totalY1, totalY2, totalY3,
+    totalMonthly,
+    totalNetProfitY1, totalNetProfitY2, totalNetProfitY3,
+  };
 }
 
 export function formatCurrency(n, compact = false) {
