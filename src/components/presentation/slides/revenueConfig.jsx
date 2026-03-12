@@ -253,7 +253,7 @@ export const STREAMS = [
     color: STREAM_COLORS.monitoring,
     emoji: '👁️',
     what: 'Remote monitoring of security cameras and access control systems with alerting, reporting, and escalation.',
-    whoServes: 'Property managers, HOAs, retail chains, and any client whose infrastructure we touched.',
+    whoServes: 'Property managers, HOAs, retail chains, and any client whose IT infrastructure supports more sophicted access and security systems.',
     howWeEarn: '$40/site/month recurring. A single retail chain rollout of 40 locations = $1,600/mo MRR.',
     driver: {
       name: baseline('monitoring').driver_name,
