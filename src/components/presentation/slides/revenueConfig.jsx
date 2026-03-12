@@ -304,7 +304,7 @@ export const STREAMS = [
     driver: {
       name: baseline('refrigeration').driver_name,
       unitLabel: baseline('refrigeration').driver_unit,
-      min: 0, max: 100, step: 5, defaultValue: baseline('refrigeration').plan_driver_m1,
+      min: 0, max: 100, step: 1, defaultValue: baseline('refrigeration').plan_driver_m1,
     },
     assumptions: {
       unitRevenue: baseline('refrigeration').unit_revenue,
