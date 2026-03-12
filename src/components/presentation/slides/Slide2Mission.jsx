@@ -84,7 +84,7 @@ export default function Slide2Mission({ onInteracted }) {
         }))
     , [revenues]);
 
-    const handleReset = () => setDrivers(defaultDrivers);
+    const handleReset = () => setDrivers(scenarioDrivers);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 py-14 px-4 md:px-8">
