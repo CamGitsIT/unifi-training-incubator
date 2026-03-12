@@ -245,6 +245,7 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                                 </div>
 
                                 {stream.unitsDriver && (
+
                                     <div className="mt-4 pt-4 border-t border-slate-700/60">
                                         <p className="text-white font-semibold text-sm mb-3">{stream.unitsDriver.name}</p>
                                         <div className="flex items-center gap-4 mb-3">
