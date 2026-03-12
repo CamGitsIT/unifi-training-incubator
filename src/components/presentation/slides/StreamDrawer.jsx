@@ -392,10 +392,20 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                                                 ))}
                                             </div>
 
-                                            <div className="border-t border-slate-800 pt-3 mt-3">
+                                               <div className="border-t border-slate-800 pt-3 mt-3">
                                                 <p className="text-xs text-slate-500 italic">{stream.assumptions.scenarioNote}</p>
-                                                
                                             </div>
+
+                                            {stream.revenueFormula && (
+                                                <div className="border-t border-slate-800 pt-3 mt-3">
+                                                    <p className="text-xs font-semibold text-slate-400 mb-2">Revenue formula</p>
+                                                    <div className="rounded-lg bg-slate-950/60 border border-slate-700 px-3 py-2.5">
+                                                        {stream.revenueFormula(driverValue, secondParam ?? 20).split('\n').map((line, i) => (
+                                                            <p key={i} className={`text-xs font-mono ${i === 0 ? 'text-cyan-300 font-semibold' : 'text-slate-500 mt-1'}`}>{line}</p>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </motion.div>
                                 )}
