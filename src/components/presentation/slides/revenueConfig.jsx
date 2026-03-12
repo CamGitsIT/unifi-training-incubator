@@ -74,7 +74,7 @@ function computeExperienceRevenue(driverValue, scenario, yearView, _secondParam,
 function computeRetailRevenue(accountsValue, scenario, yearView, sitesPerAccount = 20, customGrowthRate) {
   const streams = BASELINE_STREAMS.map(s =>
     s.stream_id === 'retail'
-      ? { ...s, plan_driver_m1: accountsValue, units_per_driver: sitesPerAccount }
+      ? { ...s, plan_driver_m1: accountsValue, units_per_driver: sitesPerAccount, ...(customGrowthRate != null ? { monthly_growth: customGrowthRate } : {}) }
       : { ...s }
   );
   const result = runForecast(streams, scenario);
