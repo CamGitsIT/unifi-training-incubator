@@ -27,10 +27,10 @@ export const YEAR_RAMP = {
 // the existing Slide2 / StreamDrawer interface.
 // -------------------------------------------------------
 function makeCompute(streamId) {
-  return function computeRevenue(driverValue, scenario, yearView) {
+  return function computeRevenue(driverValue, scenario, yearView, _secondParam, customGrowthRate) {
     const streams = BASELINE_STREAMS.map(s =>
       s.stream_id === streamId
-        ? { ...s, plan_driver_m1: driverValue }
+        ? { ...s, plan_driver_m1: driverValue, ...(customGrowthRate != null ? { monthly_growth: customGrowthRate } : {}) }
         : { ...s }
     );
     const result = runForecast(streams, scenario);
