@@ -71,7 +71,7 @@ function computeExperienceRevenue(driverValue, scenario, yearView, _secondParam,
 
 // Special compute for Multi-Location Retail:
 // accounts × sitesPerAccount × $500/site (12.5% of $4,000/site)
-function computeRetailRevenue(accountsValue, scenario, yearView, sitesPerAccount = 20) {
+function computeRetailRevenue(accountsValue, scenario, yearView, sitesPerAccount = 20, customGrowthRate) {
   const streams = BASELINE_STREAMS.map(s =>
     s.stream_id === 'retail'
       ? { ...s, plan_driver_m1: accountsValue, units_per_driver: sitesPerAccount }
