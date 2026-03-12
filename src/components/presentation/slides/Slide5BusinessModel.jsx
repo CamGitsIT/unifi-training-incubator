@@ -195,11 +195,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
           </div>
         </motion.div>
 
-        {allExpanded && (
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
-            ✓ All 8 lines explored — click Next to continue
-          </motion.p>
-        )}
+        {/* All-explored message hidden */}
       </div>
     </div>
   );
