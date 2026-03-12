@@ -124,10 +124,7 @@ export default function Slide2Mission({ onInteracted }) {
                                  );
                              })}
                          </div>
-                        <button onClick={handleReset}
-                            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-400 hover:text-white text-xs font-semibold transition-all">
-                            <RotateCcw className="w-3.5 h-3.5" /> Reset
-                        </button>
+
                     </div>
                 </motion.div>
 
