@@ -235,7 +235,8 @@ export default function Slide7Financials({ onInteracted }) {
                                 key={s.value}
                                 initial={{ scale: 0.9, opacity: 0.5 }}
                                 animate={{ scale: 1, opacity: 1 }}
-                                className={`text-2xl md:text-3xl font-bold ${s.color}`}
+                                className="text-2xl md:text-3xl font-bold"
+                                style={{ color: s.color }}
                             >
                                 {s.value}
                             </motion.div>
