@@ -216,6 +216,30 @@ export default function StreamDrawer({ stream, scenario, yearView, driverValue: 
                                     <span>{stream.driver.max} {stream.driver.unitLabel}</span>
                                 </div>
 
+                                {/* MoM Growth Rate slider */}
+                                <div className="mt-4 pt-4 border-t border-slate-700/60">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <p className="text-white font-semibold text-sm">MoM Growth Rate</p>
+                                        <span className="text-sm font-bold tabular-nums" style={{ color: stream.color }}>
+                                            {customGrowthPct.toFixed(1)}%
+                                        </span>
+                                    </div>
+                                    <Slider
+                                        value={[customGrowthPct]}
+                                        onValueChange={v => setCustomGrowthPct(v[0])}
+                                        min={0}
+                                        max={100}
+                                        step={0.5}
+                                        className="mb-1"
+                                        style={{ '--slider-filled': stream.color }}
+                                    />
+                                    <div className="flex justify-between text-xs text-slate-600 mt-1">
+                                        <span>0%</span>
+                                        <span className="text-slate-500 italic text-center">Default: {momGrowth}%</span>
+                                        <span>100%</span>
+                                    </div>
+                                </div>
+
                                 {stream.unitsDriver && (
                                     <div className="mt-4 pt-4 border-t border-slate-700/60">
                                         <p className="text-white font-semibold text-sm mb-3">{stream.unitsDriver.name}</p>
