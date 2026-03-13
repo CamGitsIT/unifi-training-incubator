@@ -57,9 +57,16 @@ export default function Slide2Problem({ onInteracted }) {
                     className="bg-slate-800/30 border border-slate-700 rounded-2xl p-8 md:p-12 mb-8"
                 >
                     <div className="prose prose-lg prose-invert max-w-none">
-                        <p className="text-slate-200 text-lg md:text-xl leading-relaxed mb-8">
-                            Businesses and property groups are stuck <strong className="text-white">paying forever</strong> for <strong className="text-white">fragmented systems</strong> that were never built to work together across core functions like networking, surveillance, access, and communications.
+                        <p className="text-slate-200 text-lg md:text-xl leading-relaxed mb-6">
+                            Multi-site businesses and property groups <strong className="text-white">pay forever</strong> for <strong className="text-white">fragmented systems</strong> that were never built to work together — across networking, surveillance, access, and communications.
                         </p>
+                        
+                        <div className="text-slate-300 text-base md:text-lg leading-relaxed mb-8 space-y-2">
+                            <p><strong className="text-white">Recurring fees</strong> drain millions.</p>
+                            <p><strong className="text-white">Auto-renewals</strong> lock you in.</p>
+                            <p><strong className="text-white">Fragmented tools</strong> create management chaos.</p>
+                            <p><strong className="text-white">Dated tech</strong> holds everyone back.</p>
+                        </div>
 
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -90,11 +97,15 @@ export default function Slide2Problem({ onInteracted }) {
                         </motion.div>
                         
                         <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-6">
-                            UniFi replaces that with <strong className="text-cyan-400">one integrated, subscription-free stack</strong> with more sophisticated, united technology.
+                            UniFi replaces it with <strong className="text-cyan-400">one integrated, subscription-free stack</strong>.
+                        </p>
+                        
+                        <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-4">
+                            What's missing: the expertise to deploy, teach, and scale it.
                         </p>
                         
                         <p className="text-slate-300 text-base md:text-lg leading-relaxed">
-                            What's rare is the expertise to deploy it, teach it, and scale it. <strong className="text-cyan-400">OverISP</strong> <strong className="text-white">is that layer</strong>.
+                            <strong className="text-cyan-400">OverISP</strong> <strong className="text-white">is that layer</strong>.
                         </p>
                     </div>
                 </motion.div>
