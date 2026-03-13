@@ -94,7 +94,7 @@ export default function Slide2Problem({ onInteracted }) {
                         </motion.div>
                         
                         <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-6">
-                            <strong className="text-cyan-400">Ubiquiti and UniFi</strong> solved this — through both hardware and software — by building a <strong className="text-white">unified, subscription-free technology stack</strong> that replaces it all. The problem is <strong className="text-white">there are very few experts</strong> who know how to deploy it, teach it, and scale it.
+                            <strong className="text-cyan-400">Ubiquiti and UniFi</strong> solved this — through both hardware and software — by building a <strong className="text-white">unified, subscription-free technology stack</strong> that replaces it all. The problem is <strong className="text-cyan-400">there are very few experts</strong> who know how to deploy it, teach it, and scale it.
                         </p>
                         
                         <p className="text-cyan-400 text-lg md:text-xl font-semibold leading-relaxed">
