@@ -58,7 +58,7 @@ export default function Slide2Problem({ onInteracted }) {
                 >
                     <div className="prose prose-lg prose-invert max-w-none">
                         <p className="text-slate-200 text-lg md:text-xl leading-relaxed mb-6">
-                            Mid-market businesses and property operators are <strong className="text-white">bleeding thousands of dollars every month</strong> — locked into <strong className="text-white">recurring, contractual software subscriptions</strong> built on aging, fragmented technology that was never designed to work together.
+                            Buusinesses and residential property groups are <strong className="text-white">bleeding thousands of dollars every month</strong> — locked into <strong className="text-white">recurring, contractual software subscriptions</strong> built on aging, fragmented technology that was never designed to work together.
                         </p>
                         
                         <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-6">
@@ -66,7 +66,7 @@ export default function Slide2Problem({ onInteracted }) {
                         </p>
                         
                         <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-6">
-                            <strong className="text-cyan-400">Ubiquiti and UniFi</strong> solved this — through both hardware and software — by building a <strong className="text-white">unified, subscription-free technology stack</strong> that replaces all of it. The problem is <strong className="text-white">there are very few experts</strong> who know how to deploy it, teach it, and scale it.
+                            <strong className="text-cyan-400">Ubiquiti and UniFi</strong> solved this — through both hardware and software — by building a <strong className="text-white">unified, subscription-free technology stack</strong> that replaces it all. The problem is <strong className="text-white">there are very few experts</strong> who know how to deploy it, teach it, and scale it.
                         </p>
                         
                         <p className="text-cyan-400 text-lg md:text-xl font-semibold leading-relaxed">
