@@ -40,9 +40,9 @@ export default function Slide2Problem({ onInteracted }) {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center mb-12"
                 >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/20 mb-6">
-                        <AlertTriangle className="w-4 h-4 text-red-400" />
-                        <span className="text-red-400 text-sm font-medium">The Problem</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-500/10 border border-slate-500/20 mb-6">
+                        <AlertTriangle className="w-4 h-4 text-slate-400" />
+                        <span className="text-slate-400 text-sm font-medium">The Problem</span>
                     </div>
                     
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
@@ -58,15 +58,15 @@ export default function Slide2Problem({ onInteracted }) {
                 >
                     <div className="prose prose-lg prose-invert max-w-none">
                         <p className="text-slate-200 text-lg md:text-xl leading-relaxed mb-6">
-                            Mid-market businesses and property operators are bleeding thousands of dollars every month — locked into recurring, contractual software subscriptions built on aging, fragmented technology that was never designed to work together.
+                            Mid-market businesses and property operators are <strong className="text-white">bleeding thousands of dollars every month</strong> — locked into <strong className="text-white">recurring, contractual software subscriptions</strong> built on aging, fragmented technology that was never designed to work together.
                         </p>
                         
                         <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-6">
-                            Separate vendors for networking, surveillance, access control, and communications. Contracts that auto-renew. Support that doesn't show up. And a total cost of ownership that compounds every year with no end in sight.
+                            <strong className="text-white">Separate vendors</strong> for networking, surveillance, access control, and communications. <strong className="text-white">Contracts that auto-renew.</strong> Support that doesn't show up. And a <strong className="text-white">total cost of ownership that compounds every year</strong> with no end in sight.
                         </p>
                         
                         <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-6">
-                            Ubiquiti and UniFi solved this — through both hardware and software — by building a unified, subscription-free technology stack that replaces all of it. The problem is nobody built the infrastructure to deploy it, teach it, and scale it.
+                            <strong className="text-cyan-400">Ubiquiti and UniFi</strong> solved this — through both hardware and software — by building a <strong className="text-white">unified, subscription-free technology stack</strong> that replaces all of it. The problem is <strong className="text-white">there are very few experts</strong> who know how to deploy it, teach it, and scale it.
                         </p>
                         
                         <p className="text-cyan-400 text-lg md:text-xl font-semibold leading-relaxed">
