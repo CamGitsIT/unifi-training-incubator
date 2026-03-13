@@ -4,6 +4,7 @@ import { Shield } from 'lucide-react';
 import SlideNav from '../components/presentation/SlideNav';
 import SideNav from '../components/presentation/SideNav';
 import Slide1Hero from '../components/presentation/slides/Slide1Hero';
+import Slide2Problem from '../components/presentation/slides/Slide2Problem';
 import Slide2Mission from '../components/presentation/slides/Slide2Mission';
 import Slide5BusinessModel from '../components/presentation/slides/Slide5BusinessModel';
 import Slide6Property from '../components/presentation/slides/Slide6Property';
@@ -22,6 +23,7 @@ const GATING_ENABLED = false;
 
 const SLIDES = [
     { id: 'overview', component: Slide1Hero, label: 'Welcome' },
+    { id: 'the-problem', component: Slide2Problem, label: 'The Problem' },
     { id: 'business-model', component: Slide5BusinessModel, label: 'Business Model' },
     { id: 'revenue-streams', component: Slide2Mission, label: 'Revenue Streams' },
     { id: 'community-impact', component: Slide10SocialImpact, label: 'Community Impact' },

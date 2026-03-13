@@ -9,13 +9,14 @@ import { Menu } from 'lucide-react';
 // Each section contains slideIndices (internal array references only)
 const NAV_SECTIONS = [
     { id: 'overview', label: 'Overview', slideIndices: [0] },
-    { id: 'business-model', label: 'Business Model', slideIndices: [1] },
-    { id: 'revenue-streams', label: 'Revenue Streams', slideIndices: [2] },
-    { id: 'community-impact', label: 'Community Impact', slideIndices: [3] },
-    { id: 'the-property', label: 'The Property', slideIndices: [4] },
-    { id: 'financials', label: 'Investment Insights', slideIndices: [5] },
-    { id: 'team', label: 'The Team', slideIndices: [6] },
-    { id: 'call-to-action', label: 'Join the Mission', slideIndices: [7] },
+    { id: 'the-problem', label: 'The Problem', slideIndices: [1] },
+    { id: 'business-model', label: 'Business Model', slideIndices: [2] },
+    { id: 'revenue-streams', label: 'Revenue Streams', slideIndices: [3] },
+    { id: 'community-impact', label: 'Community Impact', slideIndices: [4] },
+    { id: 'the-property', label: 'The Property', slideIndices: [5] },
+    { id: 'financials', label: 'Investment Insights', slideIndices: [6] },
+    { id: 'team', label: 'The Team', slideIndices: [7] },
+    { id: 'call-to-action', label: 'Join the Mission', slideIndices: [8] },
 ];
 
 function NavContent({ current, seen, interacted = [], onNavigate, onClose }) {
