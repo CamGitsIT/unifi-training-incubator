@@ -94,7 +94,7 @@ export default function Slide2Problem({ onInteracted }) {
                         </p>
                         
                         <p className="text-slate-300 text-base md:text-lg leading-relaxed">
-                            What's rare is the expertise to deploy it, teach it, and scale it. <strong className="text-white">OverISP</strong> <strong className="text-white">is that layer</strong>.
+                            What's rare is the expertise to deploy it, teach it, and scale it. <strong className="text-cyan-400">OverISP</strong> <strong className="text-white">is that layer</strong>.
                         </p>
                     </div>
                 </motion.div>
