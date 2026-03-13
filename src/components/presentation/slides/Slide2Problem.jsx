@@ -57,12 +57,8 @@ export default function Slide2Problem({ onInteracted }) {
                     className="bg-slate-800/30 border border-slate-700 rounded-2xl p-8 md:p-12 mb-8"
                 >
                     <div className="prose prose-lg prose-invert max-w-none">
-                        <p className="text-slate-200 text-lg md:text-xl leading-relaxed mb-6">
-                            Buusinesses and residential property groups are <strong className="text-white">bleeding thousands of dollars every month</strong> — locked into <strong className="text-white">recurring, contractual software subscriptions</strong> built on aging, fragmented technology that was never designed to work together.
-                        </p>
-                        
-                        <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-8">
-                            <strong className="text-white">Separate vendors</strong> for networking, surveillance, access control, and communications. <strong className="text-white">Contracts that auto-renew.</strong> Support that doesn't show up. And a <strong className="text-white">total cost of ownership that compounds every year</strong> with no end in sight.
+                        <p className="text-slate-200 text-lg md:text-xl leading-relaxed mb-8">
+                            Businesses and property groups are stuck <strong className="text-white">paying forever</strong> for <strong className="text-white">fragmented systems</strong> that were never built to work together across core functions like networking, surveillance, access, and communications.
                         </p>
 
                         <motion.div
@@ -94,11 +90,11 @@ export default function Slide2Problem({ onInteracted }) {
                         </motion.div>
                         
                         <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-6">
-                            <strong className="text-cyan-400">Ubiquiti and UniFi</strong> solved this — through both hardware and software — by building a <strong className="text-white">unified, subscription-free technology stack</strong> that replaces it all. The problem is <strong className="text-cyan-400">there are very few experts</strong> who know how to deploy it, teach it, and scale it.
+                            UniFi replaces that with <strong className="text-cyan-400">one integrated, subscription-free stack</strong> with more sophisticated, united technology.
                         </p>
                         
-                        <p className="text-cyan-400 text-lg md:text-xl font-semibold leading-relaxed">
-                            That's exactly what OverISP is.
+                        <p className="text-slate-300 text-base md:text-lg leading-relaxed">
+                            What's rare is the expertise to deploy it, teach it, and scale it. <strong className="text-white">OverISP</strong> <strong className="text-white">is that layer</strong>.
                         </p>
                     </div>
                 </motion.div>
