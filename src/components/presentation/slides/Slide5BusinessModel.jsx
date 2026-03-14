@@ -41,9 +41,10 @@ const STACK_DATA = [
 ];
 
 export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
-  const [expanded, setExpanded] = useState(new Set());
-  const [timerDone, setTimerDone] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(60);
+    const [expanded, setExpanded] = useState(new Set());
+    const [expandedCard, setExpandedCard] = useState(null);
+    const [timerDone, setTimerDone] = useState(false);
+    const [secondsLeft, setSecondsLeft] = useState(60);
 
   useEffect(() => {
     if (timerDone) { if (onUnlockMessage) onUnlockMessage(null); return; }
@@ -62,9 +63,14 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
   }, [timerDone]);
 
   const handleExpand = (i) => {
-    const next = new Set(expanded);
-    next.has(i) ? next.delete(i) : next.add(i);
-    setExpanded(next);
+      const next = new Set(expanded);
+      next.has(i) ? next.delete(i) : next.add(i);
+      setExpanded(next);
+      setExpandedCard(businessLines[i]);
+  };
+
+  const closeExpanded = () => {
+      setExpandedCard(null);
   };
 
   const allExpanded = expanded.size === businessLines.length;
@@ -98,16 +104,47 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
         </motion.div>
 
         {/* Flywheel Visualization */}
-        <div className="relative w-full max-w-6xl mx-auto mb-10 py-16" style={{ minHeight: '800px' }}>
+        <div className="relative w-full h-[700px] max-w-5xl mx-auto mb-10">
             {/* Center: Experience Center + Training (separately expandable) */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-                {/* Animated rotating ring */}
-                <motion.div
-                    className="absolute inset-0 rounded-full border-4 border-dashed border-emerald-500/40"
-                    style={{ width: '320px', height: '320px', left: '-60px', top: '-60px' }}
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                />
+                {/* Revolving colored arrows around center */}
+                {[0, 60, 120, 180, 240, 300].map((angle, idx) => (
+                    <motion.div
+                        key={idx}
+                        className="absolute top-1/2 left-1/2"
+                        style={{
+                            width: '120px',
+                            height: '2px',
+                            transformOrigin: 'left center',
+                        }}
+                        animate={{
+                            rotate: [angle, angle + 360],
+                        }}
+                        transition={{
+                            duration: 8,
+                            repeat: Infinity,
+                            ease: 'linear',
+                            delay: idx * 0.3,
+                        }}
+                    >
+                        <div className="w-full h-full relative">
+                            <motion.div
+                                className="absolute right-0 top-1/2 -translate-y-1/2"
+                                animate={{
+                                    opacity: [0.3, 1, 0.3],
+                                    scale: [1, 1.3, 1],
+                                }}
+                                transition={{
+                                    duration: 2,
+                                    repeat: Infinity,
+                                    delay: idx * 0.3,
+                                }}
+                            >
+                                <ArrowRight className="w-5 h-5" style={{ color: Object.values(STREAM_COLORS)[idx] }} />
+                            </motion.div>
+                        </div>
+                    </motion.div>
+                ))}
 
                 <div className="relative space-y-3">
                     {/* Experience Center Card */}
@@ -115,35 +152,19 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                         const expLine = businessLines.find(l => l.id === 'experience');
                         const expColors = colorMap[expLine.color];
                         const expIdx = businessLines.indexOf(expLine);
-                        const expOpen = expanded.has(expIdx);
                         return (
                             <motion.div
                                 onClick={() => handleExpand(expIdx)}
-                                className={`bg-gradient-to-br ${expColors.bg} to-slate-900/20 border-2 ${expColors.border} rounded-2xl p-4 cursor-pointer transition-all hover:scale-105 shadow-2xl ${expOpen ? 'ring-2 ring-cyan-400' : ''}`}
-                                style={{ width: expOpen ? '280px' : '200px' }}
+                                className={`bg-gradient-to-br ${expColors.bg} to-slate-900/20 border-2 ${expColors.border} rounded-2xl p-4 cursor-pointer transition-all hover:scale-105 shadow-2xl w-52`}
                             >
                                 <div className="flex items-center gap-2 mb-2">
                                     <div className={`w-8 h-8 ${expColors.icon} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                                        {expOpen ? <CheckCircle className="w-4 h-4 text-green-400" /> : <Camera className={`w-4 h-4 ${expColors.iconColor}`} />}
+                                        <Camera className={`w-4 h-4 ${expColors.iconColor}`} />
                                     </div>
                                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${expColors.tag}`}>{expLine.tag}</span>
                                 </div>
                                 <h3 className="text-sm font-bold text-white leading-tight">{expLine.title}</h3>
                                 <p className={`text-xs ${expColors.accent} mt-0.5 leading-snug`}>{expLine.subtitle}</p>
-
-                                {expOpen && (
-                                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="pt-2 mt-2 border-t border-slate-700/50">
-                                        <p className="text-slate-300 text-xs mb-2 leading-relaxed">{expLine.description}</p>
-                                        <div className="space-y-1">
-                                            {expLine.metrics.map((m, j) => (
-                                                <div key={j} className="flex items-start gap-1.5 text-xs text-slate-400">
-                                                    <ArrowRight className={`w-3 h-3 flex-shrink-0 mt-0.5 ${expColors.iconColor}`} />
-                                                    <span>{m}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </motion.div>
-                                )}
                             </motion.div>
                         );
                     })()}
@@ -153,120 +174,143 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                         const trainLine = businessLines.find(l => l.id === 'training');
                         const trainColors = colorMap[trainLine.color];
                         const trainIdx = businessLines.indexOf(trainLine);
-                        const trainOpen = expanded.has(trainIdx);
                         return (
                             <motion.div
                                 onClick={() => handleExpand(trainIdx)}
-                                className={`bg-gradient-to-br ${trainColors.bg} to-slate-900/20 border-2 ${trainColors.border} rounded-2xl p-4 cursor-pointer transition-all hover:scale-105 shadow-2xl ${trainOpen ? 'ring-2 ring-green-400' : ''}`}
-                                style={{ width: trainOpen ? '280px' : '200px' }}
+                                className={`bg-gradient-to-br ${trainColors.bg} to-slate-900/20 border-2 ${trainColors.border} rounded-2xl p-4 cursor-pointer transition-all hover:scale-105 shadow-2xl w-52`}
                             >
                                 <div className="flex items-center gap-2 mb-2">
                                     <div className={`w-8 h-8 ${trainColors.icon} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                                        {trainOpen ? <CheckCircle className="w-4 h-4 text-green-400" /> : <GraduationCap className={`w-4 h-4 ${trainColors.iconColor}`} />}
+                                        <GraduationCap className={`w-4 h-4 ${trainColors.iconColor}`} />
                                     </div>
                                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${trainColors.tag}`}>{trainLine.tag}</span>
                                 </div>
                                 <h3 className="text-sm font-bold text-white leading-tight">{trainLine.title}</h3>
                                 <p className={`text-xs ${trainColors.accent} mt-0.5 leading-snug`}>{trainLine.subtitle}</p>
-
-                                {trainOpen && (
-                                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="pt-2 mt-2 border-t border-slate-700/50">
-                                        <p className="text-slate-300 text-xs mb-2 leading-relaxed">{trainLine.description}</p>
-                                        <div className="space-y-1">
-                                            {trainLine.metrics.map((m, j) => (
-                                                <div key={j} className="flex items-start gap-1.5 text-xs text-slate-400">
-                                                    <ArrowRight className={`w-3 h-3 flex-shrink-0 mt-0.5 ${trainColors.iconColor}`} />
-                                                    <span>{m}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </motion.div>
-                                )}
                             </motion.div>
                         );
                     })()}
                 </div>
             </div>
 
-            {/* Surrounding 6 streams in circular layout */}
+            {/* Surrounding 6 streams as circles */}
             {businessLines.filter(l => l.id !== 'experience' && l.id !== 'training').map((line, i) => {
                 const colors = colorMap[line.color];
                 const Icon = line.icon;
-                const isOpen = expanded.has(businessLines.indexOf(line));
-                const angle = (i * 60) - 90; // Start from top, 60° spacing for 6 items
-                const radius = 320;
+                const angle = (i * 60) - 90;
+                const radius = 280;
                 const x = Math.cos((angle * Math.PI) / 180) * radius;
                 const y = Math.sin((angle * Math.PI) / 180) * radius;
 
                 return (
                     <React.Fragment key={line.id}>
-                        {/* Visible animated arrow from center to card */}
-                        <svg className="absolute top-1/2 left-1/2 pointer-events-none" style={{ width: '100%', height: '100%', transform: 'translate(-50%, -50%)' }}>
+                        {/* Arrow from center to satellite */}
+                        <svg className="absolute top-1/2 left-1/2 pointer-events-none" style={{ width: '100%', height: '100%', transform: 'translate(-50%, -50%)', overflow: 'visible' }}>
                             <defs>
-                                <marker id={`arrowhead-${line.id}`} markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-                                    <polygon points="0 0, 10 3, 0 6" fill={STREAM_COLORS[line.id]} />
+                                <marker id={`arrowhead-${line.id}`} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill={STREAM_COLORS[line.id]} opacity="0.6" />
                                 </marker>
                             </defs>
                             <motion.line
                                 x1="50%"
                                 y1="50%"
-                                x2={`calc(50% + ${x * 0.7}px)`}
-                                y2={`calc(50% + ${y * 0.7}px)`}
+                                x2={`calc(50% + ${x * 0.75}px)`}
+                                y2={`calc(50% + ${y * 0.75}px)`}
                                 stroke={STREAM_COLORS[line.id]}
                                 strokeWidth="2"
-                                strokeDasharray="5,5"
+                                strokeDasharray="4,4"
                                 markerEnd={`url(#arrowhead-${line.id})`}
-                                initial={{ pathLength: 0, opacity: 0 }}
-                                animate={{ pathLength: 1, opacity: 0.6 }}
-                                transition={{ delay: 0.5 + i * 0.1, duration: 0.8 }}
+                                opacity="0.5"
+                                initial={{ pathLength: 0 }}
+                                animate={{ pathLength: 1 }}
+                                transition={{ delay: 0.3 + i * 0.1, duration: 0.6 }}
                             />
                         </svg>
 
+                        {/* Circular satellite card */}
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
+                            initial={{ opacity: 0, scale: 0.7 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: i * 0.08 }}
+                            transition={{ delay: i * 0.1 }}
                             onClick={() => handleExpand(businessLines.indexOf(line))}
-                            className={`absolute cursor-pointer transition-all hover:scale-105 ${isOpen ? 'z-20' : 'z-0'}`}
+                            className="absolute cursor-pointer transition-all hover:scale-110"
                             style={{
                                 top: `calc(50% + ${y}px)`,
                                 left: `calc(50% + ${x}px)`,
                                 transform: 'translate(-50%, -50%)',
-                                width: isOpen ? '260px' : '190px',
                             }}
                         >
-                            <div className={`bg-gradient-to-br ${colors.bg} to-slate-900/20 border-2 ${colors.border} rounded-2xl p-4 transition-all ${isOpen ? 'ring-2 ring-offset-2 ring-offset-slate-900 shadow-2xl' : 'shadow-lg'}`}>
-                                <div className="flex items-center gap-2 mb-2">
-                                    <div className={`w-8 h-8 ${colors.icon} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                                        {isOpen ? <CheckCircle className="w-4 h-4 text-green-400" /> : <Icon className={`w-4 h-4 ${colors.iconColor}`} />}
-                                    </div>
-                                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${colors.tag}`}>{line.tag}</span>
+                            <div 
+                                className={`w-40 h-40 rounded-full bg-gradient-to-br ${colors.bg} to-slate-900/20 border-2 ${colors.border} shadow-xl flex flex-col items-center justify-center p-4 text-center`}
+                            >
+                                <div className={`w-10 h-10 ${colors.icon} rounded-full flex items-center justify-center mb-2`}>
+                                    <Icon className={`w-5 h-5 ${colors.iconColor}`} />
                                 </div>
-
-                                <div>
-                                    <h3 className="text-sm font-bold text-white leading-tight">{line.title}</h3>
-                                    <p className={`text-xs ${colors.accent} mt-0.5 leading-snug`}>{line.subtitle}</p>
-                                </div>
-
-                                {isOpen && (
-                                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="pt-2 mt-2 border-t border-slate-700/50">
-                                        <p className="text-slate-300 text-xs mb-2 leading-relaxed">{line.description}</p>
-                                        <div className="space-y-1">
-                                            {line.metrics.map((m, j) => (
-                                                <div key={j} className="flex items-start gap-1.5 text-xs text-slate-400">
-                                                    <ArrowRight className={`w-3 h-3 flex-shrink-0 mt-0.5 ${colors.iconColor}`} />
-                                                    <span>{m}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </motion.div>
-                                )}
+                                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${colors.tag} mb-2`}>{line.tag}</span>
+                                <h3 className="text-xs font-bold text-white leading-tight">{line.title}</h3>
                             </div>
                         </motion.div>
                     </React.Fragment>
                 );
             })}
         </div>
+
+        {/* Expanded Card Modal Overlay */}
+        {expandedCard && (() => {
+            const colors = colorMap[expandedCard.color];
+            const Icon = expandedCard.icon;
+            return (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={closeExpanded}
+                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+                    />
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl max-h-[80vh] overflow-y-auto"
+                    >
+                        <div className={`bg-gradient-to-br ${colors.bg} to-slate-900 border-2 ${colors.border} rounded-3xl p-8 shadow-2xl mx-4`}>
+                            <div className="flex items-start justify-between mb-6">
+                                <div className="flex items-center gap-4">
+                                    <div className={`w-14 h-14 ${colors.icon} rounded-2xl flex items-center justify-center`}>
+                                        <Icon className={`w-7 h-7 ${colors.iconColor}`} />
+                                    </div>
+                                    <div>
+                                        <span className={`text-sm font-semibold px-3 py-1 rounded-full ${colors.tag} inline-block mb-2`}>{expandedCard.tag}</span>
+                                        <h3 className="text-2xl font-bold text-white leading-tight">{expandedCard.title}</h3>
+                                        <p className={`text-base ${colors.accent} mt-1`}>{expandedCard.subtitle}</p>
+                                    </div>
+                                </div>
+                                <button onClick={closeExpanded} className="text-slate-400 hover:text-white transition-colors">
+                                    <CheckCircle className="w-6 h-6" />
+                                </button>
+                            </div>
+
+                            <div className="space-y-4">
+                                <p className="text-slate-200 text-base leading-relaxed">{expandedCard.description}</p>
+
+                                <div className="bg-slate-900/40 rounded-2xl p-5 border border-slate-700/50">
+                                    <h4 className="text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">Key Benefits</h4>
+                                    <div className="space-y-2">
+                                        {expandedCard.metrics.map((m, j) => (
+                                            <div key={j} className="flex items-start gap-3 text-base text-slate-300">
+                                                <ArrowRight className={`w-5 h-5 flex-shrink-0 mt-0.5 ${colors.iconColor}`} />
+                                                <span>{m}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </>
+            );
+        })()}
 
         {/* Section break */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="mt-14 mb-8 flex items-center gap-4">
