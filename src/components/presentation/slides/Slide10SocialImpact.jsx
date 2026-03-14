@@ -211,8 +211,8 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     <h3 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
                         We don't hire installers.<br />We create them.
                     </h3>
-                    <p className="text-slate-300 max-w-2xl mx-auto mb-10">
-                        Graduates leave with credentials, portfolio projects, and a pipeline of paid work—launching independent contractors and small businesses that keep SBA-backed impact circulating in the local economy.
+                    <p className="text-slate-400 max-w-xl mx-auto mb-10 text-base">
+                        Credentials, portfolio projects, and a pipeline of paid work — on day one.
                     </p>
                     <div className="grid md:grid-cols-3 gap-5">
                         {[
@@ -232,42 +232,49 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     </div>
                 </div>
 
-                {/* Certifications That Change Lives — summary panel */}
-                <div className="grid md:grid-cols-2 gap-6 mb-8 bg-slate-800/30 border border-slate-700 rounded-2xl p-6">
-                    <div>
-                        <h3 className="text-xl font-bold text-white mb-3">Certifications That Change Lives</h3>
-                        <p className="text-slate-300 text-sm mb-3">
-                            Ubiquiti Academy's global certification program has trained more than <strong className="text-white">50,000 students worldwide</strong>. OverIT channels that momentum into a local UniFi Experience Center and National Training Center.
-                        </p>
-                        <p className="text-slate-300 text-sm mb-3">
-                            <strong className="text-white">The OverIT Multiplier Effect:</strong> we don't staff a huge installer workforce. We certify professionals, then route retrofit, retail, and ISP projects directly to our alumni and partner businesses.
-                        </p>
-                        <p className="text-cyan-400 text-sm font-medium">
-                            By approving this loan, the SBA is not just funding a building; it is funding an incubator that creates independent contractors and tax-contributing small businesses across the region.
-                        </p>
+                {/* Certifications That Change Lives — stat cards + badge image */}
+                <div className="grid md:grid-cols-2 gap-6 mb-8">
+                    <div className="flex flex-col gap-4">
+                        <h3 className="text-xl font-bold text-white">Certifications That Change Lives</h3>
+                        <div className="grid grid-cols-1 gap-3">
+                            <div className="flex items-start gap-4 bg-slate-800/40 border border-slate-700 rounded-2xl px-5 py-4">
+                                <div className="text-3xl font-black text-white leading-none">50K+</div>
+                                <div>
+                                    <div className="text-white font-semibold text-sm">Students certified worldwide</div>
+                                    <div className="text-slate-400 text-xs mt-0.5">Ubiquiti Academy's global program — OverIT brings that pipeline home.</div>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-4 bg-slate-800/40 border border-slate-700 rounded-2xl px-5 py-4">
+                                <div className="text-3xl font-black text-emerald-400 leading-none">↑×</div>
+                                <div>
+                                    <div className="text-white font-semibold text-sm">The OverIT Multiplier</div>
+                                    <div className="text-slate-400 text-xs mt-0.5">Certify professionals → route retrofit, retail, and ISP projects to alumni directly. No payroll. Pure margin.</div>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-4 bg-cyan-500/5 border border-cyan-500/20 rounded-2xl px-5 py-4">
+                                <div className="text-3xl font-black text-cyan-400 leading-none">SBA</div>
+                                <div>
+                                    <div className="text-white font-semibold text-sm">An incubator, not just a building</div>
+                                    <div className="text-cyan-400/80 text-xs mt-0.5">This loan creates independent contractors and tax-contributing small businesses across the region.</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="bg-slate-900/60 border border-slate-600 rounded-xl p-5 flex flex-col gap-4">
-                       <img
+                    <div className="bg-slate-900/60 border border-slate-600 rounded-xl p-5 flex items-center justify-center">
+                        <img
                             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/6c072e701_certification-program2.png"
                             alt="Ubiquiti Certifications"
                             className="w-full rounded-lg object-contain"
                         />
-                        <ul className="space-y-2">
-                            {certifications.map((cert) => (
-                                <li key={cert.id} className="flex items-center gap-3 text-slate-200 text-sm">
-                                    <img src={cert.badge} alt={cert.name} className="w-7 h-7 flex-shrink-0 rounded-md" />
-                                    <span>{cert.name}</span>
-                                </li>
-                            ))}
-                        </ul>
                     </div>
                 </div>
 
                 <Tabs value={activeCert} onValueChange={handleTab} className="w-full">
                     <TabsList className="grid w-full grid-cols-5 bg-slate-800/50 p-2 rounded-xl mb-6 h-auto gap-1">
                         {certifications.map(cert => (
-                            <TabsTrigger key={cert.id} value={cert.id} className="data-[state=active]:bg-slate-700 rounded-lg hover:scale-105 transition-transform relative p-1.5">
+                            <TabsTrigger key={cert.id} value={cert.id} className="data-[state=active]:bg-slate-700 rounded-lg hover:scale-105 transition-transform relative p-1.5 flex flex-col items-center gap-1">
                                 <img src={cert.badge} alt={cert.name} className="w-10 h-10 md:w-14 md:h-14 object-contain" />
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{cert.id.toUpperCase()}</span>
                                 {visited.has(cert.id) && cert.id !== activeCert && (
                                     <div className="absolute top-1 right-1 w-2 h-2 bg-green-400 rounded-full" />
                                 )}
