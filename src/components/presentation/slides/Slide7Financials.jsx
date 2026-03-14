@@ -20,7 +20,9 @@ const LOCATION_FREE = {
 
 const ANNUAL_DEBT_SERVICE = 55200;
 const MARGIN = 0.63;
-const REVEAL_INTERVAL = 2600;
+const REVEAL_INTERVAL = 2600; // ms between each stream reveal after the first
+const FIRST_REVEAL_DELAY = 1200; // ms after mount before first stream drops in
+// (Home.jsx entrance animation is 350ms, so 1200ms gives it plenty of room)
 
 // ─── Build LINE_CONFIGS from baseline ────────────────────────────────────────
 const LINE_CONFIGS_RAW = BASELINE_STREAMS.map(s => ({
@@ -54,16 +56,16 @@ const LINE_CONFIGS_RAW = BASELINE_STREAMS.map(s => ({
 }));
 
 // ─── Display order: Experience + Training pinned first ────────────────────────
-const PINNED_IDS  = ['experience', 'training'];
-const OTHER_IDS   = ['refrigeration', 'retrofit', 'retail', 'rentals', 'isp', 'monitoring'];
+const PINNED_IDS = ['experience', 'training'];
+const OTHER_IDS  = ['refrigeration', 'retrofit', 'retail', 'rentals', 'isp', 'monitoring'];
 
 const LINE_CONFIGS = [
     ...PINNED_IDS.map(id => LINE_CONFIGS_RAW.find(l => l.id === id)),
     ...OTHER_IDS.map(id => LINE_CONFIGS_RAW.find(l => l.id === id)),
 ].filter(Boolean);
 
-const PINNED_COUNT = PINNED_IDS.length;   // 2
-const TOTAL_STEPS  = OTHER_IDS.length;    // 6
+const PINNED_COUNT = PINNED_IDS.length;  // 2
+const TOTAL_STEPS  = OTHER_IDS.length;   // 6
 
 // ─── LineCard ─────────────────────────────────────────────────────────────────
 function LineCard({ line, value, onChange, isPinned }) {
@@ -183,65 +185,31 @@ export default function Slide7Financials({ onInteracted }) {
     const [secondsLeft, setSecondsLeft]     = useState(45);
 
     // ── Reveal state ──────────────────────────────────────────────────────────
-    // slideVisible: true only when this slide is actually on screen
-    // revealStarted: latched true once we've begun — prevents restart on re-render
-    const [slideVisible,   setSlideVisible]   = useState(false);
-    const [revealStarted,  setRevealStarted]  = useState(false);
-    const [revealStep,     setRevealStep]      = useState(0);
-    const [revealPaused,   setRevealPaused]    = useState(false);
+    // revealStep: how many of the OTHER_IDS streams are currently visible (0..6)
+    // revealActive: starts false, flips true after FIRST_REVEAL_DELAY ms on mount
+    // revealPaused: true while user is dragging a slider
+    const [revealStep,   setRevealStep]   = useState(0);
+    const [revealActive, setRevealActive] = useState(false);
+    const [revealPaused, setRevealPaused] = useState(false);
+    const revealTimer = useRef(null);
 
-    const rootRef      = useRef(null);   // attached to the outermost div
-    const revealTimer  = useRef(null);
-
-    // ── IntersectionObserver: detect when slide enters viewport ──────────────
-    // threshold: 0.15 = at least 15% of the slide is visible before we start.
-    // This fires even if Base44 pre-renders all slides, because a hidden/offscreen
-    // slide won't cross the threshold until the user actually navigates to it.
+    // ── Gate: wait for entrance animation before starting reveal ─────────────
+    // Home.jsx animates the slide in over 350ms. We wait FIRST_REVEAL_DELAY ms
+    // (1200ms) so the investor sees the pinned cards before anything else drops.
     useEffect(() => {
-        const el = rootRef.current;
-        if (!el) return;
+        const t = setTimeout(() => setRevealActive(true), FIRST_REVEAL_DELAY);
+        return () => clearTimeout(t);
+    }, []); // empty deps = runs exactly once when this slide mounts
 
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !revealStarted) {
-                        setSlideVisible(true);
-                    }
-                    // If the slide scrolls back out of view we do NOT reset —
-                    // the investor may have already seen streams; keep them visible.
-                });
-            },
-            { threshold: 0.15 }
-        );
-
-        observer.observe(el);
-        return () => observer.disconnect();
-    }, [revealStarted]);
-
-    // ── Start reveal sequence once slide is visible ───────────────────────────
-    // Small initial delay (600ms) so the slide has finished its entrance
-    // animation before the first card drops in.
+    // ── Auto-advance reveal ───────────────────────────────────────────────────
+    // Only runs once revealActive is true AND not paused AND not finished.
     useEffect(() => {
-        if (!slideVisible || revealStarted) return;
-        setRevealStarted(true);
-        const initialDelay = setTimeout(() => {
-            setRevealStep(0); // ensure clean start
-            // kick off the chain via the next effect
-        }, 600);
-        return () => clearTimeout(initialDelay);
-    }, [slideVisible, revealStarted]);
-
-    // ── Auto-advance reveal — only runs after revealStarted ──────────────────
-    useEffect(() => {
-        if (!revealStarted) return;
-        if (revealPaused || revealStep >= TOTAL_STEPS) return;
-
+        if (!revealActive || revealPaused || revealStep >= TOTAL_STEPS) return;
         revealTimer.current = setTimeout(() => {
             setRevealStep(s => Math.min(s + 1, TOTAL_STEPS));
-        }, revealStep === 0 ? 800 : REVEAL_INTERVAL);
-
+        }, REVEAL_INTERVAL);
         return () => clearTimeout(revealTimer.current);
-    }, [revealStep, revealPaused, revealStarted]);
+    }, [revealActive, revealStep, revealPaused]);
 
     // ── Unlock timer ──────────────────────────────────────────────────────────
     useEffect(() => {
@@ -265,10 +233,13 @@ export default function Slide7Financials({ onInteracted }) {
     const handleReset = () => {
         setValues(Object.fromEntries(LINE_CONFIGS.map(l => [l.id, l.defaultValue])));
         setRevealStep(0);
+        setRevealActive(false);
         setRevealPaused(false);
+        // Re-trigger the delay so the sequence restarts cleanly
+        setTimeout(() => setRevealActive(true), 600);
     };
 
-    // ── Forecast (unchanged) ──────────────────────────────────────────────────
+    // ── Forecast ──────────────────────────────────────────────────────────────
     const modifiedStreams = BASELINE_STREAMS.map(s => ({
         ...s,
         plan_driver_m1: values[s.stream_id] ?? s.plan_driver_m1,
@@ -312,7 +283,7 @@ export default function Slide7Financials({ onInteracted }) {
 
     // ── Render ────────────────────────────────────────────────────────────────
     return (
-        <div ref={rootRef} className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 py-16 px-4 md:px-6">
+        <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 py-16 px-4 md:px-6">
             <div className="max-w-7xl mx-auto w-full">
 
                 {/* Header */}
@@ -347,7 +318,7 @@ export default function Slide7Financials({ onInteracted }) {
                     ))}
                 </div>
 
-                {/* Summary bar — running total */}
+                {/* Summary bar — running total animates up */}
                 <motion.div layout className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                     {[
                         {
@@ -411,9 +382,7 @@ export default function Slide7Financials({ onInteracted }) {
                             </button>
                         </div>
 
-                        {!allRevealed && (
-                            <RevealProgress step={revealStep} total={TOTAL_STEPS} />
-                        )}
+                        {!allRevealed && <RevealProgress step={revealStep} total={TOTAL_STEPS} />}
                         {allRevealed && (
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="flex-1 h-1 bg-cyan-500/40 rounded" />
@@ -424,7 +393,7 @@ export default function Slide7Financials({ onInteracted }) {
 
                         <div className="space-y-3 max-h-[560px] overflow-y-auto pr-1">
 
-                            {/* Pinned — always visible */}
+                            {/* Pinned — always visible from mount */}
                             {LINE_CONFIGS.slice(0, PINNED_COUNT).map(line => (
                                 <LineCard
                                     key={line.id}
@@ -441,7 +410,7 @@ export default function Slide7Financials({ onInteracted }) {
                                 <div className="flex-1 border-t border-slate-700/60" />
                             </div>
 
-                            {/* Animated reveal */}
+                            {/* Animated reveal — only shown once revealStep > 0 */}
                             <AnimatePresence>
                                 {LINE_CONFIGS.slice(PINNED_COUNT).map((line, i) => {
                                     if (i >= revealStep) return null;
