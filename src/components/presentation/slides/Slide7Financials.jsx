@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { TrendingUp, Globe, Zap, Shield, RefreshCw, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -168,6 +168,17 @@ export default function Slide7Financials({ onInteracted }) {
     const startedAt   = useRef(null);
     const rafRef      = useRef(null);
     const stepRef     = useRef(0); // mirrors revealStep but accessible in RAF
+
+    // Guard against Vite Fast Refresh stale state: useState values (started,
+    // revealStep) survive HMR but useRef values reset. If started=true but
+    // startedAt is null we're in an inconsistent post-HMR state — reset before paint.
+    useLayoutEffect(() => {
+        if (started && startedAt.current === null) {
+            setStarted(false);
+            setRevealStep(0);
+            stepRef.current = 0;
+        }
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const startReveal = useCallback(() => {
         if (startedAt.current !== null) return; // already started
