@@ -97,51 +97,119 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
           </p>
         </motion.div>
 
-        {/* Business Line Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
-          {businessLines.map((line, i) => {
-            const colors = colorMap[line.color];
-            const Icon = line.icon;
-            const isOpen = expanded.has(i);
-            return (
-              <motion.div
-                key={line.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06 }}
-                onClick={() => handleExpand(i)}
-                className={`bg-gradient-to-br ${colors.bg} to-slate-900/20 border ${colors.border} rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.02] flex flex-col gap-2 ${isOpen ? 'ring-1 ring-offset-1 ring-offset-slate-900' : ''}`}
-              >
-                <div className="flex items-center gap-2">
-                  <div className={`w-8 h-8 ${colors.icon} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                    {isOpen
-                      ? <CheckCircle className="w-4 h-4 text-green-400" />
-                      : <Icon className={`w-4 h-4 ${colors.iconColor}`} />}
-                  </div>
-                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${colors.tag}`}>{line.tag}</span>
-                </div>
+        {/* Flywheel Visualization */}
+        <div className="relative w-full max-w-4xl mx-auto mb-10" style={{ minHeight: '600px' }}>
+            {/* Center: Experience Center + Training */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                {/* Animated rotating ring */}
+                <motion.div
+                    className="absolute inset-0 rounded-full border-4 border-dashed border-emerald-500/40"
+                    style={{ width: '280px', height: '280px', left: '-40px', top: '-40px' }}
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                />
 
-                <div>
-                  <h3 className="text-sm font-bold text-white leading-tight">{line.title}</h3>
-                  <p className={`text-xs ${colors.accent} mt-0.5 leading-snug`}>{line.subtitle}</p>
-                </div>
-
-                {isOpen && (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pt-2 border-t border-slate-700/50">
-                    <p className="text-slate-300 text-xs mb-2 leading-relaxed">{line.description}</p>
-                    <div className="space-y-1">
-                      {line.metrics.map((m, j) => (
-                        <div key={j} className="flex items-start gap-1.5 text-xs text-slate-400">
-                          <ArrowRight className={`w-3 h-3 flex-shrink-0 mt-0.5 ${colors.iconColor}`} />
-                          <span>{m}</span>
+                <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border-2 border-cyan-500/40 p-6 w-48 shadow-2xl">
+                    <div className="text-center space-y-3">
+                        <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center mx-auto">
+                            <Camera className="w-5 h-5 text-cyan-400" />
                         </div>
-                      ))}
+                        <div>
+                            <h3 className="text-sm font-bold text-white leading-tight">Experience Center</h3>
+                            <p className="text-xs text-cyan-400 mt-0.5">Live showroom</p>
+                        </div>
+
+                        <div className="pt-2 border-t border-slate-700">
+                            <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mx-auto mb-2">
+                                <GraduationCap className="w-4 h-4 text-green-400" />
+                            </div>
+                            <h4 className="text-xs font-bold text-white">Certification Training</h4>
+                            <p className="text-xs text-green-400 mt-0.5">Official UniFi training</p>
+                        </div>
                     </div>
-                  </motion.div>
-                )}
-              </motion.div>
-            );
-          })}
+                </div>
+            </div>
+
+            {/* Surrounding 6 streams in circular layout */}
+            {businessLines.filter(l => l.id !== 'experience' && l.id !== 'training').map((line, i) => {
+                const colors = colorMap[line.color];
+                const Icon = line.icon;
+                const isOpen = expanded.has(businessLines.indexOf(line));
+                const angle = (i * 60) - 90; // Start from top, 60° spacing for 6 items
+                const radius = 250;
+                const x = Math.cos((angle * Math.PI) / 180) * radius;
+                const y = Math.sin((angle * Math.PI) / 180) * radius;
+
+                return (
+                    <React.Fragment key={line.id}>
+                        {/* Animated arrow from center to card */}
+                        <motion.div
+                            className="absolute top-1/2 left-1/2 origin-left"
+                            style={{
+                                width: `${radius - 60}px`,
+                                height: '2px',
+                                transform: `rotate(${angle}deg)`,
+                                transformOrigin: 'left center',
+                            }}
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            transition={{ delay: 0.5 + i * 0.1, duration: 0.6 }}
+                        >
+                            <div className="relative w-full h-full">
+                                <div className={`absolute inset-0 bg-gradient-to-r from-${line.color}-500/40 to-${line.color}-500/20`} style={{ backgroundColor: `${STREAM_COLORS[line.id]}40` }} />
+                                <motion.div
+                                    className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full"
+                                    style={{ backgroundColor: STREAM_COLORS[line.id] }}
+                                    animate={{ scale: [1, 1.5, 1] }}
+                                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                                />
+                            </div>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: i * 0.08 }}
+                            onClick={() => handleExpand(businessLines.indexOf(line))}
+                            className={`absolute cursor-pointer transition-all hover:scale-105 ${isOpen ? 'z-20' : 'z-0'}`}
+                            style={{
+                                top: `calc(50% + ${y}px)`,
+                                left: `calc(50% + ${x}px)`,
+                                transform: 'translate(-50%, -50%)',
+                                width: isOpen ? '240px' : '180px',
+                            }}
+                        >
+                            <div className={`bg-gradient-to-br ${colors.bg} to-slate-900/20 border-2 ${colors.border} rounded-2xl p-4 transition-all ${isOpen ? 'ring-2 ring-offset-2 ring-offset-slate-900 shadow-2xl' : 'shadow-lg'}`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div className={`w-8 h-8 ${colors.icon} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                                        {isOpen ? <CheckCircle className="w-4 h-4 text-green-400" /> : <Icon className={`w-4 h-4 ${colors.iconColor}`} />}
+                                    </div>
+                                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${colors.tag}`}>{line.tag}</span>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-sm font-bold text-white leading-tight">{line.title}</h3>
+                                    <p className={`text-xs ${colors.accent} mt-0.5 leading-snug`}>{line.subtitle}</p>
+                                </div>
+
+                                {isOpen && (
+                                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="pt-2 mt-2 border-t border-slate-700/50">
+                                        <p className="text-slate-300 text-xs mb-2 leading-relaxed">{line.description}</p>
+                                        <div className="space-y-1">
+                                            {line.metrics.map((m, j) => (
+                                                <div key={j} className="flex items-start gap-1.5 text-xs text-slate-400">
+                                                    <ArrowRight className={`w-3 h-3 flex-shrink-0 mt-0.5 ${colors.iconColor}`} />
+                                                    <span>{m}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </React.Fragment>
+                );
+            })}
         </div>
 
         {/* Section break */}
