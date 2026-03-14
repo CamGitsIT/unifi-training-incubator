@@ -111,7 +111,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         <br /><br />
                         Developers, property managers, and multi-site operators now experience Ubiquiti's subscription-free stack, get certified, and grow in new directions.
                         <br /><br />
-                        We educate, demo, then design & scope every project — handing implementation to our trusted integrator partners for a 15% fee on total project cost.
+                        We educate, demo, then design & scope new projects — handing implementation to our trusted integrators for a fee.
                         <br /><br />
                         <strong className="text-white">Everything connects.</strong>
                     </motion.p>
