@@ -1,9 +1,16 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { TrendingUp, Globe, Zap, Shield, RefreshCw } from 'lucide-react';
+import { TrendingUp, Globe, Zap, Shield, RefreshCw, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Slider } from "@/components/ui/slider";
 import { BASELINE_STREAMS, runForecast, formatCurrency, STREAM_COLORS } from '@/components/forecast/forecastEngine';
+
+// ─── Timing ───────────────────────────────────────────────────────────────────
+// How long to wait between each stream reveal AFTER the user has clicked
+// "Start Reveal" or scrolled/interacted with the slide.
+// Adjust these two numbers to tune pacing:
+const REVEAL_INTERVAL    = 6000;  // ms between each stream appearing
+const FIRST_REVEAL_DELAY = 3000;  // ms before the first stream appears
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const LOCATION_FREE = {
@@ -20,10 +27,8 @@ const LOCATION_FREE = {
 
 const ANNUAL_DEBT_SERVICE = 55200;
 const MARGIN = 0.63;
-const REVEAL_INTERVAL = 7000;    // 7 seconds between each stream reveal
-const FIRST_REVEAL_DELAY = 4500; // 4.5 seconds after mount before first stream appears
 
-// ─── Build LINE_CONFIGS from baseline ────────────────────────────────────────
+// ─── LINE_CONFIGS ─────────────────────────────────────────────────────────────
 const LINE_CONFIGS_RAW = BASELINE_STREAMS.map(s => ({
     id: s.stream_id,
     name: s.stream_title,
@@ -36,45 +41,39 @@ const LINE_CONFIGS_RAW = BASELINE_STREAMS.map(s => ({
     locationIndependent: LOCATION_FREE[s.stream_id],
     unit: s.driver_unit,
     unitLabel: s.driver_name,
-    min: { experience: 5, experience_design_consulting: 5, training: 1, retrofit: 1, retail: 1, monitoring: 5, rentals: 1, refrigeration: 5, isp: 1 }[s.stream_id],
-    max: { experience: 200, experience_design_consulting: 200, training: 60, retrofit: 20, retail: 20, monitoring: 150, rentals: 30, refrigeration: 100, isp: 50 }[s.stream_id],
-    step: { experience: 5, experience_design_consulting: 5, training: 1, retrofit: 1, retail: 1, monitoring: 5, rentals: 1, refrigeration: 5, isp: 1 }[s.stream_id],
+    min:  { experience:5, experience_design_consulting:5, training:1, retrofit:1, retail:1, monitoring:5, rentals:1, refrigeration:5, isp:1 }[s.stream_id],
+    max:  { experience:200, experience_design_consulting:200, training:60, retrofit:20, retail:20, monitoring:150, rentals:30, refrigeration:100, isp:50 }[s.stream_id],
+    step: { experience:5, experience_design_consulting:5, training:1, retrofit:1, retail:1, monitoring:5, rentals:1, refrigeration:5, isp:1 }[s.stream_id],
     defaultValue: s.plan_driver_m1,
     revenuePerDriver: s.unit_revenue * s.units_per_driver,
     tagline: {
-        experience: 'Local UniFi Experience Center that fuels every other revenue line.',
+        experience:    'Local UniFi Experience Center that fuels every other revenue line.',
         experience_design_consulting: '2-hour design consult billed per visit — $300 per qualified visitor.',
-        training: 'Location-free National Training Center cohorts delivered online and on-site.',
-        retrofit: 'Local retrofit installs that become the national playbook.',
-        retail: 'Remote UniFi rollout design for franchise and multi-location retail brands.',
-        monitoring: 'Recurring UniFi monitoring revenue, managed from anywhere.',
-        rentals: 'UniFi infrastructure rentals for events and pop-ups, shippable anywhere.',
+        training:      'Location-free National Training Center cohorts delivered online and on-site.',
+        retrofit:      'Local retrofit installs that become the national playbook.',
+        retail:        'Remote UniFi rollout design for franchise and multi-location retail brands.',
+        monitoring:    'Recurring UniFi monitoring revenue, managed from anywhere.',
+        rentals:       'UniFi infrastructure rentals for events and pop-ups, shippable anywhere.',
         refrigeration: 'Remote cold-chain compliance monitoring for food and pharma locations.',
-        isp: 'Local Micro ISP infrastructure that can be replicated city by city.',
+        isp:           'Local Micro ISP infrastructure that can be replicated city by city.',
     }[s.stream_id],
 }));
 
-// ─── Display order ────────────────────────────────────────────────────────────
-// Pinned (always visible from mount, in this order top-to-bottom):
-//   1. Experience Center
-//   2. Certification Training
-// Then animated reveal in revenue-descending order:
+// Experience Center first, then Training — then others by revenue desc
 const PINNED_IDS = ['experience', 'training'];
 const OTHER_IDS  = ['refrigeration', 'retrofit', 'retail', 'rentals', 'isp', 'monitoring'];
 
 const LINE_CONFIGS = [
     ...PINNED_IDS.map(id => LINE_CONFIGS_RAW.find(l => l.id === id)),
-    ...OTHER_IDS.map(id => LINE_CONFIGS_RAW.find(l => l.id === id)),
+    ...OTHER_IDS.map(id  => LINE_CONFIGS_RAW.find(l => l.id === id)),
 ].filter(Boolean);
 
-const PINNED_COUNT = PINNED_IDS.length;  // 2
-const TOTAL_STEPS  = OTHER_IDS.length;   // 6
+const PINNED_COUNT = PINNED_IDS.length;
+const TOTAL_STEPS  = OTHER_IDS.length;
 
 // ─── LineCard ─────────────────────────────────────────────────────────────────
 function LineCard({ line, value, onChange, isPinned }) {
-    const monthlyRev = value * line.revenuePerDriver;
-    const annualRev  = monthlyRev * 12;
-
+    const annualRev = value * line.revenuePerDriver * 12;
     return (
         <motion.div
             layout
@@ -92,7 +91,7 @@ function LineCard({ line, value, onChange, isPinned }) {
                             <div className="text-white font-semibold text-sm">{line.name}</div>
                             {isPinned && (
                                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
-                                    style={{ background: `${line.color}20`, color: line.color, border: `1px solid ${line.color}40` }}>
+                                    style={{ background:`${line.color}20`, color:line.color, border:`1px solid ${line.color}40` }}>
                                     Core
                                 </span>
                             )}
@@ -107,9 +106,7 @@ function LineCard({ line, value, onChange, isPinned }) {
                     <div className="text-xs text-slate-500">/yr</div>
                 </div>
             </div>
-
             <p className="text-xs text-slate-400 mb-3 italic leading-relaxed">"{line.tagline}"</p>
-
             <div className="flex items-center gap-3">
                 <div className="text-xs flex-shrink-0 w-28">
                     <div><strong className="text-slate-300">{value}</strong> <span className="text-slate-500">{line.unit}</span></div>
@@ -118,9 +115,7 @@ function LineCard({ line, value, onChange, isPinned }) {
                 <Slider
                     value={[value]}
                     onValueChange={(v) => onChange(v[0])}
-                    min={line.min}
-                    max={line.max}
-                    step={line.step}
+                    min={line.min} max={line.max} step={line.step}
                     className="flex-1"
                     style={{ '--slider-filled': '#21d3ee' }}
                 />
@@ -133,49 +128,21 @@ function LineCard({ line, value, onChange, isPinned }) {
     );
 }
 
-// ─── Animated counter hook ────────────────────────────────────────────────────
+// ─── Animated counter ─────────────────────────────────────────────────────────
 function useAnimatedValue(target, duration = 700) {
     const [display, setDisplay] = useState(target);
     const prev = useRef(target);
-
     useEffect(() => {
-        const start     = prev.current;
-        const end       = target;
-        const startTime = performance.now();
-
-        function tick(now) {
-            const p    = Math.min((now - startTime) / duration, 1);
-            const ease = 1 - Math.pow(1 - p, 3);
-            setDisplay(Math.round(start + (end - start) * ease));
+        const start = prev.current, end = target, t0 = performance.now();
+        const raf = requestAnimationFrame(function tick(now) {
+            const p = Math.min((now - t0) / duration, 1);
+            setDisplay(Math.round(start + (end - start) * (1 - Math.pow(1 - p, 3))));
             if (p < 1) requestAnimationFrame(tick);
             else prev.current = end;
-        }
-        requestAnimationFrame(tick);
+        });
+        return () => cancelAnimationFrame(raf);
     }, [target, duration]);
-
     return display;
-}
-
-// ─── Progress bar ─────────────────────────────────────────────────────────────
-function RevealProgress({ step, total }) {
-    return (
-        <div className="flex items-center gap-2 mb-4">
-            <span className="text-xs text-slate-500 min-w-[80px]">
-                {step < total
-                    ? `Revealing stream ${step + PINNED_COUNT} of ${total + PINNED_COUNT}…`
-                    : 'All streams revealed'}
-            </span>
-            <div className="flex-1 h-1 bg-slate-800 rounded overflow-hidden">
-                <motion.div
-                    className="h-full rounded"
-                    style={{ background: '#22d3ee' }}
-                    animate={{ width: `${(step / total) * 100}%` }}
-                    transition={{ duration: 0.5, ease: 'easeOut' }}
-                />
-            </div>
-            <span className="text-xs text-slate-500">{step + PINNED_COUNT} / {total + PINNED_COUNT}</span>
-        </div>
-    );
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -187,87 +154,111 @@ export default function Slide7Financials({ onInteracted }) {
     const [timerDone, setTimerDone]         = useState(false);
     const [secondsLeft, setSecondsLeft]     = useState(45);
 
-    const [revealStep,   setRevealStep]   = useState(0);
-    const [revealActive, setRevealActive] = useState(false);
-    const [revealPaused, setRevealPaused] = useState(false);
-    const revealTimer = useRef(null);
+    // ── Reveal state ──────────────────────────────────────────────────────────
+    // revealStep: 0 = only pinned visible. 1..6 = additional streams shown.
+    // started: user has clicked "Begin" — only then do we start the clock.
+    const [revealStep, setRevealStep] = useState(0);
+    const [started,    setStarted]    = useState(false);
 
-    // ── Gate: wait for entrance animation, then start reveal ─────────────────
-    useEffect(() => {
-        const t = setTimeout(() => setRevealActive(true), FIRST_REVEAL_DELAY);
-        return () => clearTimeout(t);
+    // We store the timestamp of when "started" became true, and use a
+    // requestAnimationFrame loop to check wall-clock elapsed time.
+    // This is completely immune to React re-renders, StrictMode, and
+    // Framer Motion's exit animation holding old component instances alive —
+    // because we never set state from a timer that could fire on a stale closure.
+    const startedAt   = useRef(null);
+    const rafRef      = useRef(null);
+    const stepRef     = useRef(0); // mirrors revealStep but accessible in RAF
+
+    const startReveal = useCallback(() => {
+        if (startedAt.current !== null) return; // already started
+        startedAt.current = performance.now();
+        setStarted(true);
+
+        function loop(now) {
+            const elapsed = now - startedAt.current;
+            // Which step should we be on given elapsed time?
+            let target = 0;
+            if (elapsed >= FIRST_REVEAL_DELAY) {
+                target = 1 + Math.floor((elapsed - FIRST_REVEAL_DELAY) / REVEAL_INTERVAL);
+            }
+            target = Math.min(target, TOTAL_STEPS);
+
+            if (target > stepRef.current) {
+                stepRef.current = target;
+                setRevealStep(target);
+            }
+
+            if (stepRef.current < TOTAL_STEPS) {
+                rafRef.current = requestAnimationFrame(loop);
+            }
+        }
+
+        rafRef.current = requestAnimationFrame(loop);
     }, []);
 
-    // ── Auto-advance reveal ───────────────────────────────────────────────────
+    // Clean up RAF on unmount
     useEffect(() => {
-        if (!revealActive || revealPaused || revealStep >= TOTAL_STEPS) return;
-        revealTimer.current = setTimeout(() => {
-            setRevealStep(s => Math.min(s + 1, TOTAL_STEPS));
-        }, REVEAL_INTERVAL);
-        return () => clearTimeout(revealTimer.current);
-    }, [revealActive, revealStep, revealPaused]);
+        return () => {
+            if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        };
+    }, []);
 
     // ── Unlock timer ──────────────────────────────────────────────────────────
     useEffect(() => {
         if (timerDone) return;
-        const interval = setInterval(() => {
+        const iv = setInterval(() => {
             setSecondsLeft(s => {
-                if (s <= 1) { clearInterval(interval); setTimerDone(true); onInteracted(); return 0; }
+                if (s <= 1) { clearInterval(iv); setTimerDone(true); onInteracted(); return 0; }
                 return s - 1;
             });
         }, 1000);
-        return () => clearInterval(interval);
+        return () => clearInterval(iv);
     }, [timerDone]);
 
     // ── Handlers ──────────────────────────────────────────────────────────────
     const handleChange = useCallback((id, val) => {
         setValues(prev => ({ ...prev, [id]: val }));
-        setRevealPaused(true);
         if (!hasInteracted) { setHasInteracted(true); onInteracted(); }
-    }, [hasInteracted]);
+        // Also start the reveal if not already started when user touches a slider
+        startReveal();
+    }, [hasInteracted, startReveal]);
 
     const handleReset = () => {
         setValues(Object.fromEntries(LINE_CONFIGS.map(l => [l.id, l.defaultValue])));
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        startedAt.current = null;
+        stepRef.current   = 0;
         setRevealStep(0);
-        setRevealActive(false);
-        setRevealPaused(false);
-        setTimeout(() => setRevealActive(true), 600);
+        setStarted(false);
     };
 
     // ── Forecast ──────────────────────────────────────────────────────────────
     const modifiedStreams = BASELINE_STREAMS.map(s => ({
-        ...s,
-        plan_driver_m1: values[s.stream_id] ?? s.plan_driver_m1,
+        ...s, plan_driver_m1: values[s.stream_id] ?? s.plan_driver_m1,
     }));
     const currentForecast = runForecast(modifiedStreams, 'base');
+    const { totalY1: y1, totalY2: y2, totalY3: y3 } = currentForecast;
 
-    const y1 = currentForecast.totalY1;
-    const y2 = currentForecast.totalY2;
-    const y3 = currentForecast.totalY3;
+    const visibleIds = [...PINNED_IDS, ...OTHER_IDS.slice(0, revealStep)];
 
-    const visibleIds = [
-        ...PINNED_IDS,
-        ...OTHER_IDS.slice(0, revealStep),
-    ];
-
-    const lineRevenues = LINE_CONFIGS.map(l => {
-        const engineResult = currentForecast.streams[l.id];
-        return { ...l, monthly: (engineResult?.y1 ?? 0) / 12, annual: engineResult?.y1 ?? 0 };
-    });
+    const lineRevenues = LINE_CONFIGS.map(l => ({
+        ...l, annual: currentForecast.streams[l.id]?.y1 ?? 0,
+    }));
 
     const visibleRevenue = lineRevenues
         .filter(l => visibleIds.includes(l.id))
         .reduce((s, l) => s + l.annual, 0);
 
-    const totalAnnual = currentForecast.totalY1;
+    const totalAnnual = y1;
     const totalProfit = Math.round(totalAnnual * MARGIN);
-    const dscr        = (Math.round(totalAnnual * MARGIN) / ANNUAL_DEBT_SERVICE).toFixed(1);
+    const dscr        = (totalProfit / ANNUAL_DEBT_SERVICE).toFixed(1);
     const dscrColor   = parseFloat(dscr) >= 10 ? '#4ade80' : parseFloat(dscr) >= 3 ? '#22d3ee' : '#facc15';
 
     const locationFreeRevenue = lineRevenues
         .filter(l => l.locationIndependent)
         .reduce((s, l) => s + l.annual, 0);
-    const locationFreePct = totalAnnual > 0 ? Math.round((locationFreeRevenue / totalAnnual) * 100) : 0;
+    const locationFreePct = totalAnnual > 0
+        ? Math.round((locationFreeRevenue / totalAnnual) * 100) : 0;
 
     const chartData = lineRevenues
         .filter(l => visibleIds.includes(l.id))
@@ -282,7 +273,7 @@ export default function Slide7Financials({ onInteracted }) {
             <div className="max-w-7xl mx-auto w-full">
 
                 {/* Header */}
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
+                <motion.div initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} className="text-center mb-8">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 mb-4">
                         <TrendingUp className="w-4 h-4 text-green-400" />
                         <span className="text-green-400 text-sm font-medium">Interactive Financial Playground</span>
@@ -298,12 +289,12 @@ export default function Slide7Financials({ onInteracted }) {
                     </p>
                 </motion.div>
 
-                {/* 3-Year Reference Totals */}
+                {/* 3-Year Totals */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
                     {[
-                        { label: 'Year 1 Total', val: y1, sub: 'Months 1–12 · Base' },
-                        { label: 'Year 2 Total', val: y2, sub: 'Months 13–24 · Base' },
-                        { label: 'Year 3 Total', val: y3, sub: 'Months 25–36 · Base' },
+                        { label:'Year 1 Total', val:y1, sub:'Months 1–12 · Base' },
+                        { label:'Year 2 Total', val:y2, sub:'Months 13–24 · Base' },
+                        { label:'Year 3 Total', val:y3, sub:'Months 25–36 · Base' },
                     ].map(({ label, val, sub }) => (
                         <div key={label} className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center">
                             <div className="text-xs text-slate-400 mb-1">{label}</div>
@@ -320,21 +311,16 @@ export default function Slide7Financials({ onInteracted }) {
                             label: allRevealed ? 'Total Annual Revenue' : `Running Total (${visibleIds.length} streams)`,
                             value: formatCurrency(displayTotal, true),
                             color: allRevealed ? '#ffffff' : '#22d3ee',
-                            sub: allRevealed ? `${formatCurrency(Math.round(totalAnnual / 12), true)}/mo` : 'building…',
+                            sub:   allRevealed ? `${formatCurrency(Math.round(totalAnnual/12),true)}/mo` : 'building…',
                         },
-                        { label: 'Net Profit (~63%)',       value: formatCurrency(totalProfit, true), color: '#4ade80', sub: 'After ops & overhead' },
-                        { label: 'Debt Coverage Ratio',     value: `${dscr}x`,                        color: dscrColor, sub: `vs $${(ANNUAL_DEBT_SERVICE / 1000).toFixed(0)}K/yr debt service` },
-                        { label: '% Location-Free Revenue', value: `${locationFreePct}%`,             color: '#22d3ee', sub: 'Earnable from anywhere' },
+                        { label:'Net Profit (~63%)',       value:formatCurrency(totalProfit,true), color:'#4ade80', sub:'After ops & overhead' },
+                        { label:'Debt Coverage Ratio',     value:`${dscr}x`,                       color:dscrColor, sub:`vs $${(ANNUAL_DEBT_SERVICE/1000).toFixed(0)}K/yr debt service` },
+                        { label:'% Location-Free Revenue', value:`${locationFreePct}%`,            color:'#22d3ee', sub:'Earnable from anywhere' },
                     ].map((s, i) => (
                         <motion.div key={i} layout className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center">
                             <div className="text-xs text-slate-400 mb-1">{s.label}</div>
-                            <motion.div
-                                key={s.value}
-                                initial={{ scale: 0.9, opacity: 0.5 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                className="text-2xl md:text-3xl font-bold"
-                                style={{ color: s.color }}
-                            >
+                            <motion.div key={s.value} initial={{scale:0.9,opacity:0.5}} animate={{scale:1,opacity:1}}
+                                className="text-2xl md:text-3xl font-bold" style={{color:s.color}}>
                                 {s.value}
                             </motion.div>
                             <div className="text-xs text-slate-500 mt-1">{s.sub}</div>
@@ -366,37 +352,54 @@ export default function Slide7Financials({ onInteracted }) {
                     <div>
                         <div className="flex items-center justify-between mb-2">
                             <h3 className="text-white font-semibold flex items-center gap-2">
-                                <Zap className="w-4 h-4 text-cyan-400" />
-                                Adjust Each Line
+                                <Zap className="w-4 h-4 text-cyan-400" />Adjust Each Line
                             </h3>
-                            <button
-                                onClick={handleReset}
-                                className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
-                            >
+                            <button onClick={handleReset}
+                                className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors">
                                 <RefreshCw className="w-3 h-3" /> Reset
                             </button>
                         </div>
 
-                        {!allRevealed && <RevealProgress step={revealStep} total={TOTAL_STEPS} />}
+                        {/* Status bar */}
+                        {!started && !allRevealed && (
+                            <motion.button
+                                onClick={startReveal}
+                                initial={{ opacity:0, y:4 }}
+                                animate={{ opacity:1, y:0 }}
+                                whileHover={{ scale:1.02 }}
+                                whileTap={{ scale:0.98 }}
+                                className="w-full mb-4 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-cyan-500/40 bg-cyan-500/10 text-cyan-400 text-sm font-semibold cursor-pointer"
+                            >
+                                <ChevronDown className="w-4 h-4" />
+                                Click to reveal additional revenue streams
+                            </motion.button>
+                        )}
+                        {started && !allRevealed && (
+                            <div className="flex items-center gap-2 mb-4">
+                                <span className="text-xs text-slate-500">
+                                    Stream {revealStep + PINNED_COUNT} of {TOTAL_STEPS + PINNED_COUNT}
+                                </span>
+                                <div className="flex-1 h-1 bg-slate-800 rounded overflow-hidden">
+                                    <motion.div className="h-full rounded bg-cyan-400"
+                                        animate={{ width:`${(revealStep / TOTAL_STEPS) * 100}%` }}
+                                        transition={{ duration:0.4 }} />
+                                </div>
+                            </div>
+                        )}
                         {allRevealed && (
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="flex-1 h-1 bg-cyan-500/40 rounded" />
-                                <span className="text-xs text-cyan-400 font-semibold">All 8 streams revealed — drag any slider to explore</span>
+                                <span className="text-xs text-cyan-400 font-semibold">All 8 streams revealed</span>
                                 <div className="flex-1 h-1 bg-cyan-500/40 rounded" />
                             </div>
                         )}
 
                         <div className="space-y-3 max-h-[560px] overflow-y-auto pr-1">
 
-                            {/* Pinned — always visible, Experience Center first then Training */}
+                            {/* Pinned: Experience Center then Training — always visible */}
                             {LINE_CONFIGS.slice(0, PINNED_COUNT).map(line => (
-                                <LineCard
-                                    key={line.id}
-                                    line={line}
-                                    value={values[line.id]}
-                                    onChange={(v) => handleChange(line.id, v)}
-                                    isPinned={true}
-                                />
+                                <LineCard key={line.id} line={line} value={values[line.id]}
+                                    onChange={v => handleChange(line.id, v)} isPinned={true} />
                             ))}
 
                             <div className="flex items-center gap-2 py-1">
@@ -405,23 +408,17 @@ export default function Slide7Financials({ onInteracted }) {
                                 <div className="flex-1 border-t border-slate-700/60" />
                             </div>
 
-                            {/* Animated reveal */}
+                            {/* Animated reveal streams */}
                             <AnimatePresence>
                                 {LINE_CONFIGS.slice(PINNED_COUNT).map((line, i) => {
                                     if (i >= revealStep) return null;
                                     return (
-                                        <motion.div
-                                            key={line.id}
-                                            initial={{ opacity: 0, y: 16, scale: 0.97 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            transition={{ duration: 0.5, ease: 'easeOut' }}
-                                        >
-                                            <LineCard
-                                                line={line}
-                                                value={values[line.id]}
-                                                onChange={(v) => handleChange(line.id, v)}
-                                                isPinned={false}
-                                            />
+                                        <motion.div key={line.id}
+                                            initial={{ opacity:0, y:16, scale:0.97 }}
+                                            animate={{ opacity:1, y:0, scale:1 }}
+                                            transition={{ duration:0.5, ease:'easeOut' }}>
+                                            <LineCard line={line} value={values[line.id]}
+                                                onChange={v => handleChange(line.id, v)} isPinned={false} />
                                         </motion.div>
                                     );
                                 })}
@@ -429,10 +426,8 @@ export default function Slide7Financials({ onInteracted }) {
 
                             {/* Skeleton placeholders */}
                             {!allRevealed && Array.from({ length: TOTAL_STEPS - revealStep }).map((_, i) => (
-                                <div
-                                    key={`placeholder-${i}`}
-                                    className="border border-dashed border-slate-700/40 rounded-2xl p-4 flex items-center gap-3"
-                                >
+                                <div key={`ph-${i}`}
+                                    className="border border-dashed border-slate-700/40 rounded-2xl p-4 flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-full bg-slate-800 animate-pulse" />
                                     <div className="flex-1 space-y-2">
                                         <div className="h-3 bg-slate-800 rounded animate-pulse w-1/3" />
@@ -444,53 +439,42 @@ export default function Slide7Financials({ onInteracted }) {
                         </div>
                     </div>
 
-                    {/* Right: Chart + breakdown */}
+                    {/* Right: Chart */}
                     <div className="flex flex-col gap-4">
                         <div className="bg-slate-800/30 border border-slate-700 rounded-2xl p-5 flex-1">
                             <h3 className="text-white font-semibold mb-1">Annual Revenue by Line</h3>
-                            {!allRevealed && (
-                                <p className="text-xs text-slate-500 mb-3">Chart grows as each stream is revealed</p>
-                            )}
+                            {!allRevealed && <p className="text-xs text-slate-500 mb-3">Chart grows as each stream is revealed</p>}
                             <ResponsiveContainer width="100%" height={280}>
-                                <BarChart data={chartData} margin={{ bottom: 50 }}>
+                                <BarChart data={chartData} margin={{ bottom:50 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                                    <XAxis
-                                        dataKey="name"
-                                        stroke="#475569"
-                                        tick={{ fontSize: 10, fill: '#94a3b8' }}
-                                        angle={-30}
-                                        textAnchor="end"
-                                        interval={0}
-                                    />
-                                    <YAxis stroke="#475569" tick={{ fontSize: 10, fill: '#94a3b8' }} tickFormatter={v => formatCurrency(v, true)} />
+                                    <XAxis dataKey="name" stroke="#475569"
+                                        tick={{ fontSize:10, fill:'#94a3b8' }} angle={-30} textAnchor="end" interval={0} />
+                                    <YAxis stroke="#475569" tick={{ fontSize:10, fill:'#94a3b8' }}
+                                        tickFormatter={v => formatCurrency(v, true)} />
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px', fontSize: '11px' }}
+                                        contentStyle={{ backgroundColor:'#0f172a', border:'1px solid #334155', borderRadius:'8px', fontSize:'11px' }}
                                         content={({ active, payload }) => {
-                                            if (!active || !payload || !payload[0]) return null;
+                                            if (!active || !payload?.[0]) return null;
                                             const entry = payload[0].payload;
-                                            const engineData = currentForecast.streams[entry.id];
-                                            const config = LINE_CONFIGS.find(l => l.id === entry.id);
+                                            const ed  = currentForecast.streams[entry.id];
+                                            const cfg = LINE_CONFIGS.find(l => l.id === entry.id);
                                             return (
                                                 <div className="p-2 space-y-1 text-slate-200">
                                                     <div className="font-semibold">{entry.name}</div>
                                                     <div className="text-xs border-t border-slate-600 pt-1 mt-1">
                                                         <div>Annual Y1: <strong>{formatCurrency(entry.revenue)}</strong></div>
-                                                        {config && engineData && (
-                                                            <>
-                                                                <div className="text-slate-400 mt-1">Effective Driver: {engineData.effectiveDriver?.toFixed(2) || 'N/A'}</div>
-                                                                <div className="text-slate-400">Monthly/Unit Rev: {formatCurrency(engineData.monthlyUnitRev, true)}</div>
-                                                                <div className="text-slate-400">Slider Value: {values[entry.id]} {config.unit}</div>
-                                                            </>
-                                                        )}
+                                                        {cfg && ed && <>
+                                                            <div className="text-slate-400 mt-1">Effective Driver: {ed.effectiveDriver?.toFixed(2) || 'N/A'}</div>
+                                                            <div className="text-slate-400">Monthly/Unit Rev: {formatCurrency(ed.monthlyUnitRev, true)}</div>
+                                                            <div className="text-slate-400">Slider: {values[entry.id]} {cfg.unit}</div>
+                                                        </>}
                                                     </div>
                                                 </div>
                                             );
                                         }}
                                     />
-                                    <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
-                                        {chartData.map((entry, i) => (
-                                            <Cell key={i} fill={entry.color} />
-                                        ))}
+                                    <Bar dataKey="revenue" radius={[6,6,0,0]}>
+                                        {chartData.map((e,i) => <Cell key={i} fill={e.color} />)}
                                     </Bar>
                                 </BarChart>
                             </ResponsiveContainer>
@@ -499,8 +483,8 @@ export default function Slide7Financials({ onInteracted }) {
                         <div className="bg-slate-800/30 border border-slate-700 rounded-2xl p-4">
                             <h4 className="text-sm font-semibold text-white mb-3">Revenue Geography</h4>
                             <div className="flex gap-2 mb-2">
-                                <div className="h-3 rounded-full bg-cyan-400 transition-all duration-500" style={{ width: `${locationFreePct}%` }} />
-                                <div className="h-3 rounded-full bg-purple-500 transition-all duration-500" style={{ width: `${100 - locationFreePct}%` }} />
+                                <div className="h-3 rounded-full bg-cyan-400 transition-all duration-500" style={{ width:`${locationFreePct}%` }} />
+                                <div className="h-3 rounded-full bg-purple-500 transition-all duration-500" style={{ width:`${100-locationFreePct}%` }} />
                             </div>
                             <div className="flex justify-between text-xs text-slate-400">
                                 <span className="flex items-center gap-1">
@@ -509,7 +493,7 @@ export default function Slide7Financials({ onInteracted }) {
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <span className="w-2 h-2 rounded-full bg-purple-500 inline-block" />
-                                    {100 - locationFreePct}% Anchor lines
+                                    {100-locationFreePct}% Anchor lines
                                 </span>
                             </div>
                         </div>
@@ -525,12 +509,12 @@ export default function Slide7Financials({ onInteracted }) {
                 </div>
 
                 {!hasInteracted && !timerDone && (
-                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-cyan-400 text-sm">
+                    <motion.p initial={{opacity:0}} animate={{opacity:1}} className="text-center text-cyan-400 text-sm">
                         👆 Drag any slider to explore — or continue in {secondsLeft}s
                     </motion.p>
                 )}
                 {(hasInteracted || timerDone) && (
-                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold">
+                    <motion.p initial={{opacity:0}} animate={{opacity:1}} className="text-center text-green-400 font-semibold">
                         ✓ Click Next to continue
                     </motion.p>
                 )}
