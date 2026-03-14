@@ -304,9 +304,9 @@ export const STREAMS = [
     tags: ['Recurring', 'Location-free', 'Niche'],
     color: STREAM_COLORS.refrigeration,
     emoji: '🌡️',
-    what: 'IoT sensor monitoring for food-service and pharmaceutical refrigeration with automated FDA-compliant compliance reports.',
+    what: 'Automated FDA-compliant temperature monitoring for food-service and pharma — sensors log continuously, reports generate automatically.',
     whoServes: 'Restaurants, pharmacies, food distributors, and any regulated business requiring cold chain compliance.',
-    howWeEarn: 'Setup of sensors + cloud reporting service hardware varies, but less than $2000 hardware per store with estimated one-time labor & configuration costs around $3000.',
+    howWeEarn: '$1,000/location/year recurring — pure software and reporting margin after install. Every new location monitored compounds the MRR permanently.',
 
     driver: {
       name: baseline('refrigeration').driver_name,
