@@ -198,48 +198,47 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     </p>
                 </motion.div>
 
-                {/* ── TWO COLUMNS: pitch left / badge image right ── */}
+                {/* ── PITCH CARDS ── */}
                 <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                    className="grid md:grid-cols-2 gap-6 items-center">
+                    className="space-y-3">
+                    <h3 className="text-2xl font-extrabold text-white leading-tight">
+                        We don't hire installers.<br />We create them.
+                    </h3>
+                    <p className="text-slate-400 text-sm">Graduates leave with credentials, a portfolio, and a pipeline of paid work — on day one.</p>
 
-                    <div className="space-y-3">
-                        <h3 className="text-2xl font-extrabold text-white leading-tight">
-                            We don't hire installers.<br />We create them.
-                        </h3>
-                        <p className="text-slate-400 text-sm">Graduates leave with credentials, a portfolio, and a pipeline of paid work — on day one.</p>
-
-                        <div className="space-y-2 pt-1">
-                            <div className="flex items-start gap-3 bg-slate-800/40 border border-slate-700 rounded-xl px-4 py-3">
-                                <span className="text-2xl font-black text-white leading-none mt-0.5">50K+</span>
-                                <div>
-                                    <p className="text-white text-sm font-semibold">Students certified worldwide</p>
-                                    <p className="text-slate-500 text-xs">Ubiquiti Academy's global reach — we channel it locally.</p>
-                                </div>
+                    <div className="space-y-2 pt-1">
+                        <div className="flex items-start gap-3 bg-slate-800/40 border border-slate-700 rounded-xl px-4 py-3">
+                            <span className="text-2xl font-black text-white leading-none mt-0.5">50K+</span>
+                            <div>
+                                <p className="text-white text-sm font-semibold">Students certified worldwide</p>
+                                <p className="text-slate-500 text-xs">Ubiquiti Academy's global reach — we channel it locally.</p>
                             </div>
-                            <div className="flex items-start gap-3 bg-slate-800/40 border border-slate-700 rounded-xl px-4 py-3">
-                                <span className="text-2xl font-black text-emerald-400 leading-none mt-0.5">↑×</span>
-                                <div>
-                                    <p className="text-white text-sm font-semibold">The OverIT Multiplier</p>
-                                    <p className="text-slate-500 text-xs">We certify, then route retrofit, retail, and ISP projects directly to alumni. No headcount. Pure margin.</p>
-                                </div>
+                        </div>
+                        <div className="flex items-start gap-3 bg-slate-800/40 border border-slate-700 rounded-xl px-4 py-3">
+                            <span className="text-2xl font-black text-emerald-400 leading-none mt-0.5">↑×</span>
+                            <div>
+                                <p className="text-white text-sm font-semibold">The OverIT Multiplier</p>
+                                <p className="text-slate-500 text-xs">We certify, then route retrofit, retail, and ISP projects directly to alumni. No headcount. Pure margin.</p>
                             </div>
-                            <div className="flex items-start gap-3 bg-cyan-500/5 border border-cyan-500/20 rounded-xl px-4 py-3">
-                                <span className="text-2xl font-black text-cyan-400 leading-none mt-0.5">SBA</span>
-                                <div>
-                                    <p className="text-white text-sm font-semibold">An incubator, not just a building</p>
-                                    <p className="text-cyan-400/70 text-xs">This loan creates independent contractors and tax-contributing small businesses across the region.</p>
-                                </div>
+                        </div>
+                        <div className="flex items-start gap-3 bg-cyan-500/5 border border-cyan-500/20 rounded-xl px-4 py-3">
+                            <span className="text-2xl font-black text-cyan-400 leading-none mt-0.5">SBA</span>
+                            <div>
+                                <p className="text-white text-sm font-semibold">An incubator, not just a building</p>
+                                <p className="text-cyan-400/70 text-xs">This loan creates independent contractors and tax-contributing small businesses across the region.</p>
                             </div>
                         </div>
                     </div>
+                </motion.div>
 
-                    <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-4 flex items-center justify-center">
-                        <img
-                            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/6c072e701_certification-program2.png"
-                            alt="Ubiquiti Certifications"
-                            className="w-full rounded-lg object-contain"
-                        />
-                    </div>
+                {/* ── CERTIFICATION GRAPHIC ── */}
+                <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+                    className="rounded-xl border border-slate-700 bg-slate-900/60 p-4 flex items-center justify-center">
+                    <img
+                        src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699f66fd689553aa3a1d8596/6c072e701_certification-program2.png"
+                        alt="Ubiquiti Certifications"
+                        className="w-full rounded-lg object-contain"
+                    />
                 </motion.div>
 
                 {/* ── CERT EXPLORER ── */}
