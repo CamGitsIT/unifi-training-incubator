@@ -1,7 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { TrendingUp, DollarSign, PieChart, Shield, BarChart3, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BASELINE_STREAMS, runForecast, STREAM_COLORS } from '@/components/forecast/forecastEngine';
+
+// Operating margin assumptions (revenue model only; costs modeled separately)
+const MARGIN_Y1 = 0.61;
+const MARGIN_Y2 = 0.65;
+const MARGIN_Y3 = 0.78;
+
+// Annual debt service (fixed)
+const ANNUAL_DEBT_SERVICE = 55200;
+
+// Stream display names for breakdown chart
+const STREAM_LABELS = {
+    experience:   'Experience Center',
+    training:     'Training',
+    retrofit:     'Keyless Access',
+    retail:       'Multi-Location Retail',
+    monitoring:   'Pro Monitoring',
+    rentals:      'Tech Rentals',
+    refrigeration:'Refrigeration',
+    isp:          'Micro ISP',
+};
 
 export default function Financials() {
     const [activeTab, setActiveTab] = useState('overview');
@@ -13,18 +34,37 @@ export default function Financials() {
         return () => clearTimeout(timer);
     }, []);
 
-    const yearlyData = [
-        { year: '2026', revenue: 160552, profit: 97858, margin: 61 },
-        { year: '2027', revenue: 346602, profit: 226632, margin: 65 },
-        { year: '2028', revenue: 606360, profit: 470753, margin: 78 }
-    ];
+    // All revenue figures sourced directly from forecastEngine BASELINE_STREAMS (Base scenario)
+    const forecast = useMemo(() => runForecast(BASELINE_STREAMS, 'base'), []);
 
-    const revenueBreakdown2028 = [
-        { name: 'Training', value: 303821, color: '#a78bfa' },
-        { name: 'Retrofit', value: 216039, color: '#22d3ee' },
-        { name: 'Experience Center', value: 72000, color: '#4ade80' },
-        { name: 'Sager Project', value: 14500, color: '#fb923c' }
-    ];
+    const yearlyData = useMemo(() => [
+        { year: '2026', revenue: Math.round(forecast.totalY1), profit: Math.round(forecast.totalY1 * MARGIN_Y1), margin: Math.round(MARGIN_Y1 * 100) },
+        { year: '2027', revenue: Math.round(forecast.totalY2), profit: Math.round(forecast.totalY2 * MARGIN_Y2), margin: Math.round(MARGIN_Y2 * 100) },
+        { year: '2028', revenue: Math.round(forecast.totalY3), profit: Math.round(forecast.totalY3 * MARGIN_Y3), margin: Math.round(MARGIN_Y3 * 100) },
+    ], [forecast]);
+
+    // Y3 stream breakdown — top streams by Y3 revenue, combined experience streams
+    const revenueBreakdown2028 = useMemo(() => {
+        const streamMap = forecast.streams;
+        // Combine experience + experience_design_consulting into one row
+        const expY3 = (streamMap['experience']?.y3 ?? 0) + (streamMap['experience_design_consulting']?.y3 ?? 0);
+        const rows = BASELINE_STREAMS
+            .filter(s => s.stream_id !== 'experience_design_consulting') // merged into experience
+            .map(s => ({
+                name: STREAM_LABELS[s.stream_id] ?? s.stream_title,
+                value: s.stream_id === 'experience'
+                    ? Math.round(expY3)
+                    : Math.round(streamMap[s.stream_id]?.y3 ?? 0),
+                color: STREAM_COLORS[s.stream_id] ?? '#94a3b8',
+            }))
+            .filter(r => r.value > 0)
+            .sort((a, b) => b.value - a.value);
+        return rows;
+    }, [forecast]);
+
+    // DSCR — base on Y1 profit vs annual debt service
+    const dscrBase  = useMemo(() => (forecast.totalY1 * MARGIN_Y1 / ANNUAL_DEBT_SERVICE).toFixed(1), [forecast]);
+    const dscrFloor = useMemo(() => (forecast.totalY1 * MARGIN_Y1 * 0.8 / ANNUAL_DEBT_SERVICE).toFixed(2), [forecast]);
 
     return (
         <section id="financials" className="py-24 bg-gradient-to-b from-slate-950 to-slate-900">
@@ -112,10 +152,10 @@ export default function Financials() {
                     >
                         <div className="grid md:grid-cols-4 gap-6">
                             {[
-                                { label: "Year 1 Revenue", value: "$161K", subtext: "61% net margin" },
-                                { label: "Year 2 Revenue", value: "$347K", subtext: "65% net margin" },
-                                { label: "Year 3 Revenue", value: "$606K", subtext: "78% net margin" },
-                                { label: "Year 3 Profit", value: "$471K", subtext: "Free cash flow" }
+                                { label: "Year 1 Revenue", value: yearlyData[0] ? `$${(yearlyData[0].revenue/1_000_000).toFixed(2)}M` : '—', subtext: `${MARGIN_Y1*100|0}% net margin` },
+                                { label: "Year 2 Revenue", value: yearlyData[1] ? `$${(yearlyData[1].revenue/1_000_000).toFixed(2)}M` : '—', subtext: `${MARGIN_Y2*100|0}% net margin` },
+                                { label: "Year 3 Revenue", value: yearlyData[2] ? `$${(yearlyData[2].revenue/1_000_000).toFixed(2)}M` : '—', subtext: `${MARGIN_Y3*100|0}% net margin` },
+                                { label: "Year 3 Profit",  value: yearlyData[2] ? `$${(yearlyData[2].profit/1_000_000).toFixed(2)}M` : '—', subtext: "Free cash flow" }
                             ].map((stat, i) => (
                                 <div key={i} className="bg-slate-800/30 border border-slate-700 rounded-xl p-6">
                                     <div className="text-sm text-slate-400 mb-2">{stat.label}</div>
@@ -194,15 +234,15 @@ export default function Financials() {
                             </p>
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div className="bg-slate-950/50 rounded-xl p-6">
-                                    <div className="text-sm text-slate-400 mb-2">"Floor" Model (Conservative)</div>
-                                    <div className="text-5xl font-bold text-green-400 mb-2">1.54x</div>
+                                    <div className="text-sm text-slate-400 mb-2">"Floor" Model (Conservative −20%)</div>
+                                    <div className="text-5xl font-bold text-green-400 mb-2">{dscrFloor}x</div>
                                     <div className="text-slate-300 text-sm">
-                                        Training revenue alone covers debt 10x over
+                                        Training revenue alone covers debt many times over
                                     </div>
                                 </div>
                                 <div className="bg-slate-950/50 rounded-xl p-6">
                                     <div className="text-sm text-slate-400 mb-2">"Base" Model (Market Potential)</div>
-                                    <div className="text-5xl font-bold text-cyan-400 mb-2">52.9x</div>
+                                    <div className="text-5xl font-bold text-cyan-400 mb-2">{dscrBase}x</div>
                                     <div className="text-slate-300 text-sm">
                                         Could pay off building in under 18 months
                                     </div>

@@ -2,16 +2,18 @@ import React, { useRef, useState } from 'react';
 import { Upload, Download, CheckCircle, AlertCircle, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
+// TEMPLATE_ROWS must stay in sync with BASELINE_STREAMS in forecastEngine.jsx
 const TEMPLATE_ROWS = [
     ['stream_id', 'plan_driver_m1', 'units_per_driver', 'unit_revenue_usd_per_unit_mo', 'monthly_growth_rate'],
-    ['experience', 40, 1, 12, 0.07],
-    ['training', 8, 1, 2000, 0.10],
-    ['retrofit', 4, 6, 937.5, 0.075],
-    ['retail', 2, 2, 3500, 0.07],
-    ['monitoring', 20, 1, 100, 0.06],
-    ['rentals', 5, 1, 800, 0.04],
-    ['refrigeration', 15, 1, 83, 0.07],
-    ['isp', 3, 1, 100, 0.10],
+    ['experience',                  10, 1,  300,    0.07],
+    ['experience_design_consulting', 10, 1,  300,    0.07],
+    ['training',                    20, 1,  2000,   0.10],
+    ['retrofit',                     4, 1,  1125,   0.075],
+    ['retail',                       2, 20, 500,    0.07],
+    ['monitoring',                  10, 1,  40,     0.06],
+    ['rentals',                      3, 1,  800,    0.04],
+    ['refrigeration',                5, 10, 5000,   0.02],
+    ['isp',                          3, 40, 41.25,  0.06],
 ];
 
 function downloadTemplate() {

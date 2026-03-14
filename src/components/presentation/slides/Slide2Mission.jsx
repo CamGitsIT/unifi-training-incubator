@@ -91,9 +91,9 @@ export default function Slide2Mission({ onInteracted }) {
 
     const allRevealed = revealStep >= TOTAL_STEPS;
 
-    // Base drivers from BASELINE_STREAMS (the plan_driver_m1 values)
+    // Base drivers — always sourced directly from BASELINE_STREAMS in forecastEngine (plan_driver_m1)
     const baseDrivers = useMemo(() =>
-        Object.fromEntries(STREAMS.map(s => [s.id, s.driver.defaultValue])), []);
+        Object.fromEntries(STREAMS.map(s => [s.id, BASELINE_STREAMS_MAP[s.id]?.plan_driver_m1 ?? s.driver.defaultValue])), []);
 
     // Compute scenario-snapped drivers: round(base × scenario_multiplier)
     const scenarioDrivers = useMemo(() => {
@@ -171,8 +171,21 @@ export default function Slide2Mission({ onInteracted }) {
                         <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">Revenue lines, deliberately connected.</h2>
                         <p className="text-slate-400 text-sm mt-1">Drag the sliders to model each revenue driver. Click any row to explore details.</p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                        {/* Scenario */}
+                    <div className="flex flex-col items-end gap-2">
+                        {/* Reset button — above scenario tabs, only visible when sliders have been customized */}
+                        {!isAtScenario && (
+                            <motion.button
+                                initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
+                                onClick={handleReset}
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-amber-300 border-2 border-amber-400/60 bg-amber-500/15 hover:bg-amber-500/30 hover:border-amber-400 transition-all shadow-lg shadow-amber-900/20"
+                                title="Reset all sliders to current scenario defaults"
+                            >
+                                <RotateCcw className="w-4 h-4" />
+                                Reset to {SCENARIO_MULTIPLIERS[scenario].label}
+                            </motion.button>
+                        )}
+
+                        {/* Scenario selector */}
                         <div className="flex bg-slate-800/80 border border-slate-700 rounded-xl overflow-hidden">
                              {SCENARIO_OPTIONS.map(opt => {
                                  const isActive = scenario === opt.key && isAtScenario;
@@ -189,7 +202,6 @@ export default function Slide2Mission({ onInteracted }) {
                                  );
                              })}
                          </div>
-
                     </div>
                 </motion.div>
 
