@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Zap } from 'lucide-react';
+import { FocusSection } from '@/components/focus';
+import { staggerItemVariants } from '@/lib/focusAnimation';
 
 export default function Hero() {
     return (
@@ -15,16 +17,9 @@ export default function Hero() {
 
             {/* Content */}
             <div className="relative z-10 w-full max-w-6xl mx-auto px-8 md:px-16 py-24">
-                <motion.div
-                    initial={{ opacity: 0, x: -24 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.9 }}
-                    className="max-w-xl"
-                >
+                <FocusSection stagger className="max-w-xl">
                     <motion.div
-                        initial={{ opacity: 0, y: -8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
+                        variants={staggerItemVariants}
                         className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-xl border border-cyan-500/20 mb-8"
                     >
                         <Zap className="w-3.5 h-3.5 text-cyan-400" />
@@ -32,9 +27,7 @@ export default function Hero() {
                     </motion.div>
 
                     <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.8 }}
+                        variants={staggerItemVariants}
                         className="text-5xl md:text-7xl font-extrabold text-white mb-5 leading-[1.05] tracking-tight"
                     >
                         We aren't just a service provider;
@@ -44,14 +37,12 @@ export default function Hero() {
                     </motion.h1>
 
                     <motion.p
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 }}
+                        variants={staggerItemVariants}
                         className="text-lg md:text-xl text-slate-300 leading-snug"
                     >
                         A technological shift powered by three synergistic accelerators working in perfect harmony.
                     </motion.p>
-                </motion.div>
+                </FocusSection>
             </div>
 
             {/* Scroll indicator */}

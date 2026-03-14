@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Zap, Users, Lightbulb, ArrowRight } from 'lucide-react';
+import { useFocusAnimation } from '@/hooks/useFocusAnimation';
+import { FocusSection, FocusItem } from '@/components/focus';
 
 export default function CoreEngineCards() {
     const engines = [
@@ -30,6 +32,14 @@ export default function CoreEngineCards() {
         },
     ];
 
+    // Progressive focus system - each card gets 4 seconds of emphasis
+    const { getFocusState, isFocused } = useFocusAnimation({
+        itemCount: engines.length,
+        duration: 4000,
+        autoPlay: true,
+        loop: true,
+    });
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -46,13 +56,7 @@ export default function CoreEngineCards() {
     return (
         <div className="bg-slate-950 py-24">
             <div className="max-w-6xl mx-auto px-8 md:px-16">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    viewport={{ once: true }}
-                    className="text-center mb-16"
-                >
+                <FocusSection once className="text-center mb-16">
                     <p className="text-cyan-400 text-sm font-semibold tracking-widest mb-4">THE THREE-CORE ENGINE</p>
                     <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6">
                         How Everything Works Together
@@ -60,7 +64,7 @@ export default function CoreEngineCards() {
                     <p className="text-xl text-slate-400 max-w-2xl mx-auto">
                         Three synergistic accelerators that feed each other, creating a self-sustaining growth engine.
                     </p>
-                </motion.div>
+                </FocusSection>
 
                 <motion.div
                     variants={containerVariants}
@@ -71,38 +75,67 @@ export default function CoreEngineCards() {
                 >
                     {engines.map((engine, idx) => {
                         const Icon = engine.icon;
+                        const focusState = getFocusState(idx);
+                        const focused = isFocused(idx);
+                        
                         return (
                             <motion.div
                                 key={idx}
                                 variants={cardVariants}
                                 className="group relative"
                             >
-                                <div className="absolute inset-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
-                                <div className="relative bg-gradient-to-br from-slate-800/30 to-slate-900/50 border border-slate-700/50 rounded-2xl p-8 hover:border-slate-600/80 transition-all duration-300">
-                                    {/* Label */}
-                                    <div className={`inline-block bg-gradient-to-r ${engine.color} text-slate-950 text-xs font-bold px-3 py-1 rounded-full mb-4`}>
-                                        {engine.label}
-                                    </div>
-
-                                    {/* Icon */}
-                                    <div className={`inline-flex p-3 bg-gradient-to-br ${engine.color} text-slate-950 rounded-lg mb-6`}>
-                                        <Icon className="w-6 h-6" />
-                                    </div>
-
-                                    {/* Content */}
-                                    <h3 className="text-sm text-slate-400 font-medium mb-1">{engine.title}</h3>
-                                    <h4 className="text-2xl font-bold text-white mb-4">{engine.subtitle}</h4>
-                                    <p className="text-slate-400 leading-relaxed">
-                                        {engine.description}
-                                    </p>
-
-                                    {/* Arrow (except last card) */}
-                                    {idx < engines.length - 1 && (
-                                        <div className="hidden md:flex absolute -right-8 top-1/2 -translate-y-1/2">
-                                            <ArrowRight className="w-6 h-6 text-slate-600" />
+                                <FocusItem
+                                    focusState={focusState}
+                                    variant="card"
+                                    className="relative h-full"
+                                >
+                                    <div 
+                                        className={`absolute inset-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-2xl blur-xl transition-all duration-700 ${
+                                            focused ? 'blur-2xl opacity-100' : 'blur-md opacity-60'
+                                        }`} 
+                                    />
+                                    <div className={`relative bg-gradient-to-br from-slate-800/30 to-slate-900/50 border rounded-2xl p-8 transition-all duration-700 ${
+                                        focused 
+                                            ? 'border-slate-500/80' 
+                                            : 'border-slate-700/50'
+                                    }`}>
+                                        {/* Label */}
+                                        <div className={`inline-block bg-gradient-to-r ${engine.color} text-slate-950 text-xs font-bold px-3 py-1 rounded-full mb-4 transition-all duration-700 ${
+                                            focused ? 'opacity-100' : 'opacity-70'
+                                        }`}>
+                                            {engine.label}
                                         </div>
-                                    )}
-                                </div>
+
+                                        {/* Icon */}
+                                        <div className={`inline-flex p-3 bg-gradient-to-br ${engine.color} text-slate-950 rounded-lg mb-6 transition-all duration-700 ${
+                                            focused ? 'opacity-100 scale-110' : 'opacity-80 scale-100'
+                                        }`}>
+                                            <Icon className="w-6 h-6" />
+                                        </div>
+
+                                        {/* Content */}
+                                        <h3 className={`text-sm font-medium mb-1 transition-all duration-700 ${
+                                            focused ? 'text-slate-300' : 'text-slate-400'
+                                        }`}>{engine.title}</h3>
+                                        <h4 className={`text-2xl font-bold mb-4 transition-all duration-700 ${
+                                            focused ? 'text-white' : 'text-slate-200'
+                                        }`}>{engine.subtitle}</h4>
+                                        <p className={`leading-relaxed transition-all duration-700 ${
+                                            focused ? 'text-slate-300' : 'text-slate-400'
+                                        }`}>
+                                            {engine.description}
+                                        </p>
+
+                                        {/* Arrow (except last card) */}
+                                        {idx < engines.length - 1 && (
+                                            <div className="hidden md:flex absolute -right-8 top-1/2 -translate-y-1/2">
+                                                <ArrowRight className={`w-6 h-6 transition-all duration-700 ${
+                                                    focused ? 'text-cyan-400 opacity-100' : 'text-slate-600 opacity-60'
+                                                }`} />
+                                            </div>
+                                        )}
+                                    </div>
+                                </FocusItem>
                             </motion.div>
                         );
                     })}
