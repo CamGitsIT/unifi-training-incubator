@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { TrendingUp, Globe, Zap, Shield, RefreshCw } from 'lucide-react';
+import { TrendingUp, Zap, Shield, RefreshCw, ChevronRight, DollarSign, Percent } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Slider } from "@/components/ui/slider";
@@ -15,9 +15,9 @@ const LOCATION_FREE = {
 const ANNUAL_DEBT_SERVICE = 55200;
 const MARGIN = 0.63;
 
+const INVEST_AMOUNTS = [50000, 100000, 250000, 500000];
+
 // ─── Core slider configs ───────────────────────────────────────────────────────
-// Experience Center blends both experience + experience_design_consulting
-// (same driver value, $300/visit each → $600 combined per visit)
 const CORE_CONFIGS = [
     {
         id: 'experience',
@@ -30,7 +30,7 @@ const CORE_CONFIGS = [
         unitLabel: 'Qualified visitors per month',
         min: 5, max: 200, step: 5,
         defaultValue: 10,
-        revenuePerDriver: 600, // $300 showroom + $300 design consult per visit
+        revenuePerDriver: 600,
         tagline: 'On-site showroom and design consult — $600 combined per qualified visit. The anchor that feeds every other line.',
     },
     {
@@ -49,7 +49,6 @@ const CORE_CONFIGS = [
     },
 ];
 
-// Supporting streams for chart (excludes blended experience_design_consulting)
 const SUPPORT_IDS = ['retrofit', 'retail', 'monitoring', 'rentals', 'refrigeration', 'isp'];
 
 // ─── LineCard ─────────────────────────────────────────────────────────────────
@@ -130,9 +129,16 @@ function useAnimatedValue(target, duration = 700) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function Slide7Financials({ onInteracted }) {
+    // Stream sliders
     const [values, setValues] = useState(() =>
         Object.fromEntries(CORE_CONFIGS.map(l => [l.id, l.defaultValue]))
     );
+
+    // Investor calculator
+    const [investAmount,  setInvestAmount]  = useState(100000);
+    const [structure,     setStructure]     = useState('revenue_share'); // 'revenue_share' | 'equity'
+    const [sharePercent,  setSharePercent]  = useState(5);
+    const [equityPercent, setEquityPercent] = useState(10);
 
     useEffect(() => { onInteracted(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -144,7 +150,7 @@ export default function Slide7Financials({ onInteracted }) {
         setValues(Object.fromEntries(CORE_CONFIGS.map(l => [l.id, l.defaultValue])));
     };
 
-    // Apply slider values — experience slider drives both blended streams
+    // ── Forecast ──────────────────────────────────────────────────────────────
     const modifiedStreams = BASELINE_STREAMS.map(s => {
         if (s.stream_id === 'experience' || s.stream_id === 'experience_design_consulting') {
             return { ...s, plan_driver_m1: values['experience'] ?? s.plan_driver_m1 };
@@ -156,17 +162,17 @@ export default function Slide7Financials({ onInteracted }) {
     const totalY1 = currentForecast.totalY1;
     const totalY2 = currentForecast.totalY2;
     const totalY3 = currentForecast.totalY3;
-    const totalProfit = Math.round(totalY1 * MARGIN);
-    const totalDscr   = (totalProfit / ANNUAL_DEBT_SERVICE).toFixed(1);
-    const dscrColor   = parseFloat(totalDscr) >= 10 ? '#4ade80' : parseFloat(totalDscr) >= 3 ? '#22d3ee' : '#facc15';
+    const totalProfit  = Math.round(totalY1 * MARGIN);
+    const totalDscr    = (totalProfit / ANNUAL_DEBT_SERVICE).toFixed(1);
+    const dscrColor    = parseFloat(totalDscr) >= 10 ? '#4ade80' : parseFloat(totalDscr) >= 3 ? '#22d3ee' : '#facc15';
+    const freeCash     = totalProfit - ANNUAL_DEBT_SERVICE;
 
     const locationFreeRevenue = BASELINE_STREAMS
         .filter(s => LOCATION_FREE[s.stream_id])
         .reduce((sum, s) => sum + (currentForecast.streams[s.stream_id]?.y1 ?? 0), 0);
-    const locationFreePct = totalY1 > 0
-        ? Math.round((locationFreeRevenue / totalY1) * 100) : 0;
+    const locationFreePct = totalY1 > 0 ? Math.round((locationFreeRevenue / totalY1) * 100) : 0;
 
-    // Blended Experience Center Y1/Y2/Y3
+    // Blended Experience Y1/Y2/Y3
     const experienceCombinedY1 =
         (currentForecast.streams['experience']?.y1 ?? 0) +
         (currentForecast.streams['experience_design_consulting']?.y1 ?? 0);
@@ -177,7 +183,6 @@ export default function Slide7Financials({ onInteracted }) {
         (currentForecast.streams['experience']?.y3 ?? 0) +
         (currentForecast.streams['experience_design_consulting']?.y3 ?? 0);
 
-    // Per-core stream Y1/Y2/Y3 for card display
     const coreYears = {
         experience: { y1: experienceCombinedY1, y2: experienceCombinedY2, y3: experienceCombinedY3 },
         training:   {
@@ -188,7 +193,7 @@ export default function Slide7Financials({ onInteracted }) {
     };
 
     const chartData = [
-        { id:'experience', name:'Experience Center', revenue:experienceCombinedY1,        color:STREAM_COLORS['experience'], isCore:true },
+        { id:'experience', name:'Experience Center', revenue:experienceCombinedY1, color:STREAM_COLORS['experience'], isCore:true },
         { id:'training',   name:'Training',          revenue:currentForecast.streams['training']?.y1 ?? 0, color:STREAM_COLORS['training'], isCore:true },
         ...SUPPORT_IDS.map(id => ({
             id, isCore: false,
@@ -197,6 +202,34 @@ export default function Slide7Financials({ onInteracted }) {
             color: STREAM_COLORS[id],
         })),
     ];
+
+    // ── Investor calculator ────────────────────────────────────────────────────
+    let paybackMonths, threeYearReturn, annualYield, returnMultiple;
+
+    if (structure === 'revenue_share') {
+        const monthlyRev      = totalY1 / 12;
+        const monthlyPayment  = monthlyRev * (sharePercent / 100);
+        paybackMonths         = monthlyPayment > 0 ? Math.ceil(investAmount / monthlyPayment) : Infinity;
+        threeYearReturn       = monthlyPayment * 36; // revenue share collected over 3 yrs
+        annualYield           = (monthlyPayment * 12 / investAmount) * 100;
+        returnMultiple        = threeYearReturn / investAmount;
+    } else {
+        // Equity — distributions from net profit, growing with Y1/Y2/Y3
+        const distY1 = totalY1 * MARGIN * (equityPercent / 100);
+        const distY2 = totalY2 * MARGIN * (equityPercent / 100);
+        const distY3 = totalY3 * MARGIN * (equityPercent / 100);
+        // Payback: accumulate monthly distributions until ≥ investAmount
+        const monthlyDist = distY1 / 12;
+        paybackMonths     = monthlyDist > 0 ? Math.ceil(investAmount / monthlyDist) : Infinity;
+        threeYearReturn   = distY1 + distY2 + distY3;
+        annualYield       = (distY1 / investAmount) * 100;
+        returnMultiple    = threeYearReturn / investAmount;
+    }
+
+    const paybackDisplay = paybackMonths === Infinity ? '—'
+        : paybackMonths <= 12  ? `${paybackMonths} mo`
+        : paybackMonths <= 36  ? `${(paybackMonths / 12).toFixed(1)} yr`
+        : '3+ yr';
 
     const displayY1 = useAnimatedValue(Math.round(totalY1));
     const displayY2 = useAnimatedValue(Math.round(totalY2));
@@ -242,10 +275,10 @@ export default function Slide7Financials({ onInteracted }) {
                 {/* Summary bar */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                     {[
-                        { label:'Annual Revenue',          value:formatCurrency(displayY1, true), color:'#ffffff', sub:`${formatCurrency(Math.round(totalY1/12),true)}/mo avg` },
-                        { label:'Net Profit (~63%)',        value:formatCurrency(totalProfit,true), color:'#4ade80', sub:'After ops & overhead' },
-                        { label:'Debt Coverage',            value:`${totalDscr}x`,                  color:dscrColor, sub:`vs $${(ANNUAL_DEBT_SERVICE/1000).toFixed(0)}K/yr service` },
-                        { label:'Location-Free Revenue',   value:`${locationFreePct}%`,            color:'#22d3ee', sub:'Earnable from anywhere' },
+                        { label:'Annual Revenue',         value:formatCurrency(displayY1, true), color:'#ffffff', sub:`${formatCurrency(Math.round(totalY1/12),true)}/mo avg` },
+                        { label:'Net Profit (~63%)',       value:formatCurrency(totalProfit,true), color:'#4ade80', sub:'After ops & overhead' },
+                        { label:'Debt Coverage',           value:`${totalDscr}x`,                  color:dscrColor, sub:`vs $${(ANNUAL_DEBT_SERVICE/1000).toFixed(0)}K/yr service` },
+                        { label:'Location-Free Revenue',  value:`${locationFreePct}%`,            color:'#22d3ee', sub:'Earnable from anywhere' },
                     ].map((s, i) => (
                         <div key={i} className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center">
                             <div className="text-xs text-slate-400 mb-1">{s.label}</div>
@@ -258,23 +291,38 @@ export default function Slide7Financials({ onInteracted }) {
                     ))}
                 </div>
 
-                {/* Callout bars */}
-                <div className="mb-3 bg-gradient-to-r from-green-950/30 to-slate-800/30 border border-green-900/50 rounded-xl px-5 py-3 flex flex-wrap items-center gap-3">
-                    <Shield className="w-4 h-4 text-green-400 flex-shrink-0" />
-                    <p className="text-sm text-slate-300">
-                        <strong className="text-white">$55,200/yr debt service ($4,600/mo).</strong>{' '}
-                        Training covers it multiple times over on its own. Everything else is upside.
+                {/* ── CASH WATERFALL (Option 2) ── */}
+                <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }}
+                    className="mb-6 bg-slate-900/60 border border-slate-700 rounded-2xl px-5 py-4">
+                    <div className="flex items-center gap-2 mb-3">
+                        <Shield className="w-4 h-4 text-green-400" />
+                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Cash Waterfall · Year 1 Base</span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1">
+                        {[
+                            { label:'Gross Revenue',   value: formatCurrency(totalY1, true),      color:'text-white',      bg:'bg-slate-800',           border:'border-slate-600' },
+                            { label:'Net Profit (63%)',value: formatCurrency(totalProfit, true),   color:'text-green-400',  bg:'bg-green-950/40',        border:'border-green-800/50' },
+                            { label:'Debt Service',    value:`–${formatCurrency(ANNUAL_DEBT_SERVICE, true)}`, color:'text-red-400', bg:'bg-red-950/30', border:'border-red-800/40' },
+                            { label:'Free Cash',       value: formatCurrency(freeCash, true),      color:'text-emerald-300',bg:'bg-emerald-950/40',      border:'border-emerald-700/50' },
+                        ].map(({ label, value, color, bg, border }, i, arr) => (
+                            <React.Fragment key={label}>
+                                <div className={`flex-1 min-w-[120px] rounded-xl px-4 py-3 border ${bg} ${border} text-center`}>
+                                    <div className="text-xs text-slate-500 mb-1">{label}</div>
+                                    <div className={`text-lg font-bold ${color}`}>{value}</div>
+                                </div>
+                                {i < arr.length - 1 && (
+                                    <ChevronRight className="w-5 h-5 text-slate-600 flex-shrink-0" />
+                                )}
+                            </React.Fragment>
+                        ))}
+                    </div>
+                    <p className="text-xs text-slate-500 mt-3">
+                        After servicing the SBA note, <span className="text-emerald-300 font-semibold">{formatCurrency(freeCash, true)}</span> in Year 1 free cash is available for distribution, reinvestment, or investor repayment.
                     </p>
-                </div>
-                <div className="mb-6 bg-gradient-to-r from-cyan-950/30 to-slate-800/30 border border-cyan-900/50 rounded-xl px-5 py-3 flex flex-wrap items-center gap-3">
-                    <Globe className="w-4 h-4 text-cyan-400 flex-shrink-0" />
-                    <p className="text-sm text-slate-300">
-                        <strong className="text-white">5 of 8 revenue lines are location-free.</strong>{' '}
-                        Training, monitoring, retail, rentals, and cold-chain run from anywhere. The property is the showroom — the internet is the territory.
-                    </p>
-                </div>
+                </motion.div>
 
-                <div className="grid lg:grid-cols-2 gap-6 mb-8">
+                {/* Main grid: sliders + chart */}
+                <div className="grid lg:grid-cols-2 gap-6 mb-6">
 
                     {/* Left: Core sliders */}
                     <div>
@@ -310,7 +358,7 @@ export default function Slide7Financials({ onInteracted }) {
                     <div className="flex flex-col gap-4">
                         <div className="bg-slate-800/30 border border-slate-700 rounded-2xl p-5 flex-1">
                             <h3 className="text-white font-semibold mb-4">Year 1 Revenue by Stream</h3>
-                            <ResponsiveContainer width="100%" height={280}>
+                            <ResponsiveContainer width="100%" height={260}>
                                 <BarChart data={chartData} margin={{ bottom:50 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                                     <XAxis dataKey="name" stroke="#475569"
@@ -357,16 +405,130 @@ export default function Slide7Financials({ onInteracted }) {
                                 </span>
                             </div>
                         </div>
-
-                        <div className="bg-gradient-to-br from-slate-800/40 to-purple-950/20 border border-purple-800/30 rounded-2xl p-4">
-                            <p className="text-sm text-slate-300 leading-relaxed italic">
-                                "We don't confront people with their tech difficulties. We spend our energy with calm,
-                                content people who take care of themselves — and pay forward.
-                                <strong className="text-white not-italic"> Most of what we do happens to support itself.</strong>"
-                            </p>
-                        </div>
                     </div>
                 </div>
+
+                {/* ── INVESTOR RETURN CALCULATOR (Option 1) ── */}
+                <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.1 }}
+                    className="bg-gradient-to-br from-slate-900/80 to-purple-950/20 border border-purple-800/30 rounded-2xl p-6">
+
+                    <div className="flex items-center gap-2 mb-5">
+                        <DollarSign className="w-4 h-4 text-purple-400" />
+                        <span className="text-white font-semibold">Investor Return Calculator</span>
+                        <span className="text-xs text-slate-500 ml-1">· Base scenario · projections only</span>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+
+                        {/* Left: controls */}
+                        <div className="space-y-5">
+                            {/* Amount chips */}
+                            <div>
+                                <p className="text-xs text-slate-400 mb-2">Investment Amount</p>
+                                <div className="flex gap-2 flex-wrap">
+                                    {INVEST_AMOUNTS.map(amt => (
+                                        <button key={amt} onClick={() => setInvestAmount(amt)}
+                                            className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-all ${
+                                                investAmount === amt
+                                                    ? 'bg-purple-500/20 border-purple-400 text-purple-300'
+                                                    : 'bg-slate-800/60 border-slate-600 text-slate-400 hover:border-slate-400 hover:text-slate-200'
+                                            }`}>
+                                            {formatCurrency(amt, true)}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Structure toggle */}
+                            <div>
+                                <p className="text-xs text-slate-400 mb-2">Repayment Structure</p>
+                                <div className="flex bg-slate-800/80 border border-slate-700 rounded-xl overflow-hidden w-fit">
+                                    {[
+                                        { key:'revenue_share', label:'Revenue Share' },
+                                        { key:'equity',        label:'Equity' },
+                                    ].map(opt => (
+                                        <button key={opt.key} onClick={() => setStructure(opt.key)}
+                                            className={`px-4 py-2 text-sm font-medium transition-all ${
+                                                structure === opt.key
+                                                    ? 'bg-purple-500/30 text-purple-200'
+                                                    : 'text-slate-400 hover:text-slate-200'
+                                            }`}>
+                                            {opt.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Percentage slider */}
+                            {structure === 'revenue_share' ? (
+                                <div>
+                                    <p className="text-xs text-slate-400 mb-2 flex items-center gap-1">
+                                        <Percent className="w-3 h-3" /> Revenue Share — <strong className="text-slate-200">{sharePercent}% of gross revenue</strong>
+                                        <span className="text-slate-600 ml-1">(= {formatCurrency(totalY1 * sharePercent / 100, true)}/yr)</span>
+                                    </p>
+                                    <Slider value={[sharePercent]} onValueChange={v => setSharePercent(v[0])}
+                                        min={1} max={15} step={0.5} className="w-full" />
+                                    <div className="flex justify-between text-xs text-slate-600 mt-1"><span>1%</span><span>15%</span></div>
+                                </div>
+                            ) : (
+                                <div>
+                                    <p className="text-xs text-slate-400 mb-2 flex items-center gap-1">
+                                        <Percent className="w-3 h-3" /> Equity Stake — <strong className="text-slate-200">{equityPercent}% of net profit</strong>
+                                        <span className="text-slate-600 ml-1">(= {formatCurrency(totalProfit * equityPercent / 100, true)}/yr)</span>
+                                    </p>
+                                    <Slider value={[equityPercent]} onValueChange={v => setEquityPercent(v[0])}
+                                        min={1} max={40} step={1} className="w-full" />
+                                    <div className="flex justify-between text-xs text-slate-600 mt-1"><span>1%</span><span>40%</span></div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Right: output cards */}
+                        <div className="grid grid-cols-2 gap-3 content-start">
+                            {[
+                                {
+                                    label: 'Payback Period',
+                                    value: paybackDisplay,
+                                    color: paybackMonths <= 12 ? '#4ade80' : paybackMonths <= 24 ? '#22d3ee' : '#a78bfa',
+                                    sub: 'at Base Y1 run rate',
+                                },
+                                {
+                                    label: '3-Year Total Return',
+                                    value: formatCurrency(Math.round(threeYearReturn), true),
+                                    color: '#4ade80',
+                                    sub: `${returnMultiple.toFixed(1)}× on ${formatCurrency(investAmount, true)}`,
+                                },
+                                {
+                                    label: 'Annual Yield (Y1)',
+                                    value: `${annualYield.toFixed(1)}%`,
+                                    color: '#22d3ee',
+                                    sub: structure === 'revenue_share' ? 'of gross revenue' : 'of net profit',
+                                },
+                                {
+                                    label: 'Free Cash Available',
+                                    value: formatCurrency(freeCash, true),
+                                    color: '#a3e635',
+                                    sub: 'Y1 after debt service',
+                                },
+                            ].map(card => (
+                                <div key={card.label} className="bg-slate-800/50 border border-slate-700/60 rounded-xl p-3 text-center">
+                                    <div className="text-xs text-slate-500 mb-1">{card.label}</div>
+                                    <motion.div key={card.value} initial={{scale:0.9,opacity:0.5}} animate={{scale:1,opacity:1}}
+                                        className="text-xl font-bold" style={{color:card.color}}>
+                                        {card.value}
+                                    </motion.div>
+                                    <div className="text-xs text-slate-600 mt-1">{card.sub}</div>
+                                </div>
+                            ))}
+
+                            <div className="col-span-2 bg-slate-800/20 border border-slate-700/30 rounded-xl px-3 py-2">
+                                <p className="text-xs text-slate-500 leading-relaxed text-center">
+                                    Projections derived from Base scenario. Actual returns depend on execution, market conditions, and agreed terms.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
 
             </div>
         </div>
