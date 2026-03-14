@@ -73,7 +73,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-xl border border-cyan-500/20 mb-8"
                     >
                         <Zap className="w-3.5 h-3.5 text-cyan-400" />
-                        <span className="text-cyan-400 text-xs font-medium tracking-wide">UniFi Experience Center and Training Hub</span>
+                        <span className="text-cyan-400 text-xs font-medium tracking-wide">OverISP — UniFi Experience Center & Training Hub</span>
                     </motion.div>
 
                     <motion.div
@@ -105,17 +105,28 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.65 }}
-                        className="text-slate-400 text-base mb-10 leading-relaxed"
+                        className="text-slate-400 text-base mb-6 leading-relaxed"
                     >
-                        We've combined Ubiquiti's new subscription-free technology stack with the first <strong>UniFi Experience Center</strong> for developers, property managers, and multi-location operators who are done with fragmented systems and recurring software costs.
-                        <br />
-                        Alongside it, our <strong>Certification Training Center</strong> is building UniFi talent at scale, while AI-driven lead generation keeps the pipeline active.
-                        <br />
-                        The model is simple: the showroom drives demand, the training center builds trust and talent, and the technology solves real problems. Each part supports the others.
+                        We're building both the first physical Experience Center and National Training Center with this SBA-backed raise.
+                        <br /><br />
+                        Developers, property managers, and multi-site operators now experience Ubiquiti's subscription-free stack, get certified, and grow in new directions.
+                        <br /><br />
+                        We educate, demo, then design & scope every project — handing implementation to our trusted integrator partners for a 15% fee on total project cost.
+                        <br /><br />
+                        <strong className="text-white">Everything connects.</strong>
                     </motion.p>
 
                     {!acknowledged ? (
                         <div className="flex flex-col items-start gap-3">
+                            <motion.p
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.75 }}
+                                className="text-slate-400 text-sm mb-2"
+                            >
+                                Raising $300K to unlock SBA-backed $850K facility.
+                            </motion.p>
+                            
                             <motion.button
                                 initial={{ opacity: 0, y: 8 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -135,14 +146,9 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                                 Learn How →
                             </motion.button>
 
-                            {!canClick ? (
+                            {!canClick && (
                                 <p className="text-slate-500 text-sm">
                                     Available in <span className="text-cyan-400 font-bold tabular-nums">{countdown}s</span>
-                                </p>
-                            ) : (
-                                <p className="text-slate-500 text-xs flex items-center gap-1.5">
-                                    <span className="w-3.5 h-3.5 rounded-full border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-[9px]">↺</span>
-                                    Step into a smarter way to own your IT infrastructure and your data.
                                 </p>
                             )}
                         </div>
