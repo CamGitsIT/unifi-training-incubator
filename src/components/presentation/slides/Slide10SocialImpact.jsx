@@ -200,7 +200,7 @@ export default function Slide10SocialImpact({ onInteracted }) {
 
                 {/* ── TWO COLUMNS: pitch left / badge image right ── */}
                 <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                    className="grid md:grid-cols-2 gap-6 items-start">
+                    className="grid md:grid-cols-2 gap-6 items-center">
 
                     <div className="space-y-3">
                         <h3 className="text-2xl font-extrabold text-white leading-tight">
