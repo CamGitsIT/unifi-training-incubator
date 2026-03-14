@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Zap } from 'lucide-react';
+import { FocusSection } from '@/components/focus';
+import { staggerItemVariants } from '@/lib/focusAnimation';
 
 function Particle({ style }) {
     return (
@@ -49,16 +51,9 @@ export default function Slide1Hero({ onInteracted, onNext }) {
             ))}
 
             <div className="relative z-10 w-full max-w-6xl mx-auto px-8 md:px-16 py-24">
-                <motion.div
-                    initial={{ opacity: 0, x: -24 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.9 }}
-                    className="max-w-xl"
-                >
+                <FocusSection stagger className="max-w-xl">
                     <motion.div
-                        initial={{ opacity: 0, y: -8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
+                        variants={staggerItemVariants}
                         className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-xl border border-cyan-500/20 mb-8"
                     >
                         <Zap className="w-3.5 h-3.5 text-cyan-400" />
@@ -66,9 +61,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </motion.div>
 
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.8 }}
+                        variants={staggerItemVariants}
                         className="mb-5"
                     >
                         <p className="text-cyan-400 text-lg md:text-xl font-semibold tracking-wide mb-2">Finally.</p>
@@ -81,9 +74,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </motion.div>
 
                     <motion.p
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 }}
+                        variants={staggerItemVariants}
                         className="text-lg md:text-xl font-semibold text-slate-300 mb-4 leading-snug"
                     >
                         Teach. Simplify. Save.{' '}
@@ -91,9 +82,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </motion.p>
 
                     <motion.p
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.65 }}
+                        variants={staggerItemVariants}
                         className="text-slate-400 text-base mb-6 leading-relaxed"
                     >
                         We're building both the first physical Experience Center and National Training Center with this SBA-backed raise.
@@ -106,20 +95,12 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                     </motion.p>
 
                     {!acknowledged ? (
-                        <div className="flex flex-col items-start gap-3">
-                            <motion.p
-                                initial={{ opacity: 0, y: 8 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.75 }}
-                                className="text-slate-400 text-sm mb-2"
-                            >
+                        <motion.div variants={staggerItemVariants} className="flex flex-col items-start gap-3">
+                            <p className="text-slate-400 text-sm mb-2">
                                 Raising $300K to unlock SBA-backed $850K facility.
-                            </motion.p>
+                            </p>
                             
                             <motion.button
-                                initial={{ opacity: 0, y: 8 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.8 }}
                                 onClick={handleStart}
                                 whileHover={{ scale: 1.03, y: -2 }}
                                 whileTap={{ scale: 0.97 }}
@@ -127,18 +108,17 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                             >
                                 Learn How →
                             </motion.button>
-                        </div>
+                        </motion.div>
                     ) : (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
+                            variants={staggerItemVariants}
                             className="inline-flex items-center gap-3 bg-green-500/10 backdrop-blur-xl border border-green-500/30 text-green-400 font-semibold px-7 py-3.5 rounded-full"
                         >
                             ✓ Acknowledged — continue
                         </motion.div>
                     )}
 
-                </motion.div>
+                </FocusSection>
             </div>
 
             <motion.div

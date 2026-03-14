@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Hammer, Lightbulb, Building2, TrendingUp } from 'lucide-react';
+import { useFocusAnimation } from '@/hooks/useFocusAnimation';
+import { FocusSection, FocusItem } from '@/components/focus';
 
 const flywheelSteps = [
     { icon: BookOpen, label: 'Training', color: 'from-blue-500 to-cyan-500', angle: 0 },
@@ -11,21 +13,33 @@ const flywheelSteps = [
 ];
 
 export default function Flywheel() {
-    const [activeStep, setActiveStep] = useState(0);
+    const [manualStep, setManualStep] = useState(null);
+    
+    // Auto-progression through flywheel steps
+    const { focusedIndex, goTo, isFocused } = useFocusAnimation({
+        itemCount: flywheelSteps.length,
+        duration: 3500,
+        autoPlay: true,
+        loop: true,
+    });
+
+    // Use manual step if set, otherwise use auto-progression
+    const activeStep = manualStep !== null ? manualStep : focusedIndex;
+
+    const handleStepClick = (idx) => {
+        setManualStep(idx);
+        goTo(idx);
+        // Reset manual control after 7 seconds
+        setTimeout(() => setManualStep(null), 7000);
+    };
 
     return (
         <section className="py-24 px-6 bg-gradient-to-b from-slate-900 to-slate-950">
             <div className="max-w-6xl mx-auto">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    viewport={{ once: true }}
-                    className="text-center mb-16"
-                >
+                <FocusSection once className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">The Self-Sustaining Flywheel</h2>
                     <p className="text-lg text-slate-400 max-w-2xl mx-auto">Revenue flows back to fuel growth, creating a virtuous cycle.</p>
-                </motion.div>
+                </FocusSection>
 
                 <div className="flex flex-col lg:flex-row gap-12 items-center">
                     {/* Circular Diagram */}
@@ -59,20 +73,25 @@ export default function Flywheel() {
                             const rad = (step.angle * Math.PI) / 180;
                             const x = Math.cos(rad) * 130;
                             const y = Math.sin(rad) * 130;
+                            const focused = isFocused(idx);
 
                             return (
                                 <motion.div
                                     key={idx}
                                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                                     style={{ transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))` }}
-                                    onMouseEnter={() => setActiveStep(idx)}
+                                    onMouseEnter={() => handleStepClick(idx)}
                                     whileHover={{ scale: 1.15 }}
                                 >
                                     <motion.div
                                         className={`w-16 h-16 rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center cursor-pointer shadow-lg transition-all ${
                                             activeStep === idx ? 'ring-2 ring-white/60' : ''
                                         }`}
-                                        animate={{ scale: activeStep === idx ? 1.1 : 1 }}
+                                        animate={{ 
+                                            scale: activeStep === idx ? 1.1 : 1,
+                                            opacity: activeStep === idx ? 1 : 0.7,
+                                        }}
+                                        transition={{ duration: 0.5 }}
                                     >
                                         <Icon className="w-6 h-6 text-white" />
                                     </motion.div>
@@ -118,33 +137,47 @@ export default function Flywheel() {
                         <div className="space-y-6">
                             {flywheelSteps.map((step, idx) => {
                                 const Icon = step.icon;
+                                const focused = isFocused(idx);
+                                
                                 return (
-                                    <motion.div
+                                    <FocusItem
                                         key={idx}
-                                        onClick={() => setActiveStep(idx)}
+                                        focusState={activeStep === idx ? 'focused' : 'inactive'}
+                                        variant="item"
+                                        onClick={() => handleStepClick(idx)}
                                         className={`p-4 rounded-xl cursor-pointer transition-all border ${
                                             activeStep === idx
                                                 ? `bg-white/10 border-cyan-500/50`
                                                 : 'bg-white/5 border-white/10 hover:border-white/20'
                                         }`}
-                                        animate={{ x: activeStep === idx ? 8 : 0 }}
                                     >
-                                        <div className="flex items-start gap-4">
-                                            <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${step.color} flex items-center justify-center flex-shrink-0`}>
-                                                <Icon className="w-5 h-5 text-white" />
+                                        <motion.div
+                                            animate={{ x: activeStep === idx ? 8 : 0 }}
+                                            transition={{ duration: 0.5 }}
+                                        >
+                                            <div className="flex items-start gap-4">
+                                                <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${step.color} flex items-center justify-center flex-shrink-0 transition-all duration-500 ${
+                                                    activeStep === idx ? 'scale-110 opacity-100' : 'opacity-70'
+                                                }`}>
+                                                    <Icon className="w-5 h-5 text-white" />
+                                                </div>
+                                                <div>
+                                                    <h3 className={`font-bold text-lg transition-all duration-500 ${
+                                                        activeStep === idx ? 'text-white' : 'text-slate-300'
+                                                    }`}>{step.label}</h3>
+                                                    <p className={`text-sm mt-1 transition-all duration-500 ${
+                                                        activeStep === idx ? 'text-slate-300' : 'text-slate-400'
+                                                    }`}>
+                                                        {idx === 0 && "Create certified installers through hands-on training at our hub."}
+                                                        {idx === 1 && "Graduates go into the field, ready to deploy UniFi systems."}
+                                                        {idx === 2 && "AI identifies companies bleeding money on subscriptions."}
+                                                        {idx === 3 && "Decision-makers visit the Experience Center and see ROI."}
+                                                        {idx === 4 && "Projects close. Revenue flows back to fund more training."}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h3 className="font-bold text-white text-lg">{step.label}</h3>
-                                                <p className="text-slate-400 text-sm mt-1">
-                                                    {idx === 0 && "Create certified installers through hands-on training at our hub."}
-                                                    {idx === 1 && "Graduates go into the field, ready to deploy UniFi systems."}
-                                                    {idx === 2 && "AI identifies companies bleeding money on subscriptions."}
-                                                    {idx === 3 && "Decision-makers visit the Experience Center and see ROI."}
-                                                    {idx === 4 && "Projects close. Revenue flows back to fund more training."}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </motion.div>
+                                        </motion.div>
+                                    </FocusItem>
                                 );
                             })}
                         </div>
