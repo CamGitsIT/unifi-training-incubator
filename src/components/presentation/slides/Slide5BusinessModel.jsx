@@ -107,14 +107,16 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
         <div className="relative w-full h-[700px] max-w-5xl mx-auto mb-10">
             {/* Center: Experience Center + Training (separately expandable) */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-                {/* Revolving colored arrows around center */}
+                {/* Revolving colored arrows around center - larger radius */}
                 {[0, 60, 120, 180, 240, 300].map((angle, idx) => (
                     <motion.div
                         key={idx}
-                        className="absolute top-1/2 left-1/2"
+                        className="absolute"
                         style={{
-                            width: '120px',
+                            width: '180px',
                             height: '2px',
+                            left: '50%',
+                            top: '50%',
                             transformOrigin: 'left center',
                         }}
                         animate={{
@@ -204,28 +206,6 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
 
                 return (
                     <React.Fragment key={line.id}>
-                        {/* Arrow from center to satellite */}
-                        <svg className="absolute top-1/2 left-1/2 pointer-events-none" style={{ width: '100%', height: '100%', transform: 'translate(-50%, -50%)', overflow: 'visible' }}>
-                            <defs>
-                                <marker id={`arrowhead-${line.id}`} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                                    <polygon points="0 0, 8 3, 0 6" fill={STREAM_COLORS[line.id]} opacity="0.6" />
-                                </marker>
-                            </defs>
-                            <motion.line
-                                x1="50%"
-                                y1="50%"
-                                x2={`calc(50% + ${x * 0.75}px)`}
-                                y2={`calc(50% + ${y * 0.75}px)`}
-                                stroke={STREAM_COLORS[line.id]}
-                                strokeWidth="2"
-                                strokeDasharray="4,4"
-                                markerEnd={`url(#arrowhead-${line.id})`}
-                                opacity="0.5"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{ delay: 0.3 + i * 0.1, duration: 0.6 }}
-                            />
-                        </svg>
 
                         {/* Circular satellite card */}
                         <motion.div
