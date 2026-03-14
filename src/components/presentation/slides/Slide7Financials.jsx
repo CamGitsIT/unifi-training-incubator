@@ -7,54 +7,50 @@ import { BASELINE_STREAMS, runForecast, formatCurrency, STREAM_COLORS } from '@/
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const LOCATION_FREE = {
-    experience: false,
-    experience_design_consulting: false,
-    training: true,
-    retrofit: false,
-    retail: true,
-    monitoring: true,
-    rentals: true,
-    refrigeration: true,
-    isp: false,
+    experience: false, experience_design_consulting: false,
+    training: true, retrofit: false, retail: true,
+    monitoring: true, rentals: true, refrigeration: true, isp: false,
 };
 
 const ANNUAL_DEBT_SERVICE = 55200;
 const MARGIN = 0.63;
 
-// ─── LINE_CONFIGS_RAW — all 9 streams (used for chart & totals) ────────────
-const LINE_CONFIGS_RAW = BASELINE_STREAMS.map(s => ({
-    id: s.stream_id,
-    name: s.stream_title,
-    emoji: {
-        experience: '🏢', experience_design_consulting: '✏️', training: '🎓',
-        retrofit: '🔑', retail: '🏪', monitoring: '👁️',
-        rentals: '📦', refrigeration: '🌡️', isp: '📡',
-    }[s.stream_id],
-    color: STREAM_COLORS[s.stream_id],
-    locationIndependent: LOCATION_FREE[s.stream_id],
-    unit: s.driver_unit,
-    unitLabel: s.driver_name,
-    min:  { experience:5, experience_design_consulting:5, training:1, retrofit:1, retail:1, monitoring:5, rentals:1, refrigeration:5, isp:1 }[s.stream_id],
-    max:  { experience:200, experience_design_consulting:200, training:60, retrofit:20, retail:20, monitoring:150, rentals:30, refrigeration:100, isp:50 }[s.stream_id],
-    step: { experience:5, experience_design_consulting:5, training:1, retrofit:1, retail:1, monitoring:5, rentals:1, refrigeration:5, isp:1 }[s.stream_id],
-    defaultValue: s.plan_driver_m1,
-    revenuePerDriver: s.unit_revenue * s.units_per_driver,
-    tagline: {
-        experience:    'Local UniFi Experience Center that fuels every other revenue line.',
-        experience_design_consulting: '2-hour design consult billed per visit — $300 per qualified visitor.',
-        training:      'Location-free National Training Center cohorts delivered online and on-site.',
-        retrofit:      'Local retrofit installs that become the national playbook.',
-        retail:        'Remote UniFi rollout design for franchise and multi-location retail brands.',
-        monitoring:    'Recurring UniFi monitoring revenue, managed from anywhere.',
-        rentals:       'UniFi infrastructure rentals for events and pop-ups, shippable anywhere.',
-        refrigeration: 'Remote cold-chain compliance monitoring for food and pharma locations.',
-        isp:           'Local Micro ISP infrastructure that can be replicated city by city.',
-    }[s.stream_id],
-}));
+// ─── Core slider configs ───────────────────────────────────────────────────────
+// Experience Center blends both experience + experience_design_consulting
+// (same driver value, $300/visit each → $600 combined per visit)
+const CORE_CONFIGS = [
+    {
+        id: 'experience',
+        blendedIds: ['experience', 'experience_design_consulting'],
+        name: 'Experience Center',
+        emoji: '🏢',
+        color: STREAM_COLORS['experience'],
+        locationIndependent: false,
+        unit: 'visits/mo',
+        unitLabel: 'Qualified visitors per month',
+        min: 5, max: 200, step: 5,
+        defaultValue: 10,
+        revenuePerDriver: 600, // $300 showroom + $300 design consult per visit
+        tagline: 'On-site showroom and design consult — $600 combined per qualified visit. The anchor that feeds every other line.',
+    },
+    {
+        id: 'training',
+        blendedIds: ['training'],
+        name: 'Training',
+        emoji: '🎓',
+        color: STREAM_COLORS['training'],
+        locationIndependent: true,
+        unit: 'seats/mo',
+        unitLabel: 'Enrolled seats per month',
+        min: 1, max: 60, step: 1,
+        defaultValue: 20,
+        revenuePerDriver: 2000,
+        tagline: 'National cohorts delivered online and on-site. Location-free. Covers debt service alone.',
+    },
+];
 
-// Only these two have interactive sliders
-const CORE_IDS = ['experience', 'training'];
-const CORE_CONFIGS = CORE_IDS.map(id => LINE_CONFIGS_RAW.find(l => l.id === id)).filter(Boolean);
+// Supporting streams for chart (excludes blended experience_design_consulting)
+const SUPPORT_IDS = ['retrofit', 'retail', 'monitoring', 'rentals', 'refrigeration', 'isp'];
 
 // ─── LineCard ─────────────────────────────────────────────────────────────────
 function LineCard({ line, value, onChange }) {
@@ -65,7 +61,7 @@ function LineCard({ line, value, onChange }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: 'easeOut' }}
-            className="bg-slate-800/40 border border-slate-700 rounded-2xl p-4 hover:border-opacity-80 transition-all"
+            className="bg-slate-800/40 border rounded-2xl p-4 transition-all"
             style={{ borderColor: `${line.color}70` }}
         >
             <div className="flex items-start justify-between mb-2">
@@ -76,11 +72,11 @@ function LineCard({ line, value, onChange }) {
                             <div className="text-white font-semibold text-sm">{line.name}</div>
                             <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
                                 style={{ background:`${line.color}20`, color:line.color, border:`1px solid ${line.color}40` }}>
-                                Core
+                                Direct
                             </span>
                         </div>
                         <div className="text-xs mt-0.5" style={{ color: line.color }}>
-                            {line.locationIndependent ? '🌐 Location-free' : '📍 Anchor line'}
+                            {line.locationIndependent ? '🌐 Location-free' : '📍 Property anchor'}
                         </div>
                     </div>
                 </div>
@@ -100,7 +96,6 @@ function LineCard({ line, value, onChange }) {
                     onValueChange={(v) => onChange(v[0])}
                     min={line.min} max={line.max} step={line.step}
                     className="flex-1"
-                    style={{ '--slider-filled': '#21d3ee' }}
                 />
             </div>
             <div className="flex justify-between text-xs text-slate-600 mt-1">
@@ -144,13 +139,15 @@ export default function Slide7Financials({ onInteracted }) {
         setValues(Object.fromEntries(CORE_CONFIGS.map(l => [l.id, l.defaultValue])));
     };
 
-    // ── Forecast — slider values for core lines, baseline for all others ──────
-    const modifiedStreams = BASELINE_STREAMS.map(s => ({
-        ...s, plan_driver_m1: values[s.stream_id] ?? s.plan_driver_m1,
-    }));
+    // Apply slider values — experience slider drives both blended streams
+    const modifiedStreams = BASELINE_STREAMS.map(s => {
+        if (s.stream_id === 'experience' || s.stream_id === 'experience_design_consulting') {
+            return { ...s, plan_driver_m1: values['experience'] ?? s.plan_driver_m1 };
+        }
+        return { ...s, plan_driver_m1: values[s.stream_id] ?? s.plan_driver_m1 };
+    });
     const currentForecast = runForecast(modifiedStreams, 'base');
 
-    // Totals use full 9-stream forecast
     const totalY1 = currentForecast.totalY1;
     const totalY2 = currentForecast.totalY2;
     const totalY3 = currentForecast.totalY3;
@@ -158,24 +155,32 @@ export default function Slide7Financials({ onInteracted }) {
     const totalDscr   = (totalProfit / ANNUAL_DEBT_SERVICE).toFixed(1);
     const dscrColor   = parseFloat(totalDscr) >= 10 ? '#4ade80' : parseFloat(totalDscr) >= 3 ? '#22d3ee' : '#facc15';
 
-    const locationFreeRevenue = LINE_CONFIGS_RAW
-        .filter(l => l.locationIndependent)
-        .reduce((s, l) => s + (currentForecast.streams[l.id]?.y1 ?? 0), 0);
+    const locationFreeRevenue = BASELINE_STREAMS
+        .filter(s => LOCATION_FREE[s.stream_id])
+        .reduce((sum, s) => sum + (currentForecast.streams[s.stream_id]?.y1 ?? 0), 0);
     const locationFreePct = totalY1 > 0
         ? Math.round((locationFreeRevenue / totalY1) * 100) : 0;
 
-    const chartData = LINE_CONFIGS_RAW.map(l => ({
-        id: l.id,
-        name: l.name,
-        revenue: currentForecast.streams[l.id]?.y1 ?? 0,
-        color: l.color,
-    }));
+    // Chart: Experience Center = both blended streams combined; 8 bars total
+    const experienceCombinedY1 =
+        (currentForecast.streams['experience']?.y1 ?? 0) +
+        (currentForecast.streams['experience_design_consulting']?.y1 ?? 0);
+
+    const chartData = [
+        { id:'experience', name:'Experience Center', revenue:experienceCombinedY1,        color:STREAM_COLORS['experience'], isCore:true },
+        { id:'training',   name:'Training',          revenue:currentForecast.streams['training']?.y1 ?? 0, color:STREAM_COLORS['training'], isCore:true },
+        ...SUPPORT_IDS.map(id => ({
+            id, isCore: false,
+            name: BASELINE_STREAMS.find(s => s.stream_id === id)?.stream_title ?? id,
+            revenue: currentForecast.streams[id]?.y1 ?? 0,
+            color: STREAM_COLORS[id],
+        })),
+    ];
 
     const displayY1 = useAnimatedValue(Math.round(totalY1));
     const displayY2 = useAnimatedValue(Math.round(totalY2));
     const displayY3 = useAnimatedValue(Math.round(totalY3));
 
-    // ── Render ────────────────────────────────────────────────────────────────
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 py-16 px-4 md:px-6">
             <div className="max-w-7xl mx-auto w-full">
@@ -186,23 +191,23 @@ export default function Slide7Financials({ onInteracted }) {
                         <TrendingUp className="w-4 h-4 text-green-400" />
                         <span className="text-green-400 text-sm font-medium">Interactive Financial Model</span>
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-bold text-white mb-3">
-                        Two Core Lines. Nine-Line Engine.
-                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 text-2xl md:text-3xl mt-1">
-                            Experience Center and Training drive the model — the other seven amplify it.
-                        </span>
+                    <h2 className="text-3xl md:text-5xl font-bold text-white mb-2">
+                        Two Direct Streams. Six That Scale.
                     </h2>
-                    <p className="text-slate-300 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
-                        Adjust the two primary drivers to see how they alone — or together — clear debt service and stack profit across all nine revenue lines.
+                    <p className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 text-xl md:text-2xl font-semibold mb-3">
+                        The property unlocks Experience Center and Training. Six digital lines extend the model.
+                    </p>
+                    <p className="text-slate-400 max-w-xl mx-auto text-sm">
+                        Slide the two direct drivers to see how they clear debt — then watch the six supporting streams stack on top.
                     </p>
                 </motion.div>
 
                 {/* 3-Year Totals */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
                     {[
-                        { label:'Year 1 Total', val:displayY1, sub:'Months 1–12 · Base' },
-                        { label:'Year 2 Total', val:displayY2, sub:'Months 13–24 · Base' },
-                        { label:'Year 3 Total', val:displayY3, sub:'Months 25–36 · Base' },
+                        { label:'Year 1', val:displayY1, sub:'Months 1–12 · Base' },
+                        { label:'Year 2', val:displayY2, sub:'Months 13–24 · Base' },
+                        { label:'Year 3', val:displayY3, sub:'Months 25–36 · Base' },
                     ].map(({ label, val, sub }) => (
                         <div key={label} className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center">
                             <div className="text-xs text-slate-400 mb-1">{label}</div>
@@ -214,39 +219,37 @@ export default function Slide7Financials({ onInteracted }) {
                 </div>
 
                 {/* Summary bar */}
-                <motion.div layout className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                     {[
-                        { label:'Total Annual Revenue',    value:formatCurrency(displayY1, true), color:'#ffffff', sub:`${formatCurrency(Math.round(totalY1/12),true)}/mo avg` },
+                        { label:'Annual Revenue',          value:formatCurrency(displayY1, true), color:'#ffffff', sub:`${formatCurrency(Math.round(totalY1/12),true)}/mo avg` },
                         { label:'Net Profit (~63%)',        value:formatCurrency(totalProfit,true), color:'#4ade80', sub:'After ops & overhead' },
-                        { label:'Debt Coverage Ratio',      value:`${totalDscr}x`,                  color:dscrColor, sub:`vs $${(ANNUAL_DEBT_SERVICE/1000).toFixed(0)}K/yr debt service` },
-                        { label:'% Location-Free Revenue',  value:`${locationFreePct}%`,            color:'#22d3ee', sub:'Earnable from anywhere' },
+                        { label:'Debt Coverage',            value:`${totalDscr}x`,                  color:dscrColor, sub:`vs $${(ANNUAL_DEBT_SERVICE/1000).toFixed(0)}K/yr service` },
+                        { label:'Location-Free Revenue',   value:`${locationFreePct}%`,            color:'#22d3ee', sub:'Earnable from anywhere' },
                     ].map((s, i) => (
-                        <motion.div key={i} layout className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center">
+                        <div key={i} className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center">
                             <div className="text-xs text-slate-400 mb-1">{s.label}</div>
                             <motion.div key={s.value} initial={{scale:0.9,opacity:0.5}} animate={{scale:1,opacity:1}}
                                 className="text-2xl md:text-3xl font-bold" style={{color:s.color}}>
                                 {s.value}
                             </motion.div>
                             <div className="text-xs text-slate-500 mt-1">{s.sub}</div>
-                        </motion.div>
+                        </div>
                     ))}
-                </motion.div>
+                </div>
 
                 {/* Callout bars */}
-                <div className="mb-4 bg-gradient-to-r from-green-950/30 to-slate-800/30 border border-green-900/50 rounded-xl px-5 py-3 flex flex-wrap items-center gap-3">
-                    <Shield className="w-5 h-5 text-green-400 flex-shrink-0" />
-                    <p className="text-sm text-slate-300 flex-1">
-                        <strong className="text-white">Annual debt service: $55,200/yr ($4,600/mo).</strong>{' '}
-                        Training revenue alone — a single line, delivered entirely online — covers this <em>multiple times over</em>.
-                        The other seven lines are essentially free cash flow.
+                <div className="mb-3 bg-gradient-to-r from-green-950/30 to-slate-800/30 border border-green-900/50 rounded-xl px-5 py-3 flex flex-wrap items-center gap-3">
+                    <Shield className="w-4 h-4 text-green-400 flex-shrink-0" />
+                    <p className="text-sm text-slate-300">
+                        <strong className="text-white">$55,200/yr debt service ($4,600/mo).</strong>{' '}
+                        Training covers it multiple times over on its own. Everything else is upside.
                     </p>
                 </div>
                 <div className="mb-6 bg-gradient-to-r from-cyan-950/30 to-slate-800/30 border border-cyan-900/50 rounded-xl px-5 py-3 flex flex-wrap items-center gap-3">
-                    <Globe className="w-5 h-5 text-cyan-400 flex-shrink-0" />
-                    <p className="text-sm text-slate-300 flex-1">
-                        <strong className="text-white">5 of 9 lines have zero geography.</strong>{' '}
-                        Training, monitoring, retail consulting, rentals, cold-chain sensing — these work from a laptop, a coffee shop, a beach.
-                        The Experience Center is our showroom. The internet is our territory.
+                    <Globe className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                    <p className="text-sm text-slate-300">
+                        <strong className="text-white">5 of 8 revenue lines are location-free.</strong>{' '}
+                        Training, monitoring, retail, rentals, and cold-chain run from anywhere. The property is the showroom — the internet is the territory.
                     </p>
                 </div>
 
@@ -256,7 +259,7 @@ export default function Slide7Financials({ onInteracted }) {
                     <div>
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-white font-semibold flex items-center gap-2">
-                                <Zap className="w-4 h-4 text-cyan-400" />Adjust Core Drivers
+                                <Zap className="w-4 h-4 text-cyan-400" />Direct Stream Drivers
                             </h3>
                             <button onClick={handleReset}
                                 className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors">
@@ -271,11 +274,10 @@ export default function Slide7Financials({ onInteracted }) {
                             ))}
                         </div>
 
-                        {/* Supporting streams note */}
                         <div className="mt-4 bg-slate-800/20 border border-slate-700/40 rounded-xl px-4 py-3">
                             <p className="text-xs text-slate-500 leading-relaxed">
-                                <strong className="text-slate-400">+ 7 supporting streams</strong> (Retrofit, Retail, Monitoring, Rentals, Refrigeration, ISP, Design Consulting)
-                                run at base assumptions and are reflected in the totals and chart above.
+                                <strong className="text-slate-400">+ 6 supporting streams</strong>{' '}
+                                (Retrofit, Retail, Monitoring, Rentals, Refrigeration, ISP) run at base — included in all totals above.
                             </p>
                         </div>
                     </div>
@@ -283,7 +285,7 @@ export default function Slide7Financials({ onInteracted }) {
                     {/* Right: Chart */}
                     <div className="flex flex-col gap-4">
                         <div className="bg-slate-800/30 border border-slate-700 rounded-2xl p-5 flex-1">
-                            <h3 className="text-white font-semibold mb-4">Annual Revenue by Line — All 9 Streams</h3>
+                            <h3 className="text-white font-semibold mb-4">Year 1 Revenue by Stream</h3>
                             <ResponsiveContainer width="100%" height={280}>
                                 <BarChart data={chartData} margin={{ bottom:50 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
@@ -296,19 +298,12 @@ export default function Slide7Financials({ onInteracted }) {
                                         content={({ active, payload }) => {
                                             if (!active || !payload?.[0]) return null;
                                             const entry = payload[0].payload;
-                                            const ed  = currentForecast.streams[entry.id];
-                                            const cfg = LINE_CONFIGS_RAW.find(l => l.id === entry.id);
-                                            const isCore = CORE_IDS.includes(entry.id);
                                             return (
                                                 <div className="p-2 space-y-1 text-slate-200">
-                                                    <div className="font-semibold">{entry.name}{isCore ? ' ✦' : ''}</div>
+                                                    <div className="font-semibold">{entry.name}{entry.isCore ? ' ✦' : ''}</div>
                                                     <div className="text-xs border-t border-slate-600 pt-1 mt-1">
-                                                        <div>Annual Y1: <strong>{formatCurrency(entry.revenue)}</strong></div>
-                                                        {cfg && ed && <>
-                                                            <div className="text-slate-400 mt-1">Driver: {ed.effectiveDriver?.toFixed(2) || 'N/A'} {cfg.unit}</div>
-                                                            <div className="text-slate-400">Rev/unit: {formatCurrency(ed.monthlyUnitRev, true)}/mo</div>
-                                                            {isCore && <div className="text-cyan-400 mt-1">← adjustable with slider</div>}
-                                                        </>}
+                                                        <div>Year 1: <strong>{formatCurrency(entry.revenue)}</strong></div>
+                                                        {entry.isCore && <div className="text-cyan-400 mt-1">Slider-adjustable</div>}
                                                     </div>
                                                 </div>
                                             );
