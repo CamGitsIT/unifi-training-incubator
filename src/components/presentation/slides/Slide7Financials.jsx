@@ -20,9 +20,8 @@ const LOCATION_FREE = {
 
 const ANNUAL_DEBT_SERVICE = 55200;
 const MARGIN = 0.63;
-const REVEAL_INTERVAL = 2600; // ms between each stream reveal after the first
-const FIRST_REVEAL_DELAY = 1200; // ms after mount before first stream drops in
-// (Home.jsx entrance animation is 350ms, so 1200ms gives it plenty of room)
+const REVEAL_INTERVAL = 7000;    // 7 seconds between each stream reveal
+const FIRST_REVEAL_DELAY = 4500; // 4.5 seconds after mount before first stream appears
 
 // ─── Build LINE_CONFIGS from baseline ────────────────────────────────────────
 const LINE_CONFIGS_RAW = BASELINE_STREAMS.map(s => ({
@@ -55,7 +54,11 @@ const LINE_CONFIGS_RAW = BASELINE_STREAMS.map(s => ({
     }[s.stream_id],
 }));
 
-// ─── Display order: Experience + Training pinned first ────────────────────────
+// ─── Display order ────────────────────────────────────────────────────────────
+// Pinned (always visible from mount, in this order top-to-bottom):
+//   1. Experience Center
+//   2. Certification Training
+// Then animated reveal in revenue-descending order:
 const PINNED_IDS = ['experience', 'training'];
 const OTHER_IDS  = ['refrigeration', 'retrofit', 'retail', 'rentals', 'isp', 'monitoring'];
 
@@ -184,25 +187,18 @@ export default function Slide7Financials({ onInteracted }) {
     const [timerDone, setTimerDone]         = useState(false);
     const [secondsLeft, setSecondsLeft]     = useState(45);
 
-    // ── Reveal state ──────────────────────────────────────────────────────────
-    // revealStep: how many of the OTHER_IDS streams are currently visible (0..6)
-    // revealActive: starts false, flips true after FIRST_REVEAL_DELAY ms on mount
-    // revealPaused: true while user is dragging a slider
     const [revealStep,   setRevealStep]   = useState(0);
     const [revealActive, setRevealActive] = useState(false);
     const [revealPaused, setRevealPaused] = useState(false);
     const revealTimer = useRef(null);
 
-    // ── Gate: wait for entrance animation before starting reveal ─────────────
-    // Home.jsx animates the slide in over 350ms. We wait FIRST_REVEAL_DELAY ms
-    // (1200ms) so the investor sees the pinned cards before anything else drops.
+    // ── Gate: wait for entrance animation, then start reveal ─────────────────
     useEffect(() => {
         const t = setTimeout(() => setRevealActive(true), FIRST_REVEAL_DELAY);
         return () => clearTimeout(t);
-    }, []); // empty deps = runs exactly once when this slide mounts
+    }, []);
 
     // ── Auto-advance reveal ───────────────────────────────────────────────────
-    // Only runs once revealActive is true AND not paused AND not finished.
     useEffect(() => {
         if (!revealActive || revealPaused || revealStep >= TOTAL_STEPS) return;
         revealTimer.current = setTimeout(() => {
@@ -235,7 +231,6 @@ export default function Slide7Financials({ onInteracted }) {
         setRevealStep(0);
         setRevealActive(false);
         setRevealPaused(false);
-        // Re-trigger the delay so the sequence restarts cleanly
         setTimeout(() => setRevealActive(true), 600);
     };
 
@@ -318,7 +313,7 @@ export default function Slide7Financials({ onInteracted }) {
                     ))}
                 </div>
 
-                {/* Summary bar — running total animates up */}
+                {/* Summary bar */}
                 <motion.div layout className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                     {[
                         {
@@ -393,7 +388,7 @@ export default function Slide7Financials({ onInteracted }) {
 
                         <div className="space-y-3 max-h-[560px] overflow-y-auto pr-1">
 
-                            {/* Pinned — always visible from mount */}
+                            {/* Pinned — always visible, Experience Center first then Training */}
                             {LINE_CONFIGS.slice(0, PINNED_COUNT).map(line => (
                                 <LineCard
                                     key={line.id}
@@ -410,7 +405,7 @@ export default function Slide7Financials({ onInteracted }) {
                                 <div className="flex-1 border-t border-slate-700/60" />
                             </div>
 
-                            {/* Animated reveal — only shown once revealStep > 0 */}
+                            {/* Animated reveal */}
                             <AnimatePresence>
                                 {LINE_CONFIGS.slice(PINNED_COUNT).map((line, i) => {
                                     if (i >= revealStep) return null;
@@ -432,7 +427,7 @@ export default function Slide7Financials({ onInteracted }) {
                                 })}
                             </AnimatePresence>
 
-                            {/* Skeleton placeholders for unrevealed slots */}
+                            {/* Skeleton placeholders */}
                             {!allRevealed && Array.from({ length: TOTAL_STEPS - revealStep }).map((_, i) => (
                                 <div
                                     key={`placeholder-${i}`}
