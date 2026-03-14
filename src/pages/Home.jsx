@@ -131,7 +131,7 @@ export default function Home() {
 
             {/* Slide Area */}
             <div ref={slideRef} className="flex-1 pt-16 pb-20 overflow-y-auto md:pl-48">
-                <AnimatePresence mode="wait">
+                <AnimatePresence mode="sync">
                     <motion.div
                         key={current}
                         initial={{ opacity: 0, x: 60 }}
