@@ -52,13 +52,10 @@ export const FocusItem = ({
 
   const variants = getVariants();
 
-  // For stagger variant, use different animation states
-  const animateState = variant === 'stagger' ? focusState : focusState;
-
   return (
     <motion.div
       variants={variants}
-      animate={animateState}
+      animate={focusState}
       className={className}
       onClick={onClick}
       onHoverStart={onHoverStart}
