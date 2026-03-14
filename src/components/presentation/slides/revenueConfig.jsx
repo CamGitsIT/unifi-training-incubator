@@ -154,9 +154,9 @@ export const STREAMS = [
     tags: ['Recurring', 'Location-free', 'High-margin'],
     color: STREAM_COLORS.training,
     emoji: '🎓',
-    what: 'Multi-day Ubiquiti/UniFi certification courses for IT professionals, MSPs, integrators, and technicians. In-person or remote, all from our National Training Center.',
-   // whoServes: 'IT professionals, career-changers, property managers, MSPs, and integrators.',
-    howWeEarn: '$2,000 per seat — cohorts of 4–12 students.',
+    what: 'Official Ubiquiti certification bootcamps — in-person or remote — run from our National Training Center.',
+    whoServes: 'IT professionals, MSPs, integrators, technicians, and career-changers entering the network field.',
+    howWeEarn: '$2,000/seat across cohorts of 4–12. High-margin, no inventory, runs in-person or remote.',
 
     driver: {
       name: baseline('training').driver_name,
