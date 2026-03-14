@@ -1,4 +1,7 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
+
+const REVEAL_INTERVAL    = 4000; // ms between each row appearing
+const FIRST_REVEAL_DELAY = 600;  // ms before the first row (lets slide entrance finish)
 import { motion, AnimatePresence } from 'framer-motion';
 import { RotateCcw, TrendingUp, ChevronRight } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
@@ -27,7 +30,48 @@ const fmtCompact = (v) => {
 export default function Slide2Mission({ onInteracted }) {
     const [scenario, setScenario] = useState('base');
     const [activeStream, setActive] = useState(null);
-    const [hasInteracted, setInteracted] = useState(false);
+
+    // ── Sequential reveal ──────────────────────────────────────────────────────
+    const [revealStep, setRevealStep] = useState(0);
+    const [started,    setStarted]    = useState(false);
+    const startedAt = useRef(null);
+    const rafRef    = useRef(null);
+    const stepRef   = useRef(0);
+    const TOTAL_STEPS = STREAMS.length; // 8
+
+    // HMR guard: useState survives Fast Refresh but useRef resets
+    useLayoutEffect(() => {
+        if (started && startedAt.current === null) {
+            setStarted(false);
+            setRevealStep(0);
+            stepRef.current = 0;
+        }
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const startReveal = useCallback(() => {
+        if (startedAt.current !== null) return;
+        startedAt.current = performance.now();
+        setStarted(true);
+        function loop(now) {
+            const elapsed = now - startedAt.current;
+            let target = 0;
+            if (elapsed >= FIRST_REVEAL_DELAY) {
+                target = 1 + Math.floor((elapsed - FIRST_REVEAL_DELAY) / REVEAL_INTERVAL);
+            }
+            target = Math.min(target, TOTAL_STEPS);
+            if (target > stepRef.current) { stepRef.current = target; setRevealStep(target); }
+            if (stepRef.current < TOTAL_STEPS) rafRef.current = requestAnimationFrame(loop);
+        }
+        rafRef.current = requestAnimationFrame(loop);
+    }, [TOTAL_STEPS]);
+
+    useEffect(() => {
+        onInteracted();
+        startReveal();
+        return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const allRevealed = revealStep >= TOTAL_STEPS;
 
     // Base drivers from BASELINE_STREAMS (the plan_driver_m1 values)
     const baseDrivers = useMemo(() =>
@@ -52,23 +96,26 @@ export default function Slide2Mission({ onInteracted }) {
         }
     }, [scenario, scenarioDrivers]);
 
-    const markInteracted = () => { if (!hasInteracted) { setInteracted(true); onInteracted(); } };
+    const markInteracted = () => {};
 
     const revenues = useMemo(() =>
         Object.fromEntries(STREAMS.map(s => [s.id, s.computeRevenue(drivers[s.id], scenario, 'y1')]))
     , [drivers, scenario]);
 
+    // Only sum visible streams so right panel aggregates as rows appear
+    const visibleStreams = STREAMS.slice(0, revealStep);
+
     const total = useMemo(() =>
-        STREAMS.reduce((sum, s) => sum + (revenues[s.id]?.selectedYear ?? 0), 0)
-    , [revenues]);
+        visibleStreams.reduce((sum, s) => sum + (revenues[s.id]?.selectedYear ?? 0), 0)
+    , [revenues, revealStep]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const totalY2 = useMemo(() =>
-        STREAMS.reduce((sum, s) => sum + (revenues[s.id]?.y2 ?? 0), 0)
-    , [revenues]);
+        visibleStreams.reduce((sum, s) => sum + (revenues[s.id]?.y2 ?? 0), 0)
+    , [revenues, revealStep]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const totalY3 = useMemo(() =>
-        STREAMS.reduce((sum, s) => sum + (revenues[s.id]?.y3 ?? 0), 0)
-    , [revenues]);
+        visibleStreams.reduce((sum, s) => sum + (revenues[s.id]?.y3 ?? 0), 0)
+    , [revenues, revealStep]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const chartData = [
         { label: 'Y1', value: total },
@@ -77,12 +124,12 @@ export default function Slide2Mission({ onInteracted }) {
     ];
 
     const streamBreakdown = useMemo(() =>
-        STREAMS.map(s => ({
+        visibleStreams.map(s => ({
             name: s.title.split(' ').slice(0, 2).join(' '),
             value: revenues[s.id]?.selectedYear ?? 0,
             color: s.color,
         }))
-    , [revenues]);
+    , [revenues, revealStep]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // True if all sliders match the current scenario's values
     const isAtScenario = useMemo(() =>
@@ -131,17 +178,30 @@ export default function Slide2Mission({ onInteracted }) {
                 {/* ── MAIN LAYOUT: sliders left, summary right */}
                 <div className="grid lg:grid-cols-[1fr_320px] gap-5 items-start">
 
-                    {/* LEFT: Slider rows */}
+                    {/* LEFT: Slider rows — revealed one by one */}
                     <div className="space-y-2">
                         {STREAMS.map((stream, i) => {
+                            const isVisible = i < revealStep;
                             const driverVal = drivers[stream.id];
                             const rev = revenues[stream.id];
                             const revenueDisplay = fmt(rev?.selectedYear);
 
+                            if (!isVisible) return (
+                                <div key={`ph-${stream.id}`}
+                                    className="flex items-center gap-4 border border-dashed border-slate-700/40 rounded-2xl px-5 py-4">
+                                    <div className="w-8 h-8 rounded-full bg-slate-800 animate-pulse flex-shrink-0" />
+                                    <div className="flex-1 space-y-2">
+                                        <div className="h-3 bg-slate-800 rounded animate-pulse w-1/3" />
+                                        <div className="h-2 bg-slate-800/60 rounded animate-pulse w-2/3" />
+                                    </div>
+                                    <div className="h-5 w-16 bg-slate-800 rounded animate-pulse" />
+                                </div>
+                            );
+
                             return (
                                 <motion.div key={stream.id}
-                                    initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: i * 0.045 }}
+                                    initial={{ opacity: 0, x: -16, scale: 0.98 }} animate={{ opacity: 1, x: 0, scale: 1 }}
+                                    transition={{ duration: 0.45, ease: 'easeOut' }}
                                     className="group flex items-center gap-4 bg-slate-800/30 hover:bg-slate-800/60 border border-slate-700/40 hover:border-slate-600/60 rounded-2xl px-5 py-4 transition-all"
                                 >
                                     {/* Emoji + name */}
@@ -293,12 +353,6 @@ export default function Slide2Mission({ onInteracted }) {
                         <p className="italic text-amber-500/60 mt-1">⚠ Modeled — numbers link to Master Forecast.</p>
                         </div>
 
-                        {hasInteracted && (
-                            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                                className="text-xs text-green-400 font-semibold text-center">
-                                ✓ Click Next to continue
-                            </motion.p>
-                        )}
                     </div>
                 </div>
             </div>
