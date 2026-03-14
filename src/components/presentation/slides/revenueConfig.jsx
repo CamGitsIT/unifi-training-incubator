@@ -252,9 +252,9 @@ export const STREAMS = [
     tags: ['Recurring', 'Location-free', 'High-margin'],
     color: STREAM_COLORS.monitoring,
     emoji: '👁️',
-    what: 'Remote monitoring of security cameras and access control systems with alerting, reporting, and escalation.',
-    whoServes: 'Property managers, HOAs, retail chains, and any client whose IT infrastructure supports more sophicted access and security systems.',
-    howWeEarn: '$40/site/month recurring. A single retail chain rollout of 40 locations = $1,600/mo MRR.',
+    what: 'Recurring revenue collected per monitored site — every UniFi deployment we scope or refer becomes a permanent royalty stream.',
+    whoServes: 'Property managers, HOAs, and retail chains — any site running UniFi access or cameras is a candidate.',
+    howWeEarn: '$40/site/month — pure recurring. Each new deployment locks in another royalty. A 40-site chain rollout alone = $1,600/mo MRR with zero ongoing labor.',
     driver: {
       name: baseline('monitoring').driver_name,
       unitLabel: baseline('monitoring').driver_unit,
