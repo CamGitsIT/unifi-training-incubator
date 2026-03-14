@@ -185,10 +185,10 @@ export const STREAMS = [
     tags: ['Proven', 'Project', 'Partner-executed'],
     color: STREAM_COLORS.retrofit,
     emoji: '🔑',
-    what: 'We scope, sell, and manage property access retrofits. Licensed partners handle installation.',
+    what: 'We scope and sell property access retrofits. Licensed partners execute the install.',
     whoServes: 'HOAs, multi-family property managers, commercial landlords, and developers.',
-    howWeEarn: `Fee on project value. Avg project: $9,000 · Our fee: ~12.5% = ~$1,125/project.`,
-    liveProof: 'Proven in practice: the building we\'re acquiring is already running the retrofit.',
+    howWeEarn: '12.5% fee on avg $9,000 project = ~$1,125/project. No install labor — pure margin.',
+    liveProof: 'The building we\'re acquiring is already live with the retrofit — proof before we close.',
     proven: true,
     proofBadge: 'Live in Production',
     driver: {
