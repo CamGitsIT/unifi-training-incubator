@@ -1,28 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, DollarSign, RefreshCw, XCircle } from 'lucide-react';
 
-const UNLOCK_SECONDS = 8;
-
 export default function Slide2Problem({ onInteracted }) {
-    const [timerDone, setTimerDone] = useState(false);
-    const [secondsLeft, setSecondsLeft] = useState(UNLOCK_SECONDS);
-
-    useEffect(() => {
-        if (timerDone) return;
-        const interval = setInterval(() => {
-            setSecondsLeft(s => {
-                if (s <= 1) {
-                    clearInterval(interval);
-                    setTimerDone(true);
-                    onInteracted();
-                    return 0;
-                }
-                return s - 1;
-            });
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [timerDone, onInteracted]);
+    useEffect(() => { onInteracted(); }, []);
 
     const problems = [
         { icon: DollarSign, label: 'Recurring Fees', color: '#ef4444' },
@@ -110,24 +91,6 @@ export default function Slide2Problem({ onInteracted }) {
                     </div>
                 </motion.div>
 
-                {timerDone && (
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="text-center text-green-400 font-semibold mt-8"
-                    >
-                        ✓ Click Next to continue
-                    </motion.p>
-                )}
-                {!timerDone && (
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="text-center text-slate-500 text-sm mt-8"
-                    >
-                        Unlocking in {secondsLeft}s
-                    </motion.p>
-                )}
             </div>
         </div>
     );

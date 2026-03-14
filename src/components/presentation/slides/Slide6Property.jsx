@@ -11,33 +11,10 @@ const features = [
     'Live, pilot early adopter'
 ];
 
-export default function Slide6Property({ onInteracted, onUnlockMessage }) {
+export default function Slide6Property({ onInteracted }) {
     const [checkedFeatures, setCheckedFeatures] = useState(new Set());
-    const [timerDone, setTimerDone] = useState(false);
-    const [secondsLeft, setSecondsLeft] = useState(10);
 
-    useEffect(() => {
-        if (timerDone) {
-            if (onUnlockMessage) onUnlockMessage(null);
-            return;
-        }
-        if (onUnlockMessage) onUnlockMessage(`Unlocking navigation in ${secondsLeft}s — explore freely in the meantime`);
-    }, [secondsLeft, timerDone]);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setSecondsLeft(s => {
-                if (s <= 1) {
-                    clearInterval(interval);
-                    setTimerDone(true);
-                    onInteracted();
-                    return 0;
-                }
-                return s - 1;
-            });
-        }, 1000);
-        return () => clearInterval(interval);
-    }, []);
+    useEffect(() => { onInteracted(); }, []);
 
     const handleFeature = (i) => {
         const next = new Set(checkedFeatures);
@@ -143,11 +120,6 @@ export default function Slide6Property({ onInteracted, onUnlockMessage }) {
                     </div>
                 </div>
 
-                {checkedFeatures.size === features.length && (
-                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
-                        ✓ Click Next to explore the financials
-                    </motion.p>
-                )}
             </div>
         </div>
     );

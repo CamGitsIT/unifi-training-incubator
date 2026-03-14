@@ -178,31 +178,14 @@ function EcosystemFlywheel() {
 export default function Slide10SocialImpact({ onInteracted }) {
     const [activeCert, setActiveCert] = useState('ufsp');
     const [visited, setVisited] = useState(new Set(['ufsp']));
-    const [timerDone, setTimerDone] = useState(false);
-    const [secondsLeft, setSecondsLeft] = useState(10);
 
-    useEffect(() => {
-        if (timerDone || visited.size === certifications.length) return;
-        const interval = setInterval(() => {
-            setSecondsLeft(s => {
-                if (s <= 1) {
-                    clearInterval(interval);
-                    setTimerDone(true);
-                    onInteracted();
-                    return 0;
-                }
-                return s - 1;
-            });
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [timerDone, visited]);
+    useEffect(() => { onInteracted(); }, []);
 
     const handleTab = (val) => {
         setActiveCert(val);
         const next = new Set(visited);
         next.add(val);
         setVisited(next);
-        if (next.size === certifications.length) onInteracted();
     };
 
     const currentCert = certifications.find(c => c.id === activeCert);
@@ -220,7 +203,7 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-4">
                         Ubiquiti Academy has certified 50,000+ students worldwide. OverIT's National Training Center brings that engine home—creating certified UniFi and UISP professionals in our region.
                     </p>
-                    <p className="text-sm text-cyan-400 animate-pulse">👇 Click all 5 certification badges to continue</p>
+                    <p className="text-sm text-cyan-400 animate-pulse">👇 Click a certification badge to learn more</p>
                 </motion.div>
 
                 <div className="mt-0 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 p-10 text-center mb-8">
@@ -368,16 +351,6 @@ export default function Slide10SocialImpact({ onInteracted }) {
                     </AnimatePresence>
                 </Tabs>
 
-                {(visited.size === certifications.length || timerDone) && (
-                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
-                        ✓ Click Next to take action
-                    </motion.p>
-                )}
-                {visited.size < certifications.length && !timerDone && (
-                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-cyan-400 text-sm mt-6">
-                        Or unlock in {secondsLeft}s
-                    </motion.p>
-                )}
             </div>
         </div>
     );

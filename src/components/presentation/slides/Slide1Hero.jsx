@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Zap } from 'lucide-react';
 
-const BUTTON_UNLOCK_SECONDS = 10;
-
 function Particle({ style }) {
     return (
         <motion.div
@@ -28,20 +26,11 @@ const particles = [
 
 export default function Slide1Hero({ onInteracted, onNext }) {
     const [acknowledged, setAcknowledged] = useState(false);
-    const [countdown, setCountdown] = useState(BUTTON_UNLOCK_SECONDS);
 
-    const canClick = countdown <= 0;
-
-    useEffect(() => {
-        if (acknowledged || countdown <= 0) return;
-        const t = setTimeout(() => setCountdown(c => c - 1), 1000);
-        return () => clearTimeout(t);
-    }, [countdown, acknowledged]);
+    useEffect(() => { onInteracted(); }, []);
 
     const handleStart = () => {
-        if (!canClick) return;
         setAcknowledged(true);
-        onInteracted();
         if (onNext) onNext();
     };
 
@@ -132,25 +121,12 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.8 }}
                                 onClick={handleStart}
-                                disabled={!canClick}
-                                whileHover={canClick ? { scale: 1.03, y: -2 } : {}}
-                                whileTap={canClick ? { scale: 0.97 } : {}}
-                                className={`
-                                    font-bold text-base px-8 py-4 rounded-full shadow-2xl transition-all flex items-center gap-3
-                                    ${canClick
-                                        ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-cyan-500/40 cursor-pointer'
-                                        : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
-                                    }
-                                `}
+                                whileHover={{ scale: 1.03, y: -2 }}
+                                whileTap={{ scale: 0.97 }}
+                                className="font-bold text-base px-8 py-4 rounded-full shadow-2xl transition-all flex items-center gap-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-cyan-500/40 cursor-pointer"
                             >
                                 Learn How →
                             </motion.button>
-
-                            {!canClick && (
-                                <p className="text-slate-500 text-sm">
-                                    Available in <span className="text-cyan-400 font-bold tabular-nums">{countdown}s</span>
-                                </p>
-                            )}
                         </div>
                     ) : (
                         <motion.div

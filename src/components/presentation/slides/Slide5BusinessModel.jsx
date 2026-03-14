@@ -190,27 +190,11 @@ function ExpandedModal({ line, onClose }) {
 }
 
 // ── Main slide ────────────────────────────────────────────────────────────────
-export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
+export default function Slide5BusinessModel({ onInteracted }) {
   const [expanded,     setExpanded]     = useState(new Set());
   const [expandedLine, setExpandedLine] = useState(null);
-  const [timerDone,    setTimerDone]    = useState(false);
-  const [secondsLeft,  setSecondsLeft]  = useState(60);
 
-  useEffect(() => {
-    if (timerDone) { if (onUnlockMessage) onUnlockMessage(null); return; }
-    if (onUnlockMessage) onUnlockMessage(`Unlocking in ${secondsLeft}s — or expand all 8 cards to unlock now`);
-  }, [secondsLeft, timerDone]);
-
-  useEffect(() => {
-    if (timerDone) return;
-    const iv = setInterval(() => {
-      setSecondsLeft(s => {
-        if (s <= 1) { clearInterval(iv); setTimerDone(true); onInteracted(); return 0; }
-        return s - 1;
-      });
-    }, 1000);
-    return () => clearInterval(iv);
-  }, [timerDone]);
+  useEffect(() => { onInteracted(); }, []);
 
   const handleClick = (id) => {
     const line = getLine(id);
@@ -219,9 +203,6 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
     if (next.has(idx)) { next.delete(idx); setExpandedLine(null); }
     else               { next.add(idx);    setExpandedLine(line); }
     setExpanded(next);
-    if (!timerDone && next.size === businessLines.length) {
-      setTimerDone(true); onInteracted(); if (onUnlockMessage) onUnlockMessage(null);
-    }
   };
 
   // Dot colors matching each orbital stream

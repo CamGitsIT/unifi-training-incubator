@@ -6,33 +6,15 @@ import FoundersCard from './FoundersCard';
 
 export default function Slide9Team({ onInteracted }) {
     const [investmentAmount, setInvestmentAmount] = useState(25000);
-    const [hasInteracted, setHasInteracted] = useState(false);
-    const [timerDone, setTimerDone] = useState(false);
-    const [secondsLeft, setSecondsLeft] = useState(10);
 
     const targetReturn = investmentAmount * 1.10;
     const monthlyPayment = 50530 * 0.05;
     const estimatedMonths = Math.ceil(targetReturn / monthlyPayment);
 
-    useEffect(() => {
-        if (timerDone || hasInteracted) return;
-        const interval = setInterval(() => {
-            setSecondsLeft(s => {
-                if (s <= 1) {
-                    clearInterval(interval);
-                    setTimerDone(true);
-                    onInteracted();
-                    return 0;
-                }
-                return s - 1;
-            });
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [timerDone, hasInteracted]);
+    useEffect(() => { onInteracted(); }, []);
 
     const handleSlide = (val) => {
         setInvestmentAmount(val[0]);
-        if (!hasInteracted) { setHasInteracted(true); onInteracted(); }
     };
 
     return (
@@ -133,16 +115,6 @@ export default function Slide9Team({ onInteracted }) {
 
 
 
-                {(hasInteracted || timerDone) && (
-                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-green-400 font-semibold mt-6">
-                        ✓ Click Next to see social impact
-                    </motion.p>
-                )}
-                {!hasInteracted && !timerDone && (
-                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-cyan-400 text-sm mt-6">
-                        Or unlock in {secondsLeft}s
-                    </motion.p>
-                )}
             </div>
         </div>
     );
