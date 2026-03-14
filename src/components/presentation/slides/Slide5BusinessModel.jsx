@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Building2, GraduationCap, Store, Shield, Camera, Thermometer, Wifi, ArrowRight, CheckCircle, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Building2, GraduationCap, Store, Shield, Camera, Thermometer, Wifi, ArrowRight, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { BASELINE_STREAMS, STREAM_COLORS } from '@/components/forecast/forecastEngine';
@@ -16,19 +16,15 @@ const STREAM_DISPLAY = {
 };
 
 const colorMap = {
-  cyan:   { bg: 'from-cyan-950/30',   border: 'border-cyan-900/50',   icon: 'bg-cyan-500/10',   iconColor: 'text-cyan-400',   accent: 'text-cyan-400',   tag: 'bg-cyan-900/40 text-cyan-300',    hex: '#22d3ee' },
-  purple: { bg: 'from-purple-950/30', border: 'border-purple-900/50', icon: 'bg-purple-500/10', iconColor: 'text-purple-400', accent: 'text-purple-400', tag: 'bg-purple-900/40 text-purple-300', hex: '#a78bfa' },
-  green:  { bg: 'from-green-950/30',  border: 'border-green-900/50',  icon: 'bg-green-500/10',  iconColor: 'text-green-400',  accent: 'text-green-400',  tag: 'bg-green-900/40 text-green-300',  hex: '#34d399' },
-  amber:  { bg: 'from-amber-950/30',  border: 'border-amber-900/50',  icon: 'bg-amber-500/10',  iconColor: 'text-amber-400',  accent: 'text-amber-400',  tag: 'bg-amber-900/40 text-amber-300',  hex: '#fbbf24' },
-  red:    { bg: 'from-red-950/30',    border: 'border-red-900/50',    icon: 'bg-red-500/10',    iconColor: 'text-red-400',    accent: 'text-red-400',    tag: 'bg-red-900/40 text-red-300',      hex: '#f87171' },
-  indigo: { bg: 'from-indigo-950/30', border: 'border-indigo-900/50', icon: 'bg-indigo-500/10', iconColor: 'text-indigo-400', accent: 'text-indigo-400', tag: 'bg-indigo-900/40 text-indigo-300', hex: '#818cf8' },
-  orange: { bg: 'from-orange-950/30', border: 'border-orange-900/50', icon: 'bg-orange-500/10', iconColor: 'text-orange-400', accent: 'text-orange-400', tag: 'bg-orange-900/40 text-orange-300', hex: '#fb923c' },
-  teal:   { bg: 'from-teal-950/30',   border: 'border-teal-900/50',   icon: 'bg-teal-500/10',   iconColor: 'text-teal-400',   accent: 'text-teal-400',   tag: 'bg-teal-900/40 text-teal-300',    hex: '#2dd4bf' },
+  cyan:   { border: '#164e63', iconBg: '#0e7490', tagBg: '#083344', tagText: '#67e8f9', accent: '#22d3ee', hex: '#22d3ee', gradFrom: '#083344' },
+  purple: { border: '#4c1d95', iconBg: '#7c3aed', tagBg: '#2e1065', tagText: '#c4b5fd', accent: '#a78bfa', hex: '#a78bfa', gradFrom: '#2e1065' },
+  green:  { border: '#14532d', iconBg: '#16a34a', tagBg: '#052e16', tagText: '#86efac', accent: '#4ade80', hex: '#4ade80', gradFrom: '#052e16' },
+  amber:  { border: '#78350f', iconBg: '#d97706', tagBg: '#451a03', tagText: '#fcd34d', accent: '#fbbf24', hex: '#fbbf24', gradFrom: '#451a03' },
+  red:    { border: '#7f1d1d', iconBg: '#dc2626', tagBg: '#450a0a', tagText: '#fca5a5', accent: '#f87171', hex: '#f87171', gradFrom: '#450a0a' },
+  indigo: { border: '#312e81', iconBg: '#4f46e5', tagBg: '#1e1b4b', tagText: '#a5b4fc', accent: '#818cf8', hex: '#818cf8', gradFrom: '#1e1b4b' },
+  orange: { border: '#7c2d12', iconBg: '#ea580c', tagBg: '#431407', tagText: '#fdba74', accent: '#fb923c', hex: '#fb923c', gradFrom: '#431407' },
+  teal:   { border: '#134e4a', iconBg: '#0d9488', tagBg: '#042f2e', tagText: '#5eead4', accent: '#2dd4bf', hex: '#2dd4bf', gradFrom: '#042f2e' },
 };
-
-// Order: center cards first (experience, training), then the 6 orbital ones
-const CENTER_IDS = ['experience', 'training'];
-const ORBITAL_IDS = ['retrofit', 'retail', 'monitoring', 'rentals', 'refrigeration', 'isp'];
 
 const businessLines = BASELINE_STREAMS
   .filter(s => STREAM_DISPLAY[s.stream_id])
@@ -36,235 +32,141 @@ const businessLines = BASELINE_STREAMS
 
 const getLine = (id) => businessLines.find(l => l.id === id);
 
+// SVG canvas — all layout in viewBox units, scales perfectly to any container
+const VB = 600;
+const CX = VB / 2;        // 300
+const CY = VB / 2;        // 300
+const ORBIT_R = 210;
+const NODE_R  = 58;
+const CENTER_W = 152;
+const CENTER_H = 82;
+const CENTER_GAP = 10;
+const TOTAL_H = CENTER_H * 2 + CENTER_GAP;
+
+// 6 orbital IDs in clockwise order starting top-right
+const ORBITAL_IDS = ['retrofit', 'isp', 'retail', 'monitoring', 'refrigeration', 'rentals'];
+
+const orbitalPositions = ORBITAL_IDS.map((id, i) => {
+  const angle = ((i * 60) - 90) * (Math.PI / 180);
+  return { id, x: CX + Math.cos(angle) * ORBIT_R, y: CY + Math.sin(angle) * ORBIT_R };
+});
+
 const STACK_DATA = [
   { label: 'Standalone',    standalone: 40, expansion: 0,  compounding: 0  },
   { label: '+ Expansion',   standalone: 40, expansion: 35, compounding: 0  },
   { label: '+ Compounding', standalone: 40, expansion: 35, compounding: 25 },
 ];
 
-// ─── Flywheel ─────────────────────────────────────────────────────────────────
-function Flywheel({ expanded, onExpand }) {
-  const containerRef = useRef(null);
-  const [size, setSize] = useState(600);
-
-  useEffect(() => {
-    const obs = new ResizeObserver(entries => {
-      for (const e of entries) {
-        const w = e.contentRect.width;
-        setSize(Math.min(w, 680));
-      }
-    });
-    if (containerRef.current) obs.observe(containerRef.current);
-    return () => obs.disconnect();
-  }, []);
-
-  const cx = size / 2;
-  const cy = size / 2;
-  // Orbital radius scales with container: 36% of size, clamped
-  const orbitR = Math.max(160, Math.min(size * 0.36, 240));
-  // Circle node size
-  const nodeR = Math.max(56, Math.min(size * 0.1, 72));
-
-  const orbitalLines = ORBITAL_IDS.map((id, i) => {
-    const angle = (i * 60 - 90) * (Math.PI / 180); // evenly spaced, start top
-    return {
-      line: getLine(id),
-      x: cx + Math.cos(angle) * orbitR,
-      y: cy + Math.sin(angle) * orbitR,
-    };
-  });
-
-  // Spinning arrow dots along orbit ring
-  const arrowCount = 12;
-
+// Embed a lucide icon inside SVG via foreignObject
+function SvgIcon({ Icon, x, y, size, color }) {
   return (
-    <div ref={containerRef} className="w-full" style={{ maxWidth: 720, margin: '0 auto' }}>
-      <div className="relative" style={{ width: size, height: size, margin: '0 auto' }}>
-
-        {/* SVG layer: orbit ring + animated arrows */}
-        <svg
-          className="absolute inset-0 pointer-events-none"
-          width={size}
-          height={size}
-          viewBox={`0 0 ${size} ${size}`}
-        >
-          {/* Orbit ring */}
-          <circle
-            cx={cx} cy={cy} r={orbitR}
-            fill="none"
-            stroke="rgba(148,163,184,0.12)"
-            strokeWidth="1.5"
-            strokeDasharray="4 8"
-          />
-
-          {/* Spoke lines from center to each orbital */}
-          {orbitalLines.map(({ line, x, y }) => {
-            const colors = colorMap[line.color];
-            return (
-              <line
-                key={line.id}
-                x1={cx} y1={cy} x2={x} y2={y}
-                stroke={colors.hex}
-                strokeWidth="1"
-                strokeOpacity="0.18"
-              />
-            );
-          })}
-
-          {/* Animated dots on orbit ring */}
-          {Array.from({ length: arrowCount }).map((_, i) => {
-            const delay = (i / arrowCount) * 8;
-            const colorList = Object.values(colorMap).map(c => c.hex);
-            const color = colorList[i % colorList.length];
-            return (
-              <circle key={i} r="3" fill={color} opacity="0.7">
-                <animateMotion
-                  dur="8s"
-                  begin={`${-delay}s`}
-                  repeatCount="indefinite"
-                  path={`M ${cx + orbitR} ${cy} A ${orbitR} ${orbitR} 0 1 1 ${cx + orbitR - 0.001} ${cy}`}
-                />
-              </circle>
-            );
-          })}
-        </svg>
-
-        {/* ── Center hub: two cards stacked ── */}
-        <div
-          className="absolute flex flex-col gap-2 items-center"
-          style={{
-            left: cx,
-            top: cy,
-            transform: 'translate(-50%, -50%)',
-            zIndex: 10,
-            width: Math.min(size * 0.28, 180),
-          }}
-        >
-          {CENTER_IDS.map(id => {
-            const line = getLine(id);
-            const colors = colorMap[line.color];
-            const Icon = line.icon;
-            const idx = businessLines.indexOf(line);
-            const isExpanded = expanded.has(idx);
-            return (
-              <motion.button
-                key={id}
-                onClick={() => onExpand(idx)}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
-                className={`
-                  w-full text-left rounded-xl border-2 p-3 cursor-pointer shadow-2xl
-                  bg-gradient-to-br ${colors.bg} to-slate-900/30 ${colors.border}
-                  ${isExpanded ? 'ring-2 ring-offset-1 ring-offset-slate-900' : ''}
-                `}
-                style={isExpanded ? { boxShadow: `0 0 0 2px ${colors.hex}55` } : {}}
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  <div className={`w-7 h-7 ${colors.icon} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                    <Icon className={`w-3.5 h-3.5 ${colors.iconColor}`} />
-                  </div>
-                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${colors.tag}`}>{line.tag}</span>
-                </div>
-                <p className="text-xs font-bold text-white leading-tight">{line.title}</p>
-                <p className={`text-[10px] ${colors.accent} mt-0.5`}>{line.subtitle}</p>
-              </motion.button>
-            );
-          })}
-        </div>
-
-        {/* ── Orbital nodes ── */}
-        {orbitalLines.map(({ line, x, y }) => {
-          const colors = colorMap[line.color];
-          const Icon = line.icon;
-          const idx = businessLines.indexOf(line);
-          const isExpanded = expanded.has(idx);
-          return (
-            <motion.button
-              key={line.id}
-              onClick={() => onExpand(idx)}
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: ORBITAL_IDS.indexOf(line.id) * 0.07 + 0.2 }}
-              className={`
-                absolute flex flex-col items-center justify-center rounded-full
-                border-2 cursor-pointer shadow-xl
-                bg-gradient-to-br ${colors.bg} to-slate-900/20 ${colors.border}
-              `}
-              style={{
-                width: nodeR * 2,
-                height: nodeR * 2,
-                left: x,
-                top: y,
-                transform: 'translate(-50%, -50%)',
-                boxShadow: isExpanded ? `0 0 20px ${colors.hex}55` : undefined,
-              }}
-            >
-              <div className={`w-9 h-9 ${colors.icon} rounded-full flex items-center justify-center mb-1`}>
-                <Icon className={`w-4 h-4 ${colors.iconColor}`} />
-              </div>
-              <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${colors.tag} mb-1`}>{line.tag}</span>
-              <p className="text-[10px] font-bold text-white text-center leading-tight px-2">{line.title}</p>
-            </motion.button>
-          );
-        })}
-
+    <foreignObject x={x - size / 2} y={y - size / 2} width={size} height={size}>
+      <div xmlns="http://www.w3.org/1999/xhtml"
+        style={{ display:'flex', alignItems:'center', justifyContent:'center', width:size, height:size }}>
+        <Icon style={{ width: size * 0.65, height: size * 0.65, color }} />
       </div>
-    </div>
+    </foreignObject>
   );
 }
 
-// ─── Expanded modal ────────────────────────────────────────────────────────────
+function OrbitalNode({ id, x, y, isExpanded, onClick }) {
+  const line = getLine(id);
+  const c = colorMap[line.color];
+  const Icon = line.icon;
+  const words = line.title.split(' ');
+  const mid = Math.ceil(words.length / 2);
+  const t1 = words.slice(0, mid).join(' ');
+  const t2 = words.slice(mid).join(' ');
+
+  return (
+    <g onClick={() => onClick(id)} style={{ cursor: 'pointer' }}>
+      {isExpanded && <circle cx={x} cy={y} r={NODE_R + 7} fill="none" stroke={c.hex} strokeWidth="2" opacity="0.45" />}
+      <circle cx={x} cy={y} r={NODE_R} fill={c.gradFrom} stroke={c.border} strokeWidth="1.5" />
+      <SvgIcon Icon={Icon} x={x} y={y - 20} size={30} color={c.hex} />
+      <rect x={x - 24} y={y - 4} width={48} height={15} rx={7.5} fill={c.tagBg} />
+      <text x={x} y={y + 8} textAnchor="middle" fill={c.tagText} fontSize="7.5" fontWeight="700" fontFamily="ui-sans-serif,system-ui,sans-serif">{line.tag}</text>
+      <text x={x} y={y + 24} textAnchor="middle" fill="white" fontSize="9.5" fontWeight="700" fontFamily="ui-sans-serif,system-ui,sans-serif">{t1}</text>
+      {t2 && <text x={x} y={y + 36} textAnchor="middle" fill="white" fontSize="9.5" fontWeight="700" fontFamily="ui-sans-serif,system-ui,sans-serif">{t2}</text>}
+    </g>
+  );
+}
+
+function CenterCard({ id, isExpanded, onClick, yOffset }) {
+  const line = getLine(id);
+  const c = colorMap[line.color];
+  const Icon = line.icon;
+  const fx = CX - CENTER_W / 2;
+  const fy = CY - TOTAL_H / 2 + yOffset;
+
+  return (
+    <foreignObject x={fx} y={fy} width={CENTER_W} height={CENTER_H}>
+      <div xmlns="http://www.w3.org/1999/xhtml"
+        onClick={() => onClick(id)}
+        style={{
+          background: `linear-gradient(135deg, ${c.gradFrom}dd, #0f172a)`,
+          border: `2px solid ${c.border}`,
+          borderRadius: 14,
+          padding: '9px 11px',
+          cursor: 'pointer',
+          width: CENTER_W,
+          height: CENTER_H,
+          boxSizing: 'border-box',
+          boxShadow: isExpanded ? `0 0 20px ${c.hex}55` : '0 4px 24px rgba(0,0,0,0.6)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          gap: 4,
+        }}
+      >
+        <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+          <div style={{ background: c.iconBg + '44', borderRadius:8, padding:4, display:'flex' }}>
+            <Icon style={{ width:14, height:14, color:c.hex }} />
+          </div>
+          <span style={{ background:c.tagBg, color:c.tagText, fontSize:9, fontWeight:700, padding:'2px 7px', borderRadius:20 }}>{line.tag}</span>
+        </div>
+        <div style={{ color:'white', fontSize:11, fontWeight:700, lineHeight:1.3 }}>{line.title}</div>
+        <div style={{ color:c.accent, fontSize:9, lineHeight:1.2 }}>{line.subtitle}</div>
+      </div>
+    </foreignObject>
+  );
+}
+
 function ExpandedModal({ line, onClose }) {
   if (!line) return null;
-  const colors = colorMap[line.color];
+  const c = colorMap[line.color];
   const Icon = line.icon;
   return (
     <AnimatePresence>
       <>
-        <motion.div
-          key="backdrop"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
-        />
-        <motion.div
-          key="modal"
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl max-h-[80vh] overflow-y-auto px-4"
-        >
-          <div className={`bg-gradient-to-br ${colors.bg} to-slate-900 border-2 ${colors.border} rounded-3xl p-8 shadow-2xl`}>
-            <div className="flex items-start justify-between mb-6">
-              <div className="flex items-center gap-4">
-                <div className={`w-14 h-14 ${colors.icon} rounded-2xl flex items-center justify-center`}>
-                  <Icon className={`w-7 h-7 ${colors.iconColor}`} />
+        <motion.div key="bd" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
+          onClick={onClose} className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50" />
+        <motion.div key="md" initial={{opacity:0,scale:0.9,y:20}} animate={{opacity:1,scale:1,y:0}} exit={{opacity:0,scale:0.9,y:20}}
+          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl max-h-[80vh] overflow-y-auto px-4">
+          <div style={{ background:`linear-gradient(135deg,${c.gradFrom}ee,#0f172a)`, border:`2px solid ${c.border}`, borderRadius:24, padding:32 }}>
+            <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:24 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:16 }}>
+                <div style={{ background:c.iconBg+'33', borderRadius:16, padding:12, display:'flex' }}>
+                  <Icon style={{ width:28, height:28, color:c.hex }} />
                 </div>
                 <div>
-                  <span className={`text-sm font-semibold px-3 py-1 rounded-full ${colors.tag} inline-block mb-2`}>{line.tag}</span>
-                  <h3 className="text-2xl font-bold text-white leading-tight">{line.title}</h3>
-                  <p className={`text-base ${colors.accent} mt-1`}>{line.subtitle}</p>
+                  <span style={{ background:c.tagBg, color:c.tagText, fontSize:12, fontWeight:700, padding:'4px 12px', borderRadius:20, display:'inline-block', marginBottom:6 }}>{line.tag}</span>
+                  <div style={{ color:'white', fontSize:22, fontWeight:700 }}>{line.title}</div>
+                  <div style={{ color:c.accent, fontSize:14, marginTop:2 }}>{line.subtitle}</div>
                 </div>
               </div>
-              <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
-                <X className="w-6 h-6" />
+              <button onClick={onClose} style={{ color:'#94a3b8', background:'none', border:'none', cursor:'pointer' }}>
+                <X style={{ width:22, height:22 }} />
               </button>
             </div>
-            <div className="space-y-4">
-              <p className="text-slate-200 text-base leading-relaxed">{line.description}</p>
-              <div className="bg-slate-900/40 rounded-2xl p-5 border border-slate-700/50">
-                <h4 className="text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">Key Benefits</h4>
-                <div className="space-y-2">
-                  {line.metrics.map((m, j) => (
-                    <div key={j} className="flex items-start gap-3 text-base text-slate-300">
-                      <ArrowRight className={`w-5 h-5 flex-shrink-0 mt-0.5 ${colors.iconColor}`} />
-                      <span>{m}</span>
-                    </div>
-                  ))}
+            <p style={{ color:'#e2e8f0', fontSize:15, lineHeight:1.6, marginBottom:16 }}>{line.description}</p>
+            <div style={{ background:'rgba(15,23,42,0.5)', borderRadius:16, padding:20, border:'1px solid #334155' }}>
+              <div style={{ color:'#94a3b8', fontSize:11, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:12 }}>Key Benefits</div>
+              {line.metrics.map((m, j) => (
+                <div key={j} style={{ display:'flex', alignItems:'flex-start', gap:10, marginBottom:8 }}>
+                  <ArrowRight style={{ width:16, height:16, color:c.hex, flexShrink:0, marginTop:2 }} />
+                  <span style={{ color:'#cbd5e1', fontSize:14 }}>{m}</span>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </motion.div>
@@ -273,11 +175,10 @@ function ExpandedModal({ line, onClose }) {
   );
 }
 
-// ─── Main slide ────────────────────────────────────────────────────────────────
 export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
-  const [expanded, setExpanded] = useState(new Set());
-  const [expandedCard, setExpandedCard] = useState(null);
-  const [timerDone, setTimerDone] = useState(false);
+  const [expanded, setExpanded]       = useState(new Set());
+  const [expandedLine, setExpandedLine] = useState(null);
+  const [timerDone, setTimerDone]     = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(60);
 
   useEffect(() => {
@@ -287,105 +188,118 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
 
   useEffect(() => {
     if (timerDone) return;
-    const interval = setInterval(() => {
+    const iv = setInterval(() => {
       setSecondsLeft(s => {
-        if (s <= 1) { clearInterval(interval); setTimerDone(true); onInteracted(); return 0; }
+        if (s <= 1) { clearInterval(iv); setTimerDone(true); onInteracted(); return 0; }
         return s - 1;
       });
     }, 1000);
-    return () => clearInterval(interval);
+    return () => clearInterval(iv);
   }, [timerDone]);
 
-  const handleExpand = (i) => {
+  const handleClick = (id) => {
+    const line = getLine(id);
+    const idx  = businessLines.indexOf(line);
     const next = new Set(expanded);
-    const line = businessLines[i];
-    if (next.has(i)) {
-      next.delete(i);
-      setExpandedCard(null);
-    } else {
-      next.add(i);
-      setExpandedCard(line);
-    }
+    if (next.has(idx)) { next.delete(idx); setExpandedLine(null); }
+    else               { next.add(idx);    setExpandedLine(line); }
     setExpanded(next);
+    if (!timerDone && next.size === businessLines.length) {
+      setTimerDone(true); onInteracted(); if (onUnlockMessage) onUnlockMessage(null);
+    }
   };
 
-  const allExpanded = expanded.size === businessLines.length;
-  useEffect(() => {
-    if (allExpanded && !timerDone) { setTimerDone(true); onInteracted(); if (onUnlockMessage) onUnlockMessage(null); }
-  }, [allExpanded]);
+  const dotColors = ['#22d3ee','#a78bfa','#4ade80','#fbbf24','#f87171','#818cf8','#fb923c','#2dd4bf'];
 
   return (
     <div className="min-h-screen bg-slate-900 py-24 px-6">
       <div className="max-w-5xl mx-auto w-full">
 
         {/* Header */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
+        <motion.div initial={{opacity:0}} animate={{opacity:1}} className="text-center mb-12">
           <p className="text-xs font-semibold tracking-widest text-cyan-500 uppercase mb-4">Business Model</p>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
             Separate revenue lines.<br />Shared momentum.
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-6">
-            Each line earns on its own. Together they compound.
-          </p>
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-6">Each line earns on its own. Together they compound.</p>
           <p className="text-lg text-white max-w-2xl mx-auto mb-2">
             We're building both the Experience Center and National Training Center with this $300K raise (unlocking the SBA-backed $850K facility).
           </p>
           <p className="text-sm text-slate-400 max-w-2xl mx-auto">
             We educate + demo, then design & scope complex projects — handing implementation design to our trained partners to implement for a fee.
           </p>
-          <p className="text-base text-slate-300 max-w-2xl mx-auto mt-4">
-            8 connected streams complete the flywheel.
-          </p>
+          <p className="text-base text-slate-300 max-w-2xl mx-auto mt-4">8 connected streams complete the flywheel.</p>
         </motion.div>
 
-        {/* Flywheel */}
-        <Flywheel expanded={expanded} onExpand={handleExpand} />
+        {/* Flywheel — pure SVG viewBox, always perfectly centered */}
+        <div style={{ width:'100%', maxWidth:640, margin:'0 auto' }}>
+          <svg viewBox={`0 0 ${VB} ${VB}`} width="100%" style={{ display:'block', overflow:'visible' }}>
+            <defs>
+              <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.06" />
+                <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
+              </radialGradient>
+            </defs>
 
-        {/* Modal */}
-        <ExpandedModal line={expandedCard} onClose={() => setExpandedCard(null)} />
+            <circle cx={CX} cy={CY} r={ORBIT_R+50} fill="url(#glow)" />
+            <circle cx={CX} cy={CY} r={ORBIT_R} fill="none" stroke="rgba(148,163,184,0.14)" strokeWidth="1.5" strokeDasharray="6 10" />
 
-        {/* Section break */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="mt-14 mb-8 flex items-center gap-4">
+            {/* Spokes */}
+            {orbitalPositions.map(({ id, x, y }) => {
+              const c = colorMap[getLine(id).color];
+              return <line key={id} x1={CX} y1={CY} x2={x} y2={y} stroke={c.hex} strokeWidth="1" strokeOpacity="0.15" />;
+            })}
+
+            {/* Animated orbit dots */}
+            {dotColors.map((col, i) => (
+              <circle key={i} r="3.5" fill={col} opacity="0.85">
+                <animateMotion dur={`${6.5 + i * 0.25}s`} begin={`${-(i / dotColors.length) * 6.5}s`} repeatCount="indefinite"
+                  path={`M ${CX+ORBIT_R} ${CY} A ${ORBIT_R} ${ORBIT_R} 0 1 1 ${CX+ORBIT_R-0.001} ${CY}`} />
+              </circle>
+            ))}
+
+            {/* Orbital circles */}
+            {orbitalPositions.map(({ id, x, y }) => {
+              const idx = businessLines.indexOf(getLine(id));
+              return <OrbitalNode key={id} id={id} x={x} y={y} isExpanded={expanded.has(idx)} onClick={handleClick} />;
+            })}
+
+            {/* Center cards — anchored to exact SVG center */}
+            <CenterCard id="experience" isExpanded={expanded.has(businessLines.indexOf(getLine('experience')))} onClick={handleClick} yOffset={0} />
+            <CenterCard id="training"   isExpanded={expanded.has(businessLines.indexOf(getLine('training')))}   onClick={handleClick} yOffset={CENTER_H + CENTER_GAP} />
+          </svg>
+        </div>
+
+        <ExpandedModal line={expandedLine} onClose={() => setExpandedLine(null)} />
+
+        {/* Divider */}
+        <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.25}} className="mt-14 mb-8 flex items-center gap-4">
           <div className="flex-1 border-t border-slate-800" />
           <p className="text-xs font-semibold tracking-widest text-slate-500 uppercase whitespace-nowrap">Why This Model Works — Standalone. Expandable. Compounding.</p>
           <div className="flex-1 border-t border-slate-800" />
         </motion.div>
 
-        {/* Stacked visual framework */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="rounded-2xl border border-slate-800 bg-slate-800/20 px-6 py-6 mb-4">
+        {/* Stacked bars */}
+        <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:0.35}}
+          className="rounded-2xl border border-slate-800 bg-slate-800/20 px-6 py-6 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="space-y-3">
               {STACK_DATA.map((row, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <span className="text-xs text-slate-500 w-28 flex-shrink-0 text-right">{row.label}</span>
                   <div className="flex-1 h-7 rounded-lg overflow-hidden bg-slate-800/60 flex">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${row.standalone}%` }}
-                      transition={{ delay: 0.4 + i * 0.15, duration: 0.6, ease: 'easeOut' }}
-                      className="h-full bg-cyan-500/70"
-                    />
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${row.expansion}%` }}
-                      transition={{ delay: 0.55 + i * 0.15, duration: 0.5, ease: 'easeOut' }}
-                      className="h-full bg-violet-500/70"
-                    />
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${row.compounding}%` }}
-                      transition={{ delay: 0.7 + i * 0.15, duration: 0.5, ease: 'easeOut' }}
-                      className="h-full bg-green-500/70"
-                    />
+                    <motion.div initial={{width:0}} animate={{width:`${row.standalone}%`}} transition={{delay:0.4+i*0.15,duration:0.6,ease:'easeOut'}} className="h-full bg-cyan-500/70" />
+                    <motion.div initial={{width:0}} animate={{width:`${row.expansion}%`}}  transition={{delay:0.55+i*0.15,duration:0.5,ease:'easeOut'}} className="h-full bg-violet-500/70" />
+                    <motion.div initial={{width:0}} animate={{width:`${row.compounding}%`}} transition={{delay:0.7+i*0.15,duration:0.5,ease:'easeOut'}} className="h-full bg-green-500/70" />
                   </div>
                 </div>
               ))}
             </div>
             <div className="space-y-4">
               {[
-                { color: 'bg-cyan-500/70',   label: 'Standalone Revenue',   desc: 'Each line can close and generate revenue on its own.' },
-                { color: 'bg-violet-500/70', label: 'Expansion Revenue',    desc: 'One deployment often opens the door to the next service.' },
-                { color: 'bg-green-500/70',  label: 'Lower Risk. More Value.', desc: 'Diversified revenue reduces dependency on any one offer and increases long-term client value.' },
+                { color:'bg-cyan-500/70',   label:'Standalone Revenue',      desc:'Each line can close and generate revenue on its own.' },
+                { color:'bg-violet-500/70', label:'Expansion Revenue',       desc:'One deployment often opens the door to the next service.' },
+                { color:'bg-green-500/70',  label:'Lower Risk. More Value.', desc:'Diversified revenue reduces dependency on any one offer and increases long-term client value.' },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <div className={`w-3 h-3 rounded-sm ${item.color} flex-shrink-0 mt-1`} />
