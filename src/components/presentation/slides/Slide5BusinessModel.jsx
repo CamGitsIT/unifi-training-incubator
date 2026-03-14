@@ -244,7 +244,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
           <p className="text-sm text-slate-400 max-w-2xl mx-auto">
             We educate + demo, then design & scope complex projects — handing implementation design to our trained partners to implement for a fee.
           </p>
-          <p className="text-base text-slate-300 max-w-2xl mx-auto mt-4">8 connected streams complete the flywheel.</p>
+         // <p className="text-base text-slate-300 max-w-2xl mx-auto mt-4">8 connected streams complete the flywheel.</p>
         </motion.div>
 
         {/* ── Flywheel SVG ─────────────────────────────────────────────────── */}
