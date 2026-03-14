@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { TrendingUp, Zap, Shield, RefreshCw, ChevronRight, DollarSign, Percent } from 'lucide-react';
+import { TrendingUp, Zap, Shield, RefreshCw, ChevronRight, DollarSign, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Slider } from "@/components/ui/slider";
@@ -15,7 +15,9 @@ const LOCATION_FREE = {
 const ANNUAL_DEBT_SERVICE = 55200;
 const MARGIN = 0.63;
 
-const INVEST_AMOUNTS = [50000, 100000, 250000, 500000];
+const INVEST_AMOUNTS  = [50000, 100000, 250000, 500000];
+const PAYBACK_MONTHS  = [12, 24, 36, 48, 60];
+const ANNUAL_RETURN   = 0.10; // fixed 10% simple interest — not equity
 
 // ─── Core slider configs ───────────────────────────────────────────────────────
 const CORE_CONFIGS = [
@@ -136,9 +138,7 @@ export default function Slide7Financials({ onInteracted }) {
 
     // Investor calculator
     const [investAmount,  setInvestAmount]  = useState(100000);
-    const [structure,     setStructure]     = useState('revenue_share'); // 'revenue_share' | 'equity'
-    const [sharePercent,  setSharePercent]  = useState(5);
-    const [equityPercent, setEquityPercent] = useState(10);
+    const [paybackMonths, setPaybackMonths] = useState(24);
 
     useEffect(() => { onInteracted(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -203,33 +203,13 @@ export default function Slide7Financials({ onInteracted }) {
         })),
     ];
 
-    // ── Investor calculator ────────────────────────────────────────────────────
-    let paybackMonths, threeYearReturn, annualYield, returnMultiple;
-
-    if (structure === 'revenue_share') {
-        const monthlyRev      = totalY1 / 12;
-        const monthlyPayment  = monthlyRev * (sharePercent / 100);
-        paybackMonths         = monthlyPayment > 0 ? Math.ceil(investAmount / monthlyPayment) : Infinity;
-        threeYearReturn       = monthlyPayment * 36; // revenue share collected over 3 yrs
-        annualYield           = (monthlyPayment * 12 / investAmount) * 100;
-        returnMultiple        = threeYearReturn / investAmount;
-    } else {
-        // Equity — distributions from net profit, growing with Y1/Y2/Y3
-        const distY1 = totalY1 * MARGIN * (equityPercent / 100);
-        const distY2 = totalY2 * MARGIN * (equityPercent / 100);
-        const distY3 = totalY3 * MARGIN * (equityPercent / 100);
-        // Payback: accumulate monthly distributions until ≥ investAmount
-        const monthlyDist = distY1 / 12;
-        paybackMonths     = monthlyDist > 0 ? Math.ceil(investAmount / monthlyDist) : Infinity;
-        threeYearReturn   = distY1 + distY2 + distY3;
-        annualYield       = (distY1 / investAmount) * 100;
-        returnMultiple    = threeYearReturn / investAmount;
-    }
-
-    const paybackDisplay = paybackMonths === Infinity ? '—'
-        : paybackMonths <= 12  ? `${paybackMonths} mo`
-        : paybackMonths <= 36  ? `${(paybackMonths / 12).toFixed(1)} yr`
-        : '3+ yr';
+    // ── Investor calculator — fixed 10% simple interest note, payback period is the variable ──
+    const paybackYears    = paybackMonths / 12;
+    const totalRepaid     = investAmount * (1 + ANNUAL_RETURN * paybackYears); // simple interest
+    const investorReturn  = totalRepaid - investAmount;
+    const monthlyPayment  = totalRepaid / paybackMonths;
+    const freeMonthlyCash = freeCash / 12;
+    const coveragePct     = freeMonthlyCash > 0 ? (monthlyPayment / freeMonthlyCash) * 100 : 0;
 
     const displayY1 = useAnimatedValue(Math.round(totalY1));
     const displayY2 = useAnimatedValue(Math.round(totalY2));
@@ -412,10 +392,16 @@ export default function Slide7Financials({ onInteracted }) {
                 <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.1 }}
                     className="bg-gradient-to-br from-slate-900/80 to-purple-950/20 border border-purple-800/30 rounded-2xl p-6">
 
-                    <div className="flex items-center gap-2 mb-5">
-                        <DollarSign className="w-4 h-4 text-purple-400" />
-                        <span className="text-white font-semibold">Investor Return Calculator</span>
-                        <span className="text-xs text-slate-500 ml-1">· Base scenario · projections only</span>
+                    <div className="flex flex-wrap items-center gap-3 mb-5">
+                        <div className="flex items-center gap-2">
+                            <DollarSign className="w-4 h-4 text-purple-400" />
+                            <span className="text-white font-semibold">Repayment Calculator</span>
+                        </div>
+                        {/* Fixed rate badge */}
+                        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/30">
+                            <span className="text-green-400 text-xs font-bold">10% annual return · no equity</span>
+                        </div>
+                        <span className="text-xs text-slate-500">Base scenario · projections only</span>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-6">
@@ -439,76 +425,69 @@ export default function Slide7Financials({ onInteracted }) {
                                 </div>
                             </div>
 
-                            {/* Structure toggle */}
+                            {/* Payback period chips */}
                             <div>
-                                <p className="text-xs text-slate-400 mb-2">Repayment Structure</p>
-                                <div className="flex bg-slate-800/80 border border-slate-700 rounded-xl overflow-hidden w-fit">
-                                    {[
-                                        { key:'revenue_share', label:'Revenue Share' },
-                                        { key:'equity',        label:'Equity' },
-                                    ].map(opt => (
-                                        <button key={opt.key} onClick={() => setStructure(opt.key)}
-                                            className={`px-4 py-2 text-sm font-medium transition-all ${
-                                                structure === opt.key
-                                                    ? 'bg-purple-500/30 text-purple-200'
-                                                    : 'text-slate-400 hover:text-slate-200'
+                                <p className="text-xs text-slate-400 mb-2 flex items-center gap-1">
+                                    <Clock className="w-3 h-3" /> Payback Period
+                                    <span className="text-slate-600 ml-1">— shorter = higher monthly payment</span>
+                                </p>
+                                <div className="flex gap-2 flex-wrap">
+                                    {PAYBACK_MONTHS.map(mo => (
+                                        <button key={mo} onClick={() => setPaybackMonths(mo)}
+                                            className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-all ${
+                                                paybackMonths === mo
+                                                    ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300'
+                                                    : 'bg-slate-800/60 border-slate-600 text-slate-400 hover:border-slate-400 hover:text-slate-200'
                                             }`}>
-                                            {opt.label}
+                                            {mo === 12 ? '1 yr' : mo === 24 ? '2 yr' : mo === 36 ? '3 yr' : mo === 48 ? '4 yr' : '5 yr'}
                                         </button>
                                     ))}
                                 </div>
                             </div>
 
-                            {/* Percentage slider */}
-                            {structure === 'revenue_share' ? (
-                                <div>
-                                    <p className="text-xs text-slate-400 mb-2 flex items-center gap-1">
-                                        <Percent className="w-3 h-3" /> Revenue Share — <strong className="text-slate-200">{sharePercent}% of gross revenue</strong>
-                                        <span className="text-slate-600 ml-1">(= {formatCurrency(totalY1 * sharePercent / 100, true)}/yr)</span>
-                                    </p>
-                                    <Slider value={[sharePercent]} onValueChange={v => setSharePercent(v[0])}
-                                        min={1} max={15} step={0.5} className="w-full" />
-                                    <div className="flex justify-between text-xs text-slate-600 mt-1"><span>1%</span><span>15%</span></div>
+                            {/* Structure note */}
+                            <div className="bg-slate-800/30 border border-slate-700/40 rounded-xl px-4 py-3 space-y-1.5 text-xs text-slate-400">
+                                <div className="flex justify-between">
+                                    <span>Principal</span>
+                                    <span className="text-slate-200 font-medium">{formatCurrency(investAmount, true)}</span>
                                 </div>
-                            ) : (
-                                <div>
-                                    <p className="text-xs text-slate-400 mb-2 flex items-center gap-1">
-                                        <Percent className="w-3 h-3" /> Equity Stake — <strong className="text-slate-200">{equityPercent}% of net profit</strong>
-                                        <span className="text-slate-600 ml-1">(= {formatCurrency(totalProfit * equityPercent / 100, true)}/yr)</span>
-                                    </p>
-                                    <Slider value={[equityPercent]} onValueChange={v => setEquityPercent(v[0])}
-                                        min={1} max={40} step={1} className="w-full" />
-                                    <div className="flex justify-between text-xs text-slate-600 mt-1"><span>1%</span><span>40%</span></div>
+                                <div className="flex justify-between">
+                                    <span>Return (10% × {paybackYears.toFixed(1)} yr)</span>
+                                    <span className="text-green-400 font-medium">+ {formatCurrency(Math.round(investorReturn), true)}</span>
                                 </div>
-                            )}
+                                <div className="border-t border-slate-700 pt-1.5 flex justify-between">
+                                    <span className="font-semibold text-slate-300">Total Repaid</span>
+                                    <span className="text-white font-bold">{formatCurrency(Math.round(totalRepaid), true)}</span>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Right: output cards */}
                         <div className="grid grid-cols-2 gap-3 content-start">
                             {[
                                 {
-                                    label: 'Payback Period',
-                                    value: paybackDisplay,
-                                    color: paybackMonths <= 12 ? '#4ade80' : paybackMonths <= 24 ? '#22d3ee' : '#a78bfa',
-                                    sub: 'at Base Y1 run rate',
+                                    label: 'Monthly Payment',
+                                    value: formatCurrency(Math.round(monthlyPayment), true),
+                                    color: '#a78bfa',
+                                    sub: `over ${paybackMonths} months`,
                                 },
                                 {
-                                    label: '3-Year Total Return',
-                                    value: formatCurrency(Math.round(threeYearReturn), true),
+                                    label: 'Investor Return',
+                                    value: formatCurrency(Math.round(investorReturn), true),
                                     color: '#4ade80',
-                                    sub: `${returnMultiple.toFixed(1)}× on ${formatCurrency(investAmount, true)}`,
+                                    sub: `10% · ${paybackYears.toFixed(1)}-yr note`,
                                 },
                                 {
-                                    label: 'Annual Yield (Y1)',
-                                    value: `${annualYield.toFixed(1)}%`,
-                                    color: '#22d3ee',
-                                    sub: structure === 'revenue_share' ? 'of gross revenue' : 'of net profit',
+                                    label: 'Payment vs Free Cash',
+                                    value: `${coveragePct.toFixed(1)}%`,
+                                    color: coveragePct < 10 ? '#4ade80' : coveragePct < 25 ? '#22d3ee' : '#facc15',
+                                    sub: `of ${formatCurrency(Math.round(freeMonthlyCash), true)}/mo free cash`,
                                 },
                                 {
-                                    label: 'Free Cash Available',
-                                    value: formatCurrency(freeCash, true),
+                                    label: 'Free Cash / Month',
+                                    value: formatCurrency(Math.round(freeMonthlyCash), true),
                                     color: '#a3e635',
-                                    sub: 'Y1 after debt service',
+                                    sub: 'after debt service · Y1',
                                 },
                             ].map(card => (
                                 <div key={card.label} className="bg-slate-800/50 border border-slate-700/60 rounded-xl p-3 text-center">
@@ -523,7 +502,7 @@ export default function Slide7Financials({ onInteracted }) {
 
                             <div className="col-span-2 bg-slate-800/20 border border-slate-700/30 rounded-xl px-3 py-2">
                                 <p className="text-xs text-slate-500 leading-relaxed text-center">
-                                    Projections derived from Base scenario. Actual returns depend on execution, market conditions, and agreed terms.
+                                    Simple interest note. No equity. Actual terms subject to agreement.
                                 </p>
                             </div>
                         </div>
