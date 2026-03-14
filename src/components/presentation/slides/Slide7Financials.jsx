@@ -45,7 +45,7 @@ const CORE_CONFIGS = [
         min: 1, max: 60, step: 1,
         defaultValue: 20,
         revenuePerDriver: 2000,
-        tagline: 'National cohorts delivered online and on-site. Location-free. Covers debt service alone.',
+        tagline: 'National cohorts delivered online and on-site. Location-optional. Covers debt service alone.',
     },
 ];
 
@@ -53,8 +53,7 @@ const CORE_CONFIGS = [
 const SUPPORT_IDS = ['retrofit', 'retail', 'monitoring', 'rentals', 'refrigeration', 'isp'];
 
 // ─── LineCard ─────────────────────────────────────────────────────────────────
-function LineCard({ line, value, onChange }) {
-    const annualRev = value * line.revenuePerDriver * 12;
+function LineCard({ line, value, onChange, y1, y2, y3 }) {
     return (
         <motion.div
             layout
@@ -76,13 +75,19 @@ function LineCard({ line, value, onChange }) {
                             </span>
                         </div>
                         <div className="text-xs mt-0.5" style={{ color: line.color }}>
-                            {line.locationIndependent ? '🌐 Location-free' : '📍 Property anchor'}
+                            {line.locationIndependent ? '🌐 Location-optional' : '📍 Property anchor'}
                         </div>
                     </div>
                 </div>
                 <div className="text-right">
-                    <div className="text-lg font-bold" style={{ color: line.color }}>{formatCurrency(annualRev, true)}</div>
-                    <div className="text-xs text-slate-500">/yr</div>
+                    <div className="text-lg font-bold" style={{ color: line.color }}>{formatCurrency(y1, true)}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">Y1</div>
+                    {y2 != null && y3 != null && (
+                        <div className="flex gap-2 mt-1 justify-end">
+                            <span className="text-xs text-slate-500">Y2 <span className="text-slate-400 font-medium">{formatCurrency(y2, true)}</span></span>
+                            <span className="text-xs text-slate-500">Y3 <span className="text-slate-400 font-medium">{formatCurrency(y3, true)}</span></span>
+                        </div>
+                    )}
                 </div>
             </div>
             <p className="text-xs text-slate-400 mb-3 italic leading-relaxed">"{line.tagline}"</p>
@@ -161,10 +166,26 @@ export default function Slide7Financials({ onInteracted }) {
     const locationFreePct = totalY1 > 0
         ? Math.round((locationFreeRevenue / totalY1) * 100) : 0;
 
-    // Chart: Experience Center = both blended streams combined; 8 bars total
+    // Blended Experience Center Y1/Y2/Y3
     const experienceCombinedY1 =
         (currentForecast.streams['experience']?.y1 ?? 0) +
         (currentForecast.streams['experience_design_consulting']?.y1 ?? 0);
+    const experienceCombinedY2 =
+        (currentForecast.streams['experience']?.y2 ?? 0) +
+        (currentForecast.streams['experience_design_consulting']?.y2 ?? 0);
+    const experienceCombinedY3 =
+        (currentForecast.streams['experience']?.y3 ?? 0) +
+        (currentForecast.streams['experience_design_consulting']?.y3 ?? 0);
+
+    // Per-core stream Y1/Y2/Y3 for card display
+    const coreYears = {
+        experience: { y1: experienceCombinedY1, y2: experienceCombinedY2, y3: experienceCombinedY3 },
+        training:   {
+            y1: currentForecast.streams['training']?.y1 ?? 0,
+            y2: currentForecast.streams['training']?.y2 ?? 0,
+            y3: currentForecast.streams['training']?.y3 ?? 0,
+        },
+    };
 
     const chartData = [
         { id:'experience', name:'Experience Center', revenue:experienceCombinedY1,        color:STREAM_COLORS['experience'], isCore:true },
@@ -270,7 +291,10 @@ export default function Slide7Financials({ onInteracted }) {
                         <div className="space-y-3">
                             {CORE_CONFIGS.map(line => (
                                 <LineCard key={line.id} line={line} value={values[line.id]}
-                                    onChange={v => handleChange(line.id, v)} />
+                                    onChange={v => handleChange(line.id, v)}
+                                    y1={coreYears[line.id].y1}
+                                    y2={coreYears[line.id].y2}
+                                    y3={coreYears[line.id].y3} />
                             ))}
                         </div>
 
