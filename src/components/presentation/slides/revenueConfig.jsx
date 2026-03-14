@@ -146,7 +146,38 @@ export const STREAMS = [
     computeRevenue: computeExperienceRevenue,
   },
 
-  // ── 2. Keyless Property Access Retrofit ──────────────────────
+  // ── 2. UniFi Certification Training ──────────────────────────
+  {
+    id: 'training',
+    title: 'UniFi Certification Training',
+    subtitle: 'Multi-day bootcamps — URSCA, Full-Stack, and more',
+    tags: ['Recurring', 'Location-free', 'High-margin'],
+    color: STREAM_COLORS.training,
+    emoji: '🎓',
+    what: 'Multi-day Ubiquiti/UniFi certification courses for IT professionals, MSPs, integrators, and technicians. In-person or remote, all from our National Training Center.',
+   // whoServes: 'IT professionals, career-changers, property managers, MSPs, and integrators.',
+    howWeEarn: '$2,000 per seat — cohorts of 4–12 students.',
+
+    driver: {
+      name: baseline('training').driver_name,
+      unitLabel: baseline('training').driver_unit,
+      min: 0, max: 60, step: 1, defaultValue: baseline('training').plan_driver_m1,
+    },
+    revenueFormula: (d) => `$2,000/seat × ${d} seats/mo × growth_factor\n≈ ${Math.ceil(d/6)} classes/mo × ~6 students avg cohort × $2,000/seat`,
+    assumptions: {
+      unitRevenue: baseline('training').unit_revenue,
+      avgCohortSize: 6,
+      scenarioNote: 'Conservative = fewer cohorts/mo; Stretch = waitlist demand + online scale.',
+    },
+    proof: [
+      'Course curriculum drafted and validated',
+      'Ubiquiti certification framework confirmed',
+      '$2,000/seat is a real, validated price point',
+    ],
+    computeRevenue: makeCompute('training'),
+  },
+
+  // ── 3. Keyless Property Access Retrofit ──────────────────────
   {
     id: 'retrofit',
     title: 'Keyless Property Access',
@@ -178,37 +209,6 @@ export const STREAMS = [
       'Partner installer network operational',
     ],
     computeRevenue: makeCompute('retrofit'),
-  },
-
-  // ── 3. UniFi Certification Training ──────────────────────────
-  {
-    id: 'training',
-    title: 'UniFi Certification Training',
-    subtitle: 'Multi-day bootcamps — URSCA, Full-Stack, and more',
-    tags: ['Recurring', 'Location-free', 'High-margin'],
-    color: STREAM_COLORS.training,
-    emoji: '🎓',
-    what: 'Multi-day Ubiquiti/UniFi certification courses for IT professionals, MSPs, integrators, and technicians. In-person or remote, all from our National Training Center.',
-   // whoServes: 'IT professionals, career-changers, property managers, MSPs, and integrators.',
-    howWeEarn: '$2,000 per seat — cohorts of 4–12 students.',
-
-    driver: {
-      name: baseline('training').driver_name,
-      unitLabel: baseline('training').driver_unit,
-      min: 0, max: 60, step: 1, defaultValue: baseline('training').plan_driver_m1,
-    },
-    revenueFormula: (d) => `$2,000/seat × ${d} seats/mo × growth_factor\n≈ ${Math.ceil(d/6)} classes/mo × ~6 students avg cohort × $2,000/seat`,
-    assumptions: {
-      unitRevenue: baseline('training').unit_revenue,
-      avgCohortSize: 6,
-      scenarioNote: 'Conservative = fewer cohorts/mo; Stretch = waitlist demand + online scale.',
-    },
-    proof: [
-      'Course curriculum drafted and validated',
-      'Ubiquiti certification framework confirmed',
-      '$2,000/seat is a real, validated price point',
-    ],
-    computeRevenue: makeCompute('training'),
   },
 
   // ── 4. Multi-Location Retail ──────────────────────────────────
