@@ -200,7 +200,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                 const colors = colorMap[line.color];
                 const Icon = line.icon;
                 const angle = (i * 60) - 90;
-                const radius = 280;
+                const radius = 260;
                 const x = Math.cos((angle * Math.PI) / 180) * radius;
                 const y = Math.sin((angle * Math.PI) / 180) * radius;
 
