@@ -6,14 +6,14 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 import { BASELINE_STREAMS, STREAM_COLORS } from '@/components/forecast/forecastEngine';
 
 const STREAM_DISPLAY = {
-  experience:    { icon: Camera,        color: 'cyan',   title: 'Experience Center',       subtitle: 'Live showroom · no inventory',          tag: 'Direct',      description: 'Live UniFi showroom.', metrics: ['No inventory.', 'Qualifies buyers.', 'Feeds every other line.'] },
+  experience:    { icon: Camera,        color: 'cyan',   title: 'Experience Center',       subtitle: 'Live showroom',          tag: 'Direct',      description: 'Live UniFi showroom.', metrics: ['No inventory.', 'Qualifies buyers.', 'Feeds every other line.'] },
   training:      { icon: GraduationCap, color: 'green',  title: 'Certification Training',  subtitle: 'Official UniFi training',               tag: 'Direct',      description: 'Official UniFi bootcamps.', metrics: ['$2,000/seat.', 'In-person or remote.', 'Builds talent pipeline.'] },
   retrofit:      { icon: Building2,     color: 'purple', title: 'Access Control Retrofit', subtitle: 'Modern entry upgrades',                 tag: 'Project',     description: 'Modern entry upgrades.', metrics: ['Avg $9K deal. 12.5% fee.', 'Design & scope → MSP partner.'] },
-  retail:        { icon: Store,         color: 'amber',  title: 'Multi-Location Retail',   subtitle: 'Standardized retail rollouts',          tag: 'Recurring',   description: 'Standardized chain rollouts.', metrics: ['Recurring support across sites.'] },
-  monitoring:    { icon: Shield,        color: 'red',    title: 'Professional Monitoring', subtitle: 'Modern security monitoring',            tag: 'Recurring',   description: 'Modern security monitoring.', metrics: ['Endless pipeline with recurring fee per UniFi referred sites.'] },
+  retail:        { icon: Store,         color: 'amber',  title: 'Multi-Location Retail',   subtitle: 'Standardized retail rollouts',          tag: 'Recurring',   description: 'Standardized chain rollouts.', metrics: ['Adopt standardized systems across chain.', 'Manage sites from one Admin Portal.', 'Recurring support across sites.'] },
+  monitoring:    { icon: Shield,        color: 'red',    title: 'Professional Monitoring', subtitle: 'Modern security monitoring',            tag: 'Recurring',   description: 'Modern security monitoring.', metrics: ['First to partner UniFi with Monitoring.', 'Endless pipeline with recurring fee per UniFi referred sites.', 'Repeatable mold for across industries.'] },
   rentals:       { icon: Camera,        color: 'indigo', title: 'Infrastructure Rentals',  subtitle: 'Production-ready gear rentals',         tag: 'Asset',       description: 'Production-ready gear rentals.', metrics: ['$800 avg per job.', 'No client capex.'] },
   refrigeration: { icon: Thermometer,   color: 'orange', title: 'Compliance Monitoring',   subtitle: 'Temperature and compliance logging',    tag: 'Recurring',   description: 'Temp & compliance monitoring.', metrics: ['$1,000/year/location.', 'Cuts manual work and error.'] },
-  isp:           { icon: Wifi,          color: 'teal',   title: 'Micro ISP',                subtitle: 'Community broadband for HOAs',         tag: 'Infrastructure', description: 'HOA community broadband.', metrics: ['$55/unit/mo net.', 'Beats incumbents.'] },
+  isp:           { icon: Wifi,          color: 'teal',   title: 'Micro ISP',                subtitle: 'Community broadband for HOAs',         tag: 'Infrastructure', description: 'HOA community broadband.', metrics: ['$55/unit/mo net.', 'Beats incumbent pricing.', 'Portion goes back to HOA/Property.'] },
 };
 
 const colorMap = {
