@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
-import { TrendingUp, Globe, Zap, Shield, RefreshCw, ChevronDown } from 'lucide-react';
+import { TrendingUp, Globe, Zap, Shield, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Slider } from "@/components/ui/slider";
@@ -9,8 +9,8 @@ import { BASELINE_STREAMS, runForecast, formatCurrency, STREAM_COLORS } from '@/
 // How long to wait between each stream reveal AFTER the user has clicked
 // "Start Reveal" or scrolled/interacted with the slide.
 // Adjust these two numbers to tune pacing:
-const REVEAL_INTERVAL    = 6000;  // ms between each stream appearing
-const FIRST_REVEAL_DELAY = 3000;  // ms before the first stream appears
+const REVEAL_INTERVAL    = 4000;  // ms between each stream appearing
+const FIRST_REVEAL_DELAY = 600;   // ms before the first stream appears (lets slide entrance finish)
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const LOCATION_FREE = {
@@ -150,9 +150,6 @@ export default function Slide7Financials({ onInteracted }) {
     const [values, setValues] = useState(() =>
         Object.fromEntries(LINE_CONFIGS.map(l => [l.id, l.defaultValue]))
     );
-    const [hasInteracted, setHasInteracted] = useState(false);
-    const [timerDone, setTimerDone]         = useState(false);
-    const [secondsLeft, setSecondsLeft]     = useState(45);
 
     // ── Reveal state ──────────────────────────────────────────────────────────
     // revealStep: 0 = only pinned visible. 1..6 = additional streams shown.
@@ -207,32 +204,20 @@ export default function Slide7Financials({ onInteracted }) {
         rafRef.current = requestAnimationFrame(loop);
     }, []);
 
-    // Clean up RAF on unmount
+    // Auto-start reveal on mount; also mark slide as interacted immediately
+    // (no gating — the reveal itself is the experience)
     useEffect(() => {
+        onInteracted();
+        startReveal();
         return () => {
             if (rafRef.current) cancelAnimationFrame(rafRef.current);
         };
-    }, []);
-
-    // ── Unlock timer ──────────────────────────────────────────────────────────
-    useEffect(() => {
-        if (timerDone) return;
-        const iv = setInterval(() => {
-            setSecondsLeft(s => {
-                if (s <= 1) { clearInterval(iv); setTimerDone(true); onInteracted(); return 0; }
-                return s - 1;
-            });
-        }, 1000);
-        return () => clearInterval(iv);
-    }, [timerDone]);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     // ── Handlers ──────────────────────────────────────────────────────────────
     const handleChange = useCallback((id, val) => {
         setValues(prev => ({ ...prev, [id]: val }));
-        if (!hasInteracted) { setHasInteracted(true); onInteracted(); }
-        // Also start the reveal if not already started when user touches a slider
-        startReveal();
-    }, [hasInteracted, startReveal]);
+    }, []);
 
     const handleReset = () => {
         setValues(Object.fromEntries(LINE_CONFIGS.map(l => [l.id, l.defaultValue])));
@@ -241,6 +226,7 @@ export default function Slide7Financials({ onInteracted }) {
         stepRef.current   = 0;
         setRevealStep(0);
         setStarted(false);
+        startReveal(); // restart auto-reveal from the beginning
     };
 
     // ── Forecast ──────────────────────────────────────────────────────────────
@@ -248,7 +234,6 @@ export default function Slide7Financials({ onInteracted }) {
         ...s, plan_driver_m1: values[s.stream_id] ?? s.plan_driver_m1,
     }));
     const currentForecast = runForecast(modifiedStreams, 'base');
-    const { totalY1: y1, totalY2: y2, totalY3: y3 } = currentForecast;
 
     const visibleIds = [...PINNED_IDS, ...OTHER_IDS.slice(0, revealStep)];
 
@@ -256,26 +241,36 @@ export default function Slide7Financials({ onInteracted }) {
         ...l, annual: currentForecast.streams[l.id]?.y1 ?? 0,
     }));
 
+    // Only count visible streams — totals aggregate as each card is revealed
     const visibleRevenue = lineRevenues
         .filter(l => visibleIds.includes(l.id))
         .reduce((s, l) => s + l.annual, 0);
 
-    const totalAnnual = y1;
-    const totalProfit = Math.round(totalAnnual * MARGIN);
-    const dscr        = (totalProfit / ANNUAL_DEBT_SERVICE).toFixed(1);
-    const dscrColor   = parseFloat(dscr) >= 10 ? '#4ade80' : parseFloat(dscr) >= 3 ? '#22d3ee' : '#facc15';
+    const visibleY2 = LINE_CONFIGS
+        .filter(l => visibleIds.includes(l.id))
+        .reduce((s, l) => s + (currentForecast.streams[l.id]?.y2 ?? 0), 0);
+
+    const visibleY3 = LINE_CONFIGS
+        .filter(l => visibleIds.includes(l.id))
+        .reduce((s, l) => s + (currentForecast.streams[l.id]?.y3 ?? 0), 0);
+
+    const visibleProfit = Math.round(visibleRevenue * MARGIN);
+    const visibleDscr   = (visibleProfit / ANNUAL_DEBT_SERVICE).toFixed(1);
+    const dscrColor     = parseFloat(visibleDscr) >= 10 ? '#4ade80' : parseFloat(visibleDscr) >= 3 ? '#22d3ee' : '#facc15';
 
     const locationFreeRevenue = lineRevenues
-        .filter(l => l.locationIndependent)
+        .filter(l => l.locationIndependent && visibleIds.includes(l.id))
         .reduce((s, l) => s + l.annual, 0);
-    const locationFreePct = totalAnnual > 0
-        ? Math.round((locationFreeRevenue / totalAnnual) * 100) : 0;
+    const locationFreePct = visibleRevenue > 0
+        ? Math.round((locationFreeRevenue / visibleRevenue) * 100) : 0;
 
     const chartData = lineRevenues
         .filter(l => visibleIds.includes(l.id))
         .map(l => ({ id: l.id, name: l.name, revenue: l.annual, color: l.color }));
 
-    const displayTotal = useAnimatedValue(visibleRevenue);
+    const displayY1 = useAnimatedValue(visibleRevenue);
+    const displayY2 = useAnimatedValue(visibleY2);
+    const displayY3 = useAnimatedValue(visibleY3);
     const allRevealed  = revealStep >= TOTAL_STEPS;
 
     // ── Render ────────────────────────────────────────────────────────────────
@@ -300,33 +295,34 @@ export default function Slide7Financials({ onInteracted }) {
                     </p>
                 </motion.div>
 
-                {/* 3-Year Totals */}
+                {/* 3-Year Totals — aggregate as streams are revealed */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
                     {[
-                        { label:'Year 1 Total', val:y1, sub:'Months 1–12 · Base' },
-                        { label:'Year 2 Total', val:y2, sub:'Months 13–24 · Base' },
-                        { label:'Year 3 Total', val:y3, sub:'Months 25–36 · Base' },
+                        { label:'Year 1 Total', val:displayY1, sub:'Months 1–12 · Base' },
+                        { label:'Year 2 Total', val:displayY2, sub:'Months 13–24 · Base' },
+                        { label:'Year 3 Total', val:displayY3, sub:'Months 25–36 · Base' },
                     ].map(({ label, val, sub }) => (
                         <div key={label} className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center">
                             <div className="text-xs text-slate-400 mb-1">{label}</div>
-                            <div className="text-2xl md:text-3xl font-bold text-white">{formatCurrency(val, true)}</div>
+                            <motion.div key={val} initial={{scale:0.95,opacity:0.6}} animate={{scale:1,opacity:1}}
+                                className="text-2xl md:text-3xl font-bold text-white">{formatCurrency(val, true)}</motion.div>
                             <div className="text-xs text-slate-500 mt-1">{sub}</div>
                         </div>
                     ))}
                 </div>
 
-                {/* Summary bar */}
+                {/* Summary bar — all values reflect only revealed streams */}
                 <motion.div layout className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                     {[
                         {
                             label: allRevealed ? 'Total Annual Revenue' : `Running Total (${visibleIds.length} streams)`,
-                            value: formatCurrency(displayTotal, true),
+                            value: formatCurrency(displayY1, true),
                             color: allRevealed ? '#ffffff' : '#22d3ee',
-                            sub:   allRevealed ? `${formatCurrency(Math.round(totalAnnual/12),true)}/mo` : 'building…',
+                            sub:   allRevealed ? `${formatCurrency(Math.round(visibleRevenue/12),true)}/mo` : 'building…',
                         },
-                        { label:'Net Profit (~63%)',       value:formatCurrency(totalProfit,true), color:'#4ade80', sub:'After ops & overhead' },
-                        { label:'Debt Coverage Ratio',     value:`${dscr}x`,                       color:dscrColor, sub:`vs $${(ANNUAL_DEBT_SERVICE/1000).toFixed(0)}K/yr debt service` },
-                        { label:'% Location-Free Revenue', value:`${locationFreePct}%`,            color:'#22d3ee', sub:'Earnable from anywhere' },
+                        { label:'Net Profit (~63%)',       value:formatCurrency(visibleProfit,true), color:'#4ade80', sub:'After ops & overhead' },
+                        { label:'Debt Coverage Ratio',     value:`${visibleDscr}x`,                  color:dscrColor, sub:`vs $${(ANNUAL_DEBT_SERVICE/1000).toFixed(0)}K/yr debt service` },
+                        { label:'% Location-Free Revenue', value:`${locationFreePct}%`,              color:'#22d3ee', sub:'Earnable from anywhere' },
                     ].map((s, i) => (
                         <motion.div key={i} layout className="bg-slate-800/40 border border-slate-700 rounded-xl p-4 text-center">
                             <div className="text-xs text-slate-400 mb-1">{s.label}</div>
@@ -372,19 +368,6 @@ export default function Slide7Financials({ onInteracted }) {
                         </div>
 
                         {/* Status bar */}
-                        {!started && !allRevealed && (
-                            <motion.button
-                                onClick={startReveal}
-                                initial={{ opacity:0, y:4 }}
-                                animate={{ opacity:1, y:0 }}
-                                whileHover={{ scale:1.02 }}
-                                whileTap={{ scale:0.98 }}
-                                className="w-full mb-4 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-cyan-500/40 bg-cyan-500/10 text-cyan-400 text-sm font-semibold cursor-pointer"
-                            >
-                                <ChevronDown className="w-4 h-4" />
-                                Click to reveal additional revenue streams
-                            </motion.button>
-                        )}
                         {started && !allRevealed && (
                             <div className="flex items-center gap-2 mb-4">
                                 <span className="text-xs text-slate-500">
@@ -519,16 +502,6 @@ export default function Slide7Financials({ onInteracted }) {
                     </div>
                 </div>
 
-                {!hasInteracted && !timerDone && (
-                    <motion.p initial={{opacity:0}} animate={{opacity:1}} className="text-center text-cyan-400 text-sm">
-                        👆 Drag any slider to explore — or continue in {secondsLeft}s
-                    </motion.p>
-                )}
-                {(hasInteracted || timerDone) && (
-                    <motion.p initial={{opacity:0}} animate={{opacity:1}} className="text-center text-green-400 font-semibold">
-                        ✓ Click Next to continue
-                    </motion.p>
-                )}
             </div>
         </div>
     );
