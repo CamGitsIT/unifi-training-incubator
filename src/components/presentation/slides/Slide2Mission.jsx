@@ -2,6 +2,12 @@ import React, { useState, useMemo, useEffect, useLayoutEffect, useRef, useCallba
 
 const REVEAL_INTERVAL    = 4000; // ms between each row appearing
 const FIRST_REVEAL_DELAY = 600;  // ms before the first row (lets slide entrance finish)
+
+// Module-level flag: persists across re-mounts (slide nav) but resets on full page reload.
+// Allows skipping the sequential reveal on revisit.
+let _revealDone = false;
+
+const DIRECT_IDS = ['experience', 'training'];
 import { motion, AnimatePresence } from 'framer-motion';
 import { RotateCcw, TrendingUp, ChevronRight } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
@@ -50,6 +56,14 @@ export default function Slide2Mission({ onInteracted }) {
 
     const startReveal = useCallback(() => {
         if (startedAt.current !== null) return;
+        // Already completed on a prior visit — show all immediately
+        if (_revealDone) {
+            startedAt.current = -1; // sentinel
+            stepRef.current = TOTAL_STEPS;
+            setStarted(true);
+            setRevealStep(TOTAL_STEPS);
+            return;
+        }
         startedAt.current = performance.now();
         setStarted(true);
         function loop(now) {
@@ -60,7 +74,11 @@ export default function Slide2Mission({ onInteracted }) {
             }
             target = Math.min(target, TOTAL_STEPS);
             if (target > stepRef.current) { stepRef.current = target; setRevealStep(target); }
-            if (stepRef.current < TOTAL_STEPS) rafRef.current = requestAnimationFrame(loop);
+            if (stepRef.current < TOTAL_STEPS) {
+                rafRef.current = requestAnimationFrame(loop);
+            } else {
+                _revealDone = true; // mark for future visits
+            }
         }
         rafRef.current = requestAnimationFrame(loop);
     }, [TOTAL_STEPS]);
@@ -206,6 +224,14 @@ export default function Slide2Mission({ onInteracted }) {
                                 >
                                     {/* Emoji + name */}
                                     <div className="flex items-center gap-2.5 w-52 flex-shrink-0">
+                                        {DIRECT_IDS.includes(stream.id) ? (
+                                            <div className="relative flex-shrink-0" title="Direct Revenue Stream">
+                                                <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                                                <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-green-400 animate-ping opacity-50" />
+                                            </div>
+                                        ) : (
+                                            <div className="w-2.5 flex-shrink-0" />
+                                        )}
                                         <span className="text-lg">{stream.emoji}</span>
                                         <div>
                                             <div className="text-white text-sm font-semibold leading-tight">{stream.title}</div>
