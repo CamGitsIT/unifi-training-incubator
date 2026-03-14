@@ -6,14 +6,14 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 import { BASELINE_STREAMS, STREAM_COLORS } from '@/components/forecast/forecastEngine';
 
 const STREAM_DISPLAY = {
-  experience:    { icon: Camera,        color: 'cyan',   title: 'Experience Center',       subtitle: 'Live showroom · no inventory',          tag: 'Direct',      description: 'Live UniFi showroom. No inventory.', metrics: ['Qualifies buyers. Feeds every other line.'] },
-  training:      { icon: GraduationCap, color: 'green',  title: 'Certification Training',  subtitle: 'Official UniFi training',               tag: 'Direct',      description: 'Official UniFi bootcamps.', metrics: ['$2,000/seat. In-person or remote.', 'Builds talent pipeline.'] },
-  retrofit:      { icon: Building2,     color: 'purple', title: 'Access Control Retrofit', subtitle: 'Modern entry upgrades',                 tag: 'Project',     description: 'Modern entry upgrades.', metrics: ['Avg $9K deal. 12.5% fee.', 'Design & scope → integration partner.'] },
+  experience:    { icon: Camera,        color: 'cyan',   title: 'Experience Center',       subtitle: 'Live showroom · no inventory',          tag: 'Direct',      description: 'Live UniFi showroom.', metrics: ['No inventory.', 'Qualifies buyers.', 'Feeds every other line.'] },
+  training:      { icon: GraduationCap, color: 'green',  title: 'Certification Training',  subtitle: 'Official UniFi training',               tag: 'Direct',      description: 'Official UniFi bootcamps.', metrics: ['$2,000/seat.', 'In-person or remote.', 'Builds talent pipeline.'] },
+  retrofit:      { icon: Building2,     color: 'purple', title: 'Access Control Retrofit', subtitle: 'Modern entry upgrades',                 tag: 'Project',     description: 'Modern entry upgrades.', metrics: ['Avg $9K deal. 12.5% fee.', 'Design & scope → MSP partner.'] },
   retail:        { icon: Store,         color: 'amber',  title: 'Multi-Location Retail',   subtitle: 'Standardized retail rollouts',          tag: 'Recurring',   description: 'Standardized chain rollouts.', metrics: ['Recurring support across sites.'] },
   monitoring:    { icon: Shield,        color: 'red',    title: 'Professional Monitoring', subtitle: 'Modern security monitoring',            tag: 'Recurring',   description: 'Modern security monitoring.', metrics: ['Replaces legacy vendors. $100/site/mo.'] },
-  rentals:       { icon: Camera,        color: 'indigo', title: 'Infrastructure Rentals',  subtitle: 'Production-ready gear rentals',         tag: 'Asset',       description: 'Production-ready gear rentals.', metrics: ['$800 avg per job. No client capex.'] },
-  refrigeration: { icon: Thermometer,   color: 'orange', title: 'Compliance Monitoring',   subtitle: 'Temperature and compliance logging',    tag: 'Recurring',   description: 'Temp & compliance logging.', metrics: ['$1,000/year/location. Cuts manual work.'] },
-  isp:           { icon: Wifi,          color: 'teal',   title: 'Micro ISP',                subtitle: 'Community broadband for HOAs',         tag: 'Infrastructure', description: 'HOA community broadband.', metrics: ['$55/unit/mo net. Beats incumbents.'] },
+  rentals:       { icon: Camera,        color: 'indigo', title: 'Infrastructure Rentals',  subtitle: 'Production-ready gear rentals',         tag: 'Asset',       description: 'Production-ready gear rentals.', metrics: ['$800 avg per job.', 'No client capex.'] },
+  refrigeration: { icon: Thermometer,   color: 'orange', title: 'Compliance Monitoring',   subtitle: 'Temperature and compliance logging',    tag: 'Recurring',   description: 'Temp & compliance monitoring.', metrics: ['$1,000/year/location.', 'Cuts manual work and error.'] },
+  isp:           { icon: Wifi,          color: 'teal',   title: 'Micro ISP',                subtitle: 'Community broadband for HOAs',         tag: 'Infrastructure', description: 'HOA community broadband.', metrics: ['$55/unit/mo net.', 'Beats incumbents.'] },
 };
 
 const colorMap = {
@@ -147,31 +147,60 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
         {/* Section break */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="mt-14 mb-8 flex items-center gap-4">
           <div className="flex-1 border-t border-slate-800" />
-          <p className="text-xs font-semibold tracking-widest text-slate-500 uppercase whitespace-nowrap">Why This Model Works</p>
+          <p className="text-xs font-semibold tracking-widest text-slate-500 uppercase whitespace-nowrap">Why This Model Works — Standalone. Expandable. Compounding.</p>
           <div className="flex-1 border-t border-slate-800" />
         </motion.div>
 
-        {/* Why This Model Works - simplified bullets */}
+        {/* Stacked visual framework */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="rounded-2xl border border-slate-800 bg-slate-800/20 px-6 py-6 mb-4">
-          <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <div className="w-2 h-2 rounded-full bg-cyan-500 flex-shrink-0 mt-2" />
-              <div>
-                <p className="text-base font-semibold text-slate-200">Standalone — each line pays by itself</p>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+
+            {/* Left: stacked bars */}
+            <div className="space-y-3">
+              {STACK_DATA.map((row, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="text-xs text-slate-500 w-28 flex-shrink-0 text-right">{row.label}</span>
+                  <div className="flex-1 h-7 rounded-lg overflow-hidden bg-slate-800/60 flex">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${row.standalone}%` }}
+                      transition={{ delay: 0.4 + i * 0.15, duration: 0.6, ease: 'easeOut' }}
+                      className="h-full bg-cyan-500/70"
+                    />
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${row.expansion}%` }}
+                      transition={{ delay: 0.55 + i * 0.15, duration: 0.5, ease: 'easeOut' }}
+                      className="h-full bg-violet-500/70"
+                    />
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${row.compounding}%` }}
+                      transition={{ delay: 0.7 + i * 0.15, duration: 0.5, ease: 'easeOut' }}
+                      className="h-full bg-green-500/70"
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="flex items-start gap-3">
-              <div className="w-2 h-2 rounded-full bg-violet-500 flex-shrink-0 mt-2" />
-              <div>
-                <p className="text-base font-semibold text-slate-200">Expandable — one win opens the next</p>
-              </div>
+
+            {/* Right: legend */}
+            <div className="space-y-4">
+              {[
+                { color: 'bg-cyan-500/70', label: 'Standalone Revenue', desc: 'Each line can close and generate revenue on its own.' },
+                { color: 'bg-violet-500/70', label: 'Expansion Revenue', desc: 'One deployment often opens the door to the next service.' },
+                { color: 'bg-green-500/70', label: 'Lower Risk. More Value.', desc: 'Diversified revenue reduces dependency on any one offer and increases long-term client value.' },
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div className={`w-3 h-3 rounded-sm ${item.color} flex-shrink-0 mt-1`} />
+                  <div>
+                    <p className="text-sm font-semibold text-slate-200 leading-tight">{item.label}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="flex items-start gap-3">
-              <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0 mt-2" />
-              <div>
-                <p className="text-base font-semibold text-slate-200">Compounding — diversification lowers risk, raises value</p>
-              </div>
-            </div>
+
           </div>
         </motion.div>
 
