@@ -158,7 +158,7 @@ export default function Home() {
                 canAdvance={canAdvance}
                 slideLabel={SLIDES[safeCurrent].label}
                 hideNext={safeCurrent === 0}
-                unlockMessage={unlockMessage}
+                unlockMessage={GATING_ENABLED ? unlockMessage : null}
             />
         </div>
     );
