@@ -278,9 +278,9 @@ export const STREAMS = [
     tags: ['Project', 'Location-free'],
     color: STREAM_COLORS.rentals,
     emoji: '🎬',
-    what: 'Rent complete UniFi infrastructure kits to film crews, event producers, and pop-up operators.',
+    what: 'UniFi infrastructure kits rented per production — no client CapEx, no setup headaches.',
     whoServes: 'Film production companies, event coordinators, real estate stagers, pop-up retailers.',
-    howWeEarn: '$800 avg per production rental (gear + remote setup support).',
+    howWeEarn: '$800/rental — gear plus remote setup support. Asset pays for itself after ~4 jobs.',
 
     driver: {
       name: baseline('rentals').driver_name,
