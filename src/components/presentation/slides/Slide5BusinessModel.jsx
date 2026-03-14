@@ -98,35 +98,93 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
         </motion.div>
 
         {/* Flywheel Visualization */}
-        <div className="relative w-full max-w-4xl mx-auto mb-10" style={{ minHeight: '600px' }}>
-            {/* Center: Experience Center + Training */}
+        <div className="relative w-full max-w-6xl mx-auto mb-10 py-16" style={{ minHeight: '800px' }}>
+            {/* Center: Experience Center + Training (separately expandable) */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
                 {/* Animated rotating ring */}
                 <motion.div
                     className="absolute inset-0 rounded-full border-4 border-dashed border-emerald-500/40"
-                    style={{ width: '280px', height: '280px', left: '-40px', top: '-40px' }}
+                    style={{ width: '320px', height: '320px', left: '-60px', top: '-60px' }}
                     animate={{ rotate: 360 }}
                     transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
                 />
 
-                <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border-2 border-cyan-500/40 p-6 w-48 shadow-2xl">
-                    <div className="text-center space-y-3">
-                        <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center mx-auto">
-                            <Camera className="w-5 h-5 text-cyan-400" />
-                        </div>
-                        <div>
-                            <h3 className="text-sm font-bold text-white leading-tight">Experience Center</h3>
-                            <p className="text-xs text-cyan-400 mt-0.5">Live showroom</p>
-                        </div>
+                <div className="relative space-y-3">
+                    {/* Experience Center Card */}
+                    {(() => {
+                        const expLine = businessLines.find(l => l.id === 'experience');
+                        const expColors = colorMap[expLine.color];
+                        const expIdx = businessLines.indexOf(expLine);
+                        const expOpen = expanded.has(expIdx);
+                        return (
+                            <motion.div
+                                onClick={() => handleExpand(expIdx)}
+                                className={`bg-gradient-to-br ${expColors.bg} to-slate-900/20 border-2 ${expColors.border} rounded-2xl p-4 cursor-pointer transition-all hover:scale-105 shadow-2xl ${expOpen ? 'ring-2 ring-cyan-400' : ''}`}
+                                style={{ width: expOpen ? '280px' : '200px' }}
+                            >
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div className={`w-8 h-8 ${expColors.icon} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                                        {expOpen ? <CheckCircle className="w-4 h-4 text-green-400" /> : <Camera className={`w-4 h-4 ${expColors.iconColor}`} />}
+                                    </div>
+                                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${expColors.tag}`}>{expLine.tag}</span>
+                                </div>
+                                <h3 className="text-sm font-bold text-white leading-tight">{expLine.title}</h3>
+                                <p className={`text-xs ${expColors.accent} mt-0.5 leading-snug`}>{expLine.subtitle}</p>
 
-                        <div className="pt-2 border-t border-slate-700">
-                            <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mx-auto mb-2">
-                                <GraduationCap className="w-4 h-4 text-green-400" />
-                            </div>
-                            <h4 className="text-xs font-bold text-white">Certification Training</h4>
-                            <p className="text-xs text-green-400 mt-0.5">Official UniFi training</p>
-                        </div>
-                    </div>
+                                {expOpen && (
+                                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="pt-2 mt-2 border-t border-slate-700/50">
+                                        <p className="text-slate-300 text-xs mb-2 leading-relaxed">{expLine.description}</p>
+                                        <div className="space-y-1">
+                                            {expLine.metrics.map((m, j) => (
+                                                <div key={j} className="flex items-start gap-1.5 text-xs text-slate-400">
+                                                    <ArrowRight className={`w-3 h-3 flex-shrink-0 mt-0.5 ${expColors.iconColor}`} />
+                                                    <span>{m}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </motion.div>
+                        );
+                    })()}
+
+                    {/* Certification Training Card */}
+                    {(() => {
+                        const trainLine = businessLines.find(l => l.id === 'training');
+                        const trainColors = colorMap[trainLine.color];
+                        const trainIdx = businessLines.indexOf(trainLine);
+                        const trainOpen = expanded.has(trainIdx);
+                        return (
+                            <motion.div
+                                onClick={() => handleExpand(trainIdx)}
+                                className={`bg-gradient-to-br ${trainColors.bg} to-slate-900/20 border-2 ${trainColors.border} rounded-2xl p-4 cursor-pointer transition-all hover:scale-105 shadow-2xl ${trainOpen ? 'ring-2 ring-green-400' : ''}`}
+                                style={{ width: trainOpen ? '280px' : '200px' }}
+                            >
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div className={`w-8 h-8 ${trainColors.icon} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                                        {trainOpen ? <CheckCircle className="w-4 h-4 text-green-400" /> : <GraduationCap className={`w-4 h-4 ${trainColors.iconColor}`} />}
+                                    </div>
+                                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${trainColors.tag}`}>{trainLine.tag}</span>
+                                </div>
+                                <h3 className="text-sm font-bold text-white leading-tight">{trainLine.title}</h3>
+                                <p className={`text-xs ${trainColors.accent} mt-0.5 leading-snug`}>{trainLine.subtitle}</p>
+
+                                {trainOpen && (
+                                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="pt-2 mt-2 border-t border-slate-700/50">
+                                        <p className="text-slate-300 text-xs mb-2 leading-relaxed">{trainLine.description}</p>
+                                        <div className="space-y-1">
+                                            {trainLine.metrics.map((m, j) => (
+                                                <div key={j} className="flex items-start gap-1.5 text-xs text-slate-400">
+                                                    <ArrowRight className={`w-3 h-3 flex-shrink-0 mt-0.5 ${trainColors.iconColor}`} />
+                                                    <span>{m}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </motion.div>
+                        );
+                    })()}
                 </div>
             </div>
 
@@ -136,35 +194,33 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                 const Icon = line.icon;
                 const isOpen = expanded.has(businessLines.indexOf(line));
                 const angle = (i * 60) - 90; // Start from top, 60° spacing for 6 items
-                const radius = 250;
+                const radius = 320;
                 const x = Math.cos((angle * Math.PI) / 180) * radius;
                 const y = Math.sin((angle * Math.PI) / 180) * radius;
 
                 return (
                     <React.Fragment key={line.id}>
-                        {/* Animated arrow from center to card */}
-                        <motion.div
-                            className="absolute top-1/2 left-1/2 origin-left"
-                            style={{
-                                width: `${radius - 60}px`,
-                                height: '2px',
-                                transform: `rotate(${angle}deg)`,
-                                transformOrigin: 'left center',
-                            }}
-                            initial={{ scaleX: 0 }}
-                            animate={{ scaleX: 1 }}
-                            transition={{ delay: 0.5 + i * 0.1, duration: 0.6 }}
-                        >
-                            <div className="relative w-full h-full">
-                                <div className={`absolute inset-0 bg-gradient-to-r from-${line.color}-500/40 to-${line.color}-500/20`} style={{ backgroundColor: `${STREAM_COLORS[line.id]}40` }} />
-                                <motion.div
-                                    className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full"
-                                    style={{ backgroundColor: STREAM_COLORS[line.id] }}
-                                    animate={{ scale: [1, 1.5, 1] }}
-                                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-                                />
-                            </div>
-                        </motion.div>
+                        {/* Visible animated arrow from center to card */}
+                        <svg className="absolute top-1/2 left-1/2 pointer-events-none" style={{ width: '100%', height: '100%', transform: 'translate(-50%, -50%)' }}>
+                            <defs>
+                                <marker id={`arrowhead-${line.id}`} markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                                    <polygon points="0 0, 10 3, 0 6" fill={STREAM_COLORS[line.id]} />
+                                </marker>
+                            </defs>
+                            <motion.line
+                                x1="50%"
+                                y1="50%"
+                                x2={`calc(50% + ${x * 0.7}px)`}
+                                y2={`calc(50% + ${y * 0.7}px)`}
+                                stroke={STREAM_COLORS[line.id]}
+                                strokeWidth="2"
+                                strokeDasharray="5,5"
+                                markerEnd={`url(#arrowhead-${line.id})`}
+                                initial={{ pathLength: 0, opacity: 0 }}
+                                animate={{ pathLength: 1, opacity: 0.6 }}
+                                transition={{ delay: 0.5 + i * 0.1, duration: 0.8 }}
+                            />
+                        </svg>
 
                         <motion.div
                             initial={{ opacity: 0, scale: 0.8 }}
@@ -176,7 +232,7 @@ export default function Slide5BusinessModel({ onInteracted, onUnlockMessage }) {
                                 top: `calc(50% + ${y}px)`,
                                 left: `calc(50% + ${x}px)`,
                                 transform: 'translate(-50%, -50%)',
-                                width: isOpen ? '240px' : '180px',
+                                width: isOpen ? '260px' : '190px',
                             }}
                         >
                             <div className={`bg-gradient-to-br ${colors.bg} to-slate-900/20 border-2 ${colors.border} rounded-2xl p-4 transition-all ${isOpen ? 'ring-2 ring-offset-2 ring-offset-slate-900 shadow-2xl' : 'shadow-lg'}`}>
