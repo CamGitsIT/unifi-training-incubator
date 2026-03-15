@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, DollarSign, RefreshCw, XCircle } from 'lucide-react';
+import { fadeUp, focusVariants, useFocusProgression } from '@/lib/motionConfig';
 
 export default function Slide2Problem({ onInteracted }) {
     useEffect(() => { onInteracted(); }, []);
@@ -12,13 +13,16 @@ export default function Slide2Problem({ onInteracted }) {
         { icon: AlertTriangle, label: 'Dated Technology', color: '#dc2626' },
     ];
 
+    const { getFocusState, pause, resume } = useFocusProgression(problems.length, 2200);
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center py-24 px-6">
             <div className="max-w-5xl mx-auto w-full">
                 
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
                     className="text-center mb-12"
                 >
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-500/10 border border-slate-500/20 mb-6">
@@ -32,8 +36,9 @@ export default function Slide2Problem({ onInteracted }) {
                 </motion.div>
 
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
                     transition={{ delay: 0.2 }}
                     className="bg-slate-800/30 border border-slate-700 rounded-2xl p-8 md:p-12 mb-8"
                 >
@@ -49,33 +54,39 @@ export default function Slide2Problem({ onInteracted }) {
                             <p><strong className="text-white">Dated tech</strong> holds everyone back.</p>
                         </div>
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4 }}
-                            className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
-                        >
+                        {/* Problem cards — stagger entry, then cycle focus (two-layer pattern) */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                             {problems.map((problem, i) => {
                                 const Icon = problem.icon;
                                 return (
+                                    // Outer: focus state overlay (opacity / scale / filter)
                                     <motion.div
                                         key={problem.label}
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: 0.5 + i * 0.1 }}
-                                        className="bg-slate-800/40 border border-slate-700 rounded-xl p-6 text-center hover:border-slate-600 transition-all"
+                                        initial="idle"
+                                        animate={getFocusState(i)}
+                                        variants={focusVariants}
+                                        onHoverStart={() => pause(i)}
+                                        onHoverEnd={resume}
                                     >
-                                        <div
-                                            className="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center"
-                                            style={{ backgroundColor: `${problem.color}20` }}
+                                        {/* Inner: staggered entry animation */}
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 16 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.4, delay: 0.4 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                                            className="bg-slate-800/40 border border-slate-700 rounded-xl p-6 text-center cursor-default"
                                         >
-                                            <Icon className="w-6 h-6" style={{ color: problem.color }} />
-                                        </div>
-                                        <p className="text-slate-300 text-sm font-medium">{problem.label}</p>
+                                            <div
+                                                className="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center"
+                                                style={{ backgroundColor: `${problem.color}20` }}
+                                            >
+                                                <Icon className="w-6 h-6" style={{ color: problem.color }} />
+                                            </div>
+                                            <p className="text-slate-300 text-sm font-medium">{problem.label}</p>
+                                        </motion.div>
                                     </motion.div>
                                 );
                             })}
-                        </motion.div>
+                        </div>
                         
                         <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-6">
                             UniFi replaces it with <strong className="text-cyan-400">one integrated, subscription-free stack</strong>.

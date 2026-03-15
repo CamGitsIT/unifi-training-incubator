@@ -8,6 +8,7 @@ import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { formatCurrency } from '@/components/forecast/forecastEngine';
+import { fadeUp, focusVariants, useFocusProgression } from '@/lib/motionConfig';
 
 const ANNUAL_DEBT_SERVICE = 55200;
 const MARGIN = 0.63;
@@ -67,12 +68,14 @@ export default function Slide11CTA({ onInteracted }) {
         }
     };
 
+    const { getFocusState, pause, resume } = useFocusProgression(3, 2600);
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 py-16 px-6">
             <div className="max-w-5xl mx-auto w-full">
 
                 {/* Header */}
-                <motion.div initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} className="text-center mb-10">
+                <motion.div variants={fadeUp} initial="hidden" animate="visible" className="text-center mb-10">
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-4">
                         <Rocket className="w-3.5 h-3.5 text-cyan-400" />
                         <span className="text-cyan-400 text-xs font-semibold tracking-wide">Ready to Participate</span>
@@ -83,50 +86,86 @@ export default function Slide11CTA({ onInteracted }) {
                     </p>
                 </motion.div>
 
-                {/* Three action cards */}
+                {/* Three action cards — stagger entry, then cycle focus (two-layer pattern) */}
                 <div className="grid md:grid-cols-3 gap-5 mb-10">
 
                     {/* Invest */}
-                    <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.05 }}
-                        className="bg-slate-800/30 border border-cyan-500/30 rounded-xl p-6 flex flex-col items-center text-center hover:border-cyan-400/60 transition-all">
-                        <Heart className="w-8 h-8 text-cyan-400 mb-3" />
-                        <h3 className="font-bold text-white mb-2">Invest as a Friend</h3>
-                        <p className="text-slate-400 text-sm mb-5 flex-1">
-                            Simple note. Fixed 10% annual return, repaid from operating revenue. Starting at $5K. No equity, no board seat.
-                        </p>
-                        <button onClick={scrollToForm}
-                            className="flex items-center gap-1 px-4 py-2 rounded-lg bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 text-sm font-semibold hover:bg-cyan-500/25 transition-all">
-                            Register Intent <ChevronRight className="w-3.5 h-3.5" />
-                        </button>
+                    <motion.div
+                        initial="idle"
+                        animate={getFocusState(0)}
+                        variants={focusVariants}
+                        onHoverStart={() => pause(0)}
+                        onHoverEnd={resume}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                            className="bg-slate-800/30 border border-cyan-500/30 rounded-xl p-6 flex flex-col items-center text-center hover:border-cyan-400/60 transition-colors h-full cursor-default"
+                        >
+                            <Heart className="w-8 h-8 text-cyan-400 mb-3" />
+                            <h3 className="font-bold text-white mb-2">Invest as a Friend</h3>
+                            <p className="text-slate-400 text-sm mb-5 flex-1">
+                                Simple note. Fixed 10% annual return, repaid from operating revenue. Starting at $5K. No equity, no board seat.
+                            </p>
+                            <button onClick={scrollToForm}
+                                className="flex items-center gap-1 px-4 py-2 rounded-lg bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 text-sm font-semibold hover:bg-cyan-500/25 transition-all">
+                                Register Intent <ChevronRight className="w-3.5 h-3.5" />
+                            </button>
+                        </motion.div>
                     </motion.div>
 
                     {/* Gift */}
-                    <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.1 }}
-                        className="bg-slate-800/30 border border-purple-500/30 rounded-xl p-6 flex flex-col items-center text-center hover:border-purple-400/60 transition-all">
-                        <Sparkles className="w-8 h-8 text-purple-400 mb-3" />
-                        <h3 className="font-bold text-white mb-2">Make a Gift</h3>
-                        <p className="text-slate-400 text-sm mb-5 flex-1">
-                            Help fund the flagship UniFi Experience Center and create training-led jobs across Georgia.
-                        </p>
-                        <Button onClick={() => window.open('https://donate.stripe.com/aEU8xB9kM7IL8mo5kl', '_blank')}
-                            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm px-4 py-2 rounded-lg">
-                            Donate
-                        </Button>
+                    <motion.div
+                        initial="idle"
+                        animate={getFocusState(1)}
+                        variants={focusVariants}
+                        onHoverStart={() => pause(1)}
+                        onHoverEnd={resume}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                            className="bg-slate-800/30 border border-purple-500/30 rounded-xl p-6 flex flex-col items-center text-center hover:border-purple-400/60 transition-colors h-full cursor-default"
+                        >
+                            <Sparkles className="w-8 h-8 text-purple-400 mb-3" />
+                            <h3 className="font-bold text-white mb-2">Make a Gift</h3>
+                            <p className="text-slate-400 text-sm mb-5 flex-1">
+                                Help fund the flagship UniFi Experience Center and create training-led jobs across Georgia.
+                            </p>
+                            <Button onClick={() => window.open('https://donate.stripe.com/aEU8xB9kM7IL8mo5kl', '_blank')}
+                                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm px-4 py-2 rounded-lg">
+                                Donate
+                            </Button>
+                        </motion.div>
                     </motion.div>
 
                     {/* Visit */}
-                    <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.15 }}
-                        className="bg-slate-800/30 border border-green-500/30 rounded-xl p-6 flex flex-col items-center text-center hover:border-green-400/60 transition-all">
-                        <Calendar className="w-8 h-8 text-green-400 mb-3" />
-                        <h3 className="font-bold text-white mb-2">Schedule a Visit</h3>
-                        <p className="text-slate-400 text-sm mb-5 flex-1">
-                            Tour Sager Lofts, see the space, and walk through the plan in person.
-                        </p>
-                        <Link to={createPageUrl('ScheduleMeeting')}>
-                            <Button className="bg-green-700 hover:bg-green-600 text-white text-sm px-4 py-2 rounded-lg">
-                                Book a Time
-                            </Button>
-                        </Link>
+                    <motion.div
+                        initial="idle"
+                        animate={getFocusState(2)}
+                        variants={focusVariants}
+                        onHoverStart={() => pause(2)}
+                        onHoverEnd={resume}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                            className="bg-slate-800/30 border border-green-500/30 rounded-xl p-6 flex flex-col items-center text-center hover:border-green-400/60 transition-colors h-full cursor-default"
+                        >
+                            <Calendar className="w-8 h-8 text-green-400 mb-3" />
+                            <h3 className="font-bold text-white mb-2">Schedule a Visit</h3>
+                            <p className="text-slate-400 text-sm mb-5 flex-1">
+                                Tour Sager Lofts, see the space, and walk through the plan in person.
+                            </p>
+                            <Link to={createPageUrl('ScheduleMeeting')}>
+                                <Button className="bg-green-700 hover:bg-green-600 text-white text-sm px-4 py-2 rounded-lg">
+                                    Book a Time
+                                </Button>
+                            </Link>
+                        </motion.div>
                     </motion.div>
                 </div>
 

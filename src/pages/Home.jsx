@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Shield } from 'lucide-react';
+import { pageVariants } from '@/lib/motionConfig';
 import SlideNav from '../components/presentation/SlideNav';
 import SideNav from '../components/presentation/SideNav';
 import Slide1Hero from '../components/presentation/slides/Slide1Hero';
@@ -36,6 +37,7 @@ const SLIDES = [
 
 export default function Home() {
     const [current, setCurrent] = useState(0);
+    const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
     const [interacted, setInteracted] = useState(new Array(SLIDES.length).fill(!GATING_ENABLED));
     const [seen, setSeen] = useState(() => { const s = new Array(SLIDES.length).fill(false); s[0] = true; return s; });
     const [unlockMessage, setUnlockMessage] = useState(null);
@@ -77,16 +79,16 @@ export default function Home() {
 
     const goNext = () => {
         if (current < SLIDES.length - 1) {
-            const next = current + 1;
-            goToSlide(next);
+            setDirection(1);
+            goToSlide(current + 1);
         }
     };
 
     const goPrev = () => {
         if (current > 0) {
-            const prevIndex = current - 1;
-            markInteracted(prevIndex);
-            goToSlide(prevIndex);
+            setDirection(-1);
+            markInteracted(current - 1);
+            goToSlide(current - 1);
         }
     };
 
@@ -124,6 +126,15 @@ export default function Home() {
                         <span className="text-slate-600 text-sm">{safeCurrent + 1} / {SLIDES.length}</span>
                     </div>
                 </div>
+
+                {/* Slide progress bar */}
+                <motion.div
+                    className="h-0.5 bg-cyan-500/50 origin-left"
+                    initial={false}
+                    animate={{ scaleX: (safeCurrent + 1) / SLIDES.length }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    style={{ transformOrigin: 'left' }}
+                />
             </nav>
 
             {/* Side Nav */}
@@ -131,13 +142,14 @@ export default function Home() {
 
             {/* Slide Area */}
             <div ref={slideRef} className="flex-1 pt-16 pb-20 overflow-y-auto md:pl-48">
-                <AnimatePresence mode="sync">
+                <AnimatePresence mode="sync" custom={direction}>
                     <motion.div
                         key={current}
-                        initial={{ opacity: 0, x: 60 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -60 }}
-                        transition={{ duration: 0.35, ease: 'easeInOut' }}
+                        custom={direction}
+                        variants={pageVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
                     >
                         <SlideComponent
                             key={current}
