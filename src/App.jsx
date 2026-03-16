@@ -1,3 +1,4 @@
+import KineticText from './components/KineticText';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -38,14 +39,16 @@ const AuthenticatedApp = () => {
     }
   }
 
-  // Render the main app
-  return (
-    <Routes>
-      <Route path="/" element={
-        <LayoutWrapper currentPageName={mainPageKey}>
-          <MainPage />
-        </LayoutWrapper>
-      } />
+
+// Render the main app
+return (
+  <Routes>
+    <Route path="/" element={
+      <LayoutWrapper currentPageName={mainPageKey}>
+        <MainPage />
+      </LayoutWrapper>
+    } />
+    {/* ... rest of the code ... */}
       {Object.entries(Pages).map(([path, Page]) => (
         <Route
           key={path}
