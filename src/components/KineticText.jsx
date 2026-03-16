@@ -6,6 +6,8 @@ import * as THREE from 'three'
 function RotatingPrism() {
   const meshRef = useRef(null)
   const [index, setIndex] = useState(0)
+  const indexRef = useRef(index)
+  indexRef.current = index
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -16,7 +18,7 @@ function RotatingPrism() {
 
   useFrame(() => {
     if (meshRef.current) {
-      const targetRotation = index * (Math.PI * 2 / 3);
+      const targetRotation = indexRef.current * (Math.PI * 2 / 3);
       meshRef.current.rotation.y = THREE.MathUtils.lerp(
         meshRef.current.rotation.y,
         targetRotation,
