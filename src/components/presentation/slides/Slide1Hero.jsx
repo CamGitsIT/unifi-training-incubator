@@ -113,7 +113,7 @@ export default function Slide1Hero({ onInteracted, onNext }) {
                                 transition={{ delay: 0.75 }}
                                 className="text-slate-400 text-sm mb-2"
                             >
-                                Raising $300K to unlock SBA-backed $850K facility.
+                                Raising $85K down payment to unlock SBA-backed $850K facility.
                             </motion.p>
                             
                             <motion.button
