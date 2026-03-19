@@ -469,15 +469,15 @@ export default function Slide7Financials({ onInteracted }) {
                             {[
                                 {
                                     label: 'Monthly Payment',
-                                    value: formatCurrency(Math.round(monthlyPayment), true),
+                                    value: formatCurrency(Math.round(monthlyPayment)),
                                     color: '#a78bfa',
-                                    sub: `over ${paybackMonths} months`,
+                                    sub: `principal + return · ${paybackMonths} mo`,
                                 },
                                 {
                                     label: 'Investor Return',
-                                    value: formatCurrency(Math.round(investorReturn), true),
+                                    value: formatCurrency(Math.round(investorReturn)),
                                     color: '#4ade80',
-                                    sub: `10% · ${paybackYears.toFixed(1)}-yr note`,
+                                    sub: `10% simple · ${paybackYears.toFixed(1)}-yr note`,
                                 },
                                 {
                                     label: 'Payment vs Free Cash',
