@@ -9,7 +9,7 @@ const _forecast = runForecast(BASELINE_STREAMS, 'base');
 const AVG_MONTHLY_REVENUE_Y1 = Math.round(_forecast.totalY1 / 12);
 
 export default function Slide8Investment({ onInteracted }) {
-    const [investmentAmount, setInvestmentAmount] = useState(25000);
+    const [investmentAmount, setInvestmentAmount] = useState(10000);
     const [hasSlid, setHasSlid] = useState(false);
     const [timerDone, setTimerDone] = useState(false);
     const [secondsLeft, setSecondsLeft] = useState(10);
@@ -62,7 +62,7 @@ export default function Slide8Investment({ onInteracted }) {
                         </h3>
                         <div className="space-y-4">
                             {[
-                                { icon: CheckCircle, text: 'You lend us capital to acquire the property and launch operations', color: 'text-cyan-400' },
+                                { icon: CheckCircle, text: 'You contribute to the $85K down payment (10% SBA requirement) on an $850K facility — the SBA funds the rest', color: 'text-cyan-400' },
                                 { icon: DollarSign, text: 'We pay you back 10% return through monthly revenue sharing (5% of revenue)', color: 'text-green-400' },
                                 { icon: Clock, text: 'If revenue is strong, you get paid back quickly (12–18 months)', color: 'text-purple-400' },
                                 { icon: Shield, text: "If times are hard, payments flex with revenue — we won't be lazy, but we won't break either", color: 'text-blue-400' }
@@ -104,16 +104,16 @@ export default function Slide8Investment({ onInteracted }) {
                                 <p className="text-xs text-cyan-400 text-center mb-2 animate-bounce">👈 Drag the slider to calculate 👉</p>
                             )}
                             <Slider 
-                                value={[investmentAmount]} 
-                                onValueChange={handleSlide} 
-                                min={5000} 
-                                max={100000} 
-                                step={5000} 
-                                className="mb-2"
-                                style={{ '--slider-filled': '#21d3ee' }}
+                               value={[investmentAmount]} 
+                               onValueChange={handleSlide} 
+                               min={5000} 
+                               max={85000} 
+                               step={5000} 
+                               className="mb-2"
+                               style={{ '--slider-filled': '#21d3ee' }}
                             />
                             <div className="flex justify-between text-xs text-slate-500">
-                                <span>$5,000</span><span>$100,000</span>
+                               <span>$5,000</span><span>$85,000</span>
                             </div>
                         </div>
                         <div className="space-y-3 bg-slate-950/50 rounded-xl p-5">
@@ -126,7 +126,7 @@ export default function Slide8Investment({ onInteracted }) {
                         <div className="bg-purple-950/30 border border-purple-700/50 rounded-xl p-4 mt-4">
                             <div className="flex items-start gap-2">
                                 <AlertCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                                <p className="text-sm text-slate-300">If we hit our base projections ({formatCurrency(_forecast.totalY1, true)} Y1), we'll pay you back so fast you'll want to invest more to help us open Experience Center #2.</p>
+                                <p className="text-sm text-slate-300">We're raising just $85K — the 10% SBA down payment on an $850K facility. If we hit our base projections ({formatCurrency(_forecast.totalY1, true)} Y1), you'll be paid back well ahead of schedule.</p>
                             </div>
                         </div>
                     </div>

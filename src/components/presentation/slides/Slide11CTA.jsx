@@ -79,7 +79,7 @@ export default function Slide11CTA({ onInteracted }) {
                     </div>
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-3">Join the Mission</h2>
                     <p className="text-slate-400 max-w-xl mx-auto text-base">
-                        Three ways in. No equity offered — just a fair return, a front-row seat, or both.
+                        Three ways in. We're raising just $85K — the SBA down payment on an $850K facility. No equity offered — just a fair return, a front-row seat, or both.
                     </p>
                 </motion.div>
 
@@ -92,7 +92,7 @@ export default function Slide11CTA({ onInteracted }) {
                         <Heart className="w-8 h-8 text-cyan-400 mb-3" />
                         <h3 className="font-bold text-white mb-2">Invest as a Friend</h3>
                         <p className="text-slate-400 text-sm mb-5 flex-1">
-                            Simple note. Fixed 10% annual return, repaid from operating revenue. Starting at $5K. No equity, no board seat.
+                            Simple note. Fixed 10% annual return, repaid from operating revenue. Starting at $5K — up to $85K total raise. No equity, no board seat.
                         </p>
                         <button onClick={scrollToForm}
                             className="flex items-center gap-1 px-4 py-2 rounded-lg bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 text-sm font-semibold hover:bg-cyan-500/25 transition-all">
