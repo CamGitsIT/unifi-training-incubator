@@ -13,12 +13,12 @@ const ANNUAL_DEBT_SERVICE = 55200;
 const MARGIN = 0.63;
 
 const TIERS = [
-    { value: 'participant',         label: '$5K',   amount: 5000   },
-    { value: 'junior_contributor',  label: '$10K',  amount: 10000  },
-    { value: 'senior_contributor',  label: '$25K',  amount: 25000  },
-    { value: 'growth_accelerator',  label: '$50K',  amount: 50000  },
-    { value: 'mentor',              label: '$75K',  amount: 75000  },
-    { value: 'growth_leader',       label: '$100K', amount: 100000 },
+    { value: 'participant',         label: '$10K',  amount: 10000  },
+    { value: 'junior_contributor',  label: '$25K',  amount: 25000  },
+    { value: 'senior_contributor',  label: '$50K',  amount: 50000  },
+    { value: 'growth_accelerator',  label: '$75K',  amount: 75000  },
+    { value: 'mentor',              label: '$100K', amount: 100000 },
+    { value: 'growth_leader',       label: '$150K', amount: 150000 },
 ];
 
 const PAYBACK_OPTIONS = [
@@ -31,8 +31,8 @@ const PAYBACK_OPTIONS = [
 export default function Slide11CTA({ onInteracted }) {
     const formRef = useRef(null);
 
-    const [formData,     setFormData]     = useState({ full_name: '', email: '', amount: '50000', tier: 'growth_accelerator' });
-    const [selectedTier, setSelectedTier] = useState('growth_accelerator');
+    const [formData,     setFormData]     = useState({ full_name: '', email: '', amount: '25000', tier: 'junior_contributor' });
+    const [selectedTier, setSelectedTier] = useState('junior_contributor');
     const [paybackMonths,setPaybackMonths]= useState(24);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showSuccess,  setShowSuccess]  = useState(false);
@@ -92,7 +92,7 @@ export default function Slide11CTA({ onInteracted }) {
                         <Heart className="w-8 h-8 text-cyan-400 mb-3" />
                         <h3 className="font-bold text-white mb-2">Invest as a Friend</h3>
                         <p className="text-slate-400 text-sm mb-5 flex-1">
-                            Simple note. Fixed 10% annual return, repaid from operating revenue. Starting at $5K — up to $85K total raise. No equity, no board seat.
+                            Simple note. Fixed 10% annual return, repaid from operating revenue. Starting at $10K. No equity, no board seat.
                         </p>
                         <button onClick={scrollToForm}
                             className="flex items-center gap-1 px-4 py-2 rounded-lg bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 text-sm font-semibold hover:bg-cyan-500/25 transition-all">

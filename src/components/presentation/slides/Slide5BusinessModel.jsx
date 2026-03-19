@@ -220,7 +220,7 @@ export default function Slide5BusinessModel({ onInteracted }) {
           </h2>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-6">Each line earns on its own. Together they compound.</p>
           <p className="text-lg text-white max-w-2xl mx-auto mb-2">
-            We're building both the Experience Center and National Training Center with this $300K raise (unlocking the SBA-backed $850K facility).
+            We're raising $85K — the 10% SBA down payment to unlock the $850K facility — to build both the Experience Center and National Training Center.
           </p>
           <p className="text-sm text-slate-400 max-w-2xl mx-auto">
             We educate + demo, then design & scope complex projects — handing implementation design to our trained partners to implement for a fee.

@@ -15,7 +15,7 @@ const LOCATION_FREE = {
 const ANNUAL_DEBT_SERVICE = 55200;
 const MARGIN = 0.63;
 
-const INVEST_AMOUNTS  = [5000, 10000, 25000, 50000, 85000];
+const INVEST_AMOUNTS  = [10000, 25000, 75000, 100000, 150000];
 const PAYBACK_MONTHS  = [12, 24, 36, 48, 60];
 const ANNUAL_RETURN   = 0.10; // fixed 10% simple interest — not equity
 
@@ -138,6 +138,8 @@ export default function Slide7Financials({ onInteracted }) {
 
     // Investor calculator
     const [investAmount,  setInvestAmount]  = useState(25000);
+    // Note: totalRepaid = principal × (1 + 10% × years); monthlyPayment = totalRepaid / months
+    // e.g. $25K × (1 + 0.10×2) = $30K total; $30K/24 = $1,250/mo
     const [paybackMonths, setPaybackMonths] = useState(24);
 
     useEffect(() => { onInteracted(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
