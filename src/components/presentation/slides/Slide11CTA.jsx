@@ -108,7 +108,7 @@ export default function Slide11CTA({ onInteracted }) {
                         <p className="text-slate-400 text-sm mb-5 flex-1">
                             Help fund the flagship UniFi Experience Center and create training-led jobs across Georgia.
                         </p>
-                        <Button onClick={() => window.open('https://donate.stripe.com/aEU8xB9kM7IL8mo5kl', '_blank')}
+                        <Button onClick={scrollToForm}
                             className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm px-4 py-2 rounded-lg">
                             Donate
                         </Button>
