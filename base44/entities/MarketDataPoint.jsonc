@@ -1,0 +1,103 @@
+{
+  "name": "MarketDataPoint",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the property/entity"
+    },
+    "address": {
+      "type": "string"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "radius_miles": {
+      "type": "integer",
+      "description": "Radius from Experience Center (e.g., 1, 5, 10, 25, 50)"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "Multi-Family Residential",
+        "HOA",
+        "Property Management",
+        "Real Estate Developer",
+        "Security Integrator",
+        "Retail Establishment",
+        "Other"
+      ],
+      "description": "Classification of the identified entity"
+    },
+    "units_or_locations": {
+      "type": "integer",
+      "description": "Number of units for multi-family, locations for retail/chains"
+    },
+    "demographics_age_range": {
+      "type": "string",
+      "description": "Aggregated age range for the area"
+    },
+    "demographics_education": {
+      "type": "string",
+      "description": "Aggregated education level for the area"
+    },
+    "demographics_household_income": {
+      "type": "string",
+      "description": "Aggregated household income range for the area"
+    },
+    "firmographics_company_size": {
+      "type": "string",
+      "description": "Estimated company size"
+    },
+    "firmographics_revenue_range": {
+      "type": "string",
+      "description": "Estimated annual revenue range"
+    },
+    "infrastructure_system_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of observed or inferred access control/intercom system types"
+    },
+    "potential_retrofit_score": {
+      "type": "number",
+      "description": "Score/indicator for Multi-Family Retrofit business line potential (0-100)"
+    },
+    "potential_training_score": {
+      "type": "number",
+      "description": "Score/indicator for National Training business line potential (0-100)"
+    },
+    "potential_retail_score": {
+      "type": "number",
+      "description": "Score/indicator for Retail Modernization business line potential (0-100)"
+    },
+    "estimated_deal_value_retrofit": {
+      "type": "number",
+      "description": "Estimated revenue for Multi-Family Retrofit"
+    },
+    "estimated_deal_value_training": {
+      "type": "number",
+      "description": "Estimated revenue for National Training"
+    },
+    "estimated_deal_value_retail": {
+      "type": "number",
+      "description": "Estimated revenue for Retail Modernization"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Any additional notes or raw data"
+    }
+  },
+  "required": [
+    "name",
+    "address",
+    "latitude",
+    "longitude",
+    "radius_miles",
+    "entity_type"
+  ]
+}

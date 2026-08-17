@@ -1,0 +1,71 @@
+{
+  "name": "ChatwootConversation",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "Chatwoot conversation ID"
+    },
+    "contact_name": {
+      "type": "string",
+      "description": "Contact name from Chatwoot"
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "Contact email"
+    },
+    "contact_phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "resolved",
+        "pending"
+      ],
+      "default": "open",
+      "description": "Conversation status"
+    },
+    "property_inquiry": {
+      "type": "string",
+      "description": "Property name or address they inquired about"
+    },
+    "linked_property_id": {
+      "type": "string",
+      "description": "ID of the MarketDataPoint they're interested in"
+    },
+    "messages_count": {
+      "type": "integer",
+      "default": 0,
+      "description": "Total messages in conversation"
+    },
+    "last_message": {
+      "type": "string",
+      "description": "Last message content"
+    },
+    "last_message_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of last message"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "website",
+        "whatsapp",
+        "api"
+      ],
+      "default": "website",
+      "description": "Channel source"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes about this lead"
+    }
+  },
+  "required": [
+    "conversation_id"
+  ]
+}

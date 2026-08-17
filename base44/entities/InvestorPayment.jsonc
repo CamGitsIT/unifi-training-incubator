@@ -1,0 +1,66 @@
+{
+  "name": "InvestorPayment",
+  "type": "object",
+  "properties": {
+    "investor_email": {
+      "type": "string",
+      "description": "Email of the investor"
+    },
+    "investor_name": {
+      "type": "string",
+      "description": "Name of the investor"
+    },
+    "stripe_payment_id": {
+      "type": "string",
+      "description": "Stripe payment intent or charge ID"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Payment amount in dollars"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "description": "Currency code"
+    },
+    "payment_type": {
+      "type": "string",
+      "enum": [
+        "investment",
+        "revenue_share",
+        "principal_repayment",
+        "interest_payment"
+      ],
+      "description": "Type of payment"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "failed",
+        "refunded"
+      ],
+      "default": "pending",
+      "description": "Payment status"
+    },
+    "uisp_crm_synced": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether synced to UISP CRM"
+    },
+    "uisp_crm_id": {
+      "type": "string",
+      "description": "UISP CRM transaction ID"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional payment metadata from Stripe"
+    }
+  },
+  "required": [
+    "investor_email",
+    "amount",
+    "payment_type"
+  ]
+}
